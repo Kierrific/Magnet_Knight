@@ -19,7 +19,7 @@ public class Item_Grabber : MonoBehaviour
         //         first item box
         //------------------------------------------------------------------------------------------------------
 
-        randomNumber = Random.Range(1, 1000);
+        randomNumber = Random.Range(1, 1001);
         itemIndex = 0;
         for (int i = 1; i < itemPrefabs.Length; i++)
         {
@@ -42,7 +42,7 @@ public class Item_Grabber : MonoBehaviour
         //          second item box
         //------------------------------------------------------------------------------------------------------
 
-        randomNumber = Random.Range(1, 1000);
+        randomNumber = Random.Range(1, 1001);
         itemIndex = 0;
         for (int i = 1; i < itemPrefabs.Length; i++)
         {
@@ -65,7 +65,7 @@ public class Item_Grabber : MonoBehaviour
         //          third item box
         //------------------------------------------------------------------------------------------------------
 
-        randomNumber = Random.Range(1, 1000);
+        randomNumber = Random.Range(1, 1001);
         itemIndex = 0;
         for (int i = 1; i < itemPrefabs.Length; i++)
         {
