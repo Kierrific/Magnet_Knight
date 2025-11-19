@@ -20,12 +20,23 @@ public class StatsScript : MonoBehaviour
         get { return _health; }
         set
         {
-            _health = Mathf.Clamp(value, 0, _maxHealth);
+            Debug.Log($"Value: {value}\nHealth {_health}");
+            
             if (gameObject.tag == "Player")
             {
                 //Handle Custom Logic Here (Edit save data)
             }
 
+            if (value < _health) //Removing Health
+            {
+                //Debug.Log($"Health: {_health}\nDefense: {_defense}\nDamage: {_health - value}");
+                _health = Mathf.Clamp(Mathf.RoundToInt((float)_health - (((float) _health - (float) value) * (1 - _defense))), 0, _maxHealth);
+                //Debug.Log($"Updated Health: {_health}");
+            }
+            else //Adding Health
+            {
+                _health = Mathf.Clamp(value, 0, _maxHealth);
+            }
 
             if (_health == 0)
             {
@@ -37,7 +48,7 @@ public class StatsScript : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("Player Doesn't Have Stats Script");
+                        Debug.Log("Player Doesn't Have Stats Script"); //Mathf.Floor()
                     }
                     Destroy(gameObject);
                 }
@@ -227,19 +238,32 @@ public class StatsScript : MonoBehaviour
 
     void Awake()
     {
-        _player = GameObject.FindWithTag("Player");
+        //_player = GameObject.FindWithTag("Player");
         if (gameObject.tag != "Player")
         {
             Health = MaxHealth;
-            Debug.Log($"Health: {Health}\nMovement Speed: {MoveSpeed}");
+            
+            //Debug.Log($"Health: {Health}\nMovement Speed: {MoveSpeed}");
         }
         else
         {
+            _player = gameObject;
+            
             //Set Health to save data 
         }
+    }
 
+    private void Start()
+    {
 
+    }
 
-
+    private void Update()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            Health -= 10;
+            
+        }
     }
 }
