@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("Drag the players RigidBody2D into this variable (Should function without setting it here maybe)")] [SerializeField] private Rigidbody2D _rb2d;
     [Tooltip("The list of the various projectiles that the enemy can fire (Small - Medium - Large")] [SerializeField] private List<GameObject> _scrapProjectilePrefabs;
     [Tooltip("How long in seconds till the player can dash again before scaling of cooldown reduction")][SerializeField] private float _dashCooldown;
+    [Tooltip("")] [SerializeField] private  
     [Tooltip("How large the players melee attack hits")] [SerializeField] private float _meleeRadius;
 
     //Layers
@@ -22,6 +23,7 @@ public class PlayerScript : MonoBehaviour
     private bool _secondAttackPressed;
     private bool _abilityPressed;
     private float _dashTimer;
+    private float _attackTimer;  
     private string _playerBusy = "none"; //Use this variable to check if another action is current being acted
     
     
