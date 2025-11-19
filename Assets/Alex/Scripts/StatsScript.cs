@@ -70,6 +70,13 @@ public class StatsScript : MonoBehaviour
         set { _defense = Mathf.Clamp(value, 0f, 1f); }
     }
 
+    [Tooltip("The percentage of a cooldown being reducted, 0 being the default cooldown value and 1 being no cooldown")][Range(0f, 1f)] [SerializeField] private float _cooldownReduction;
+    [HideInInspector] public float CooldownReduction
+    {
+        get { return _cooldownReduction; }
+        set { _cooldownReduction = Mathf.Clamp(value, 0f, 1f); }
+    }
+
     //---------------------------------------------------------------------------------------------------
 
     //Movement Variables
