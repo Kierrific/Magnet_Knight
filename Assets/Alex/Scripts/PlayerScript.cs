@@ -5,6 +5,10 @@ using System.Collections.Generic;
 //TO DO:
 //1) Add Dash   2) Set Up Projectile Prefabs    3) Set Up Secondary Attacks 4) Go through and look at anything marked
 
+//Add IFrames to the stats script and make a check when taking damage 
+
+//Swap were the attack function plays to be something that doesnt take an input action and play that instead 
+
 [RequireComponent(typeof(Rigidbody2D))] //Needs a Rigid Body 2D
 //[RequireComponent(typeof(StatsScript))] //Needs a stats script
 public class PlayerScript : MonoBehaviour
@@ -14,7 +18,9 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("The list of the various projectiles that the enemy can fire (Primairy - Secondary")] [SerializeField] private List<GameObject> _scrapProjectilePrefabs;
     [Tooltip("How long in seconds till the player can dash again before scaling of cooldown reduction")][SerializeField] private float _dashCooldown;
     [Tooltip("How large the players melee attack hits")] [SerializeField] private float _meleeRadius;
+    [Tooltip("How long the player will dash for, will define its self as 1/3 of base dash cooldown if undefined")][SerializeField] private float _dashingLength;
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")] [SerializeField] private StatsScript _stats;
+    [Tooltip("The force added to the player every frame of the dash")] [SerializeField] private float _dashForce;
     [Tooltip("How long in seconds till the player will be able to melee atack again")] [SerializeField] private float _meleeCooldown = 0.5f; //Update this later or speed up the animation in relation to the sword swing(E) 
     [Tooltip("How long in seconds till the player will be able to ranged attack again")] [SerializeField] private float _rangeCooldown = 0.3f; //Update this later same reason as _meleeCooldown (E)
     [Tooltip("The base damage (int) of the sword")] [SerializeField] private int _meleeDamage = 5;
@@ -22,6 +28,7 @@ public class PlayerScript : MonoBehaviour
 
 
     //Layers
+    [Header("Layers")]
     [Tooltip("The layer for enemies, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _enemyLayer;
     [Tooltip("The layer for the environment, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _groundLayer;
 
@@ -31,7 +38,7 @@ public class PlayerScript : MonoBehaviour
     private bool _secondAttackPressed;
     private bool _abilityPressed;
     private float _attackChargeTime;
-    private float _dashTimer;
+    
     private float _attackTimer; 
     private string _playerBusy = "none"; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
     private Vector3 _meleePosition; //Really only used for draw gizmos
@@ -43,6 +50,8 @@ public class PlayerScript : MonoBehaviour
     private Vector3 _playerDirection;
     private bool _canMove = true;
     private bool _dashing = false;
+    private float _dashCooldownTimer;
+    private float _dashingLengthTimer;
 
     //Other Variables
     private float _playerState = 1; //1 for positive (melee) -1 for negative (range)
@@ -71,6 +80,8 @@ public class PlayerScript : MonoBehaviour
             _groundLayer = LayerMask.GetMask("Ground");
 
         }
+
+        _dashingLength = Mathf.Approximately(_dashingLength, 0f) ? _dashCooldown / 3f : _dashingLength;
 
         _playerSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
@@ -108,7 +119,7 @@ public class PlayerScript : MonoBehaviour
 
  
         
-        _dashTimer = _dashTimer > 0f ? _dashTimer - delta: _dashTimer; //This is a ternary, basically a single lined if statement
+        _dashCooldownTimer = _dashCooldownTimer > 0f ? _dashCooldownTimer - delta: _dashCooldownTimer; //This is a ternary, basically a single lined if statement
         _attackChargeTime = _mainAttackPressed || _abilityPressed || _secondAttackPressed ? _attackChargeTime + delta: _attackChargeTime;
 
         if (_attackTimer > 0f) //Checks if attack is off cooldown
@@ -249,17 +260,25 @@ public class PlayerScript : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext ctx)
     {
-        if (_dashTimer <= 0f)
+        if (_dashCooldownTimer <= 0f)
         {
             _dashing = true;
             _canMove = false;
-            _dashTimer = _dashCooldown;
+            _dashCooldownTimer = _dashCooldown;
         }
     }
 
     private void HandleDash()
     {
+        _dashingLengthTimer -= Time.deltaTime;
+        _rb2d.AddForce(_dashForce * _playerDirection.normalized);
 
+        if (_dashCooldownTimer < 0f)
+        {
+            _dashing = false;
+            _canMove = true;
+            _dashingLengthTimer = _dashingLength;
+        }
     }
 
     public void OnDrawGizmos()
