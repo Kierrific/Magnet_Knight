@@ -218,17 +218,6 @@ public class StatsScript : MonoBehaviour
         }
     }
 
-    [Header("Block Values")]
-    [Tooltip("How many attacks can the object block")][SerializeField] private int _maxBlockCharges = 5;
-    [HideInInspector]
-    public int MaxBlockCharges
-    {
-        get { return _maxBlockCharges; }
-        set
-        {
-            _maxBlockCharges = value;
-        }
-    }
 
 
     //---------------------------------------------------------------------------------------------------

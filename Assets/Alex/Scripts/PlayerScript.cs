@@ -15,7 +15,6 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("How long in seconds till the player can dash again before scaling of cooldown reduction")][SerializeField] private float _dashCooldown;
     [Tooltip("How large the players melee attack hits")] [SerializeField] private float _meleeRadius;
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")] [SerializeField] private StatsScript _stats;
-    [Tooltip("The rate in which the object get block charges back, will be affected by cooldown reduction")][SerializeField] private float _blockChargeCooldown = 1f;
     [Tooltip("How long in seconds till the player will be able to melee atack again")] [SerializeField] private float _meleeCooldown = 0.5f; //Update this later or speed up the animation in relation to the sword swing(E) 
     [Tooltip("How long in seconds till the player will be able to ranged attack again")] [SerializeField] private float _rangeCooldown = 0.3f; //Update this later same reason as _meleeCooldown (E)
     [Tooltip("The base damage (int) of the sword")] [SerializeField] private int _meleeDamage = 5;
@@ -34,8 +33,6 @@ public class PlayerScript : MonoBehaviour
     private float _attackChargeTime;
     private float _dashTimer;
     private float _attackTimer; 
-    private float _blockCharges; 
-    private float _blockChargeTimer;
     private string _playerBusy = "none"; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
     private Vector3 _meleePosition; //Really only used for draw gizmos
     
@@ -97,7 +94,7 @@ public class PlayerScript : MonoBehaviour
 
     void Start()
     {
-       _blockCharges = _stats.MaxBlockCharges; 
+        
     }
 
     // Update is called once per frame
@@ -109,20 +106,7 @@ public class PlayerScript : MonoBehaviour
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0f;
 
-        //Gives block charges based on a timer
-        if (_blockCharges < _stats.MaxBlockCharges)
-        {
-            if (_blockChargeTimer > 0f)
-            {
-                _blockChargeTimer -= delta;
-            }
-            else
-            {
-                _blockChargeTimer = _blockChargeCooldown - (_blockChargeCooldown * _stats.CooldownReduction);
-                _blockCharges++;
-            }
-        }
-
+ 
         
         _dashTimer = _dashTimer > 0f ? _dashTimer - delta: _dashTimer; //This is a ternary, basically a single lined if statement
         _attackChargeTime = _mainAttackPressed || _abilityPressed || _secondAttackPressed ? _attackChargeTime + delta: _attackChargeTime;
@@ -153,7 +137,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (_dashing)
         {
-            //HandleDash(); //(E)
+            HandleDash(); 
         }
     }
 
@@ -262,6 +246,21 @@ public class PlayerScript : MonoBehaviour
             _attackChargeTime = 0f;
         }   
      }
+
+    public void Dash(InputAction.CallbackContext ctx)
+    {
+        if (_dashTimer <= 0f)
+        {
+            _dashing = true;
+            _canMove = false;
+            _dashTimer = _dashCooldown;
+        }
+    }
+
+    private void HandleDash()
+    {
+
+    }
 
     public void OnDrawGizmos()
     {
