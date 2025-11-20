@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class StatsScript : MonoBehaviour
 {
+    //Bonuses should be calculated last and not included in percentage scalers, and percentage scalers should be independent of each other so that increasing one doesn't increase another
+    //For example the proper order of calculations for damage should look something like this:
+    //Mathf.RoundToInt(Base Melee Damage + (Base Melee Damage * MeleeDamageScaler - Base Melee Damage) + (Base Melee Damage * All Damage Scalar - Base Melee Damage) + Melee Damage Bonus + All Damaage Bonus)
+    //If you need this clarified later lmk
+
     private GameObject _player;
     //Health
     //---------------------------------------------------------------------------------------------------
@@ -20,12 +25,7 @@ public class StatsScript : MonoBehaviour
         get { return _health; }
         set
         {
-            Debug.Log($"Value: {value}\nHealth {_health}");
-            
-            if (gameObject.tag == "Player")
-            {
-                //Handle Custom Logic Here (Edit save data)
-            }
+            //Debug.Log($"Value: {value}\nHealth {_health}");
 
             if (value < _health) //Removing Health
             {
@@ -54,11 +54,16 @@ public class StatsScript : MonoBehaviour
                 }
                 else if (gameObject.tag == "Player")
                 {
-                    //UPDATE THIS LATER
+                    //UPDATE THIS LATER (E)
                     Debug.Log("PLAYER DIED");
                     transform.position = new(0f, 0f, 0f);
                     _health = _maxHealth;
                 }
+            }
+
+            if (gameObject.tag == "Player")
+            {
+                //Update this later but likely just make the health variable in the save data equal _health
             }
         }
     }
@@ -97,18 +102,18 @@ public class StatsScript : MonoBehaviour
     //Combat Variables
     //---------------------------------------------------------------------------------------------------
     [Header("Generic Attack Values")]
-    [Tooltip("How fast the object can attack")][SerializeField] private float _attackSpeed = .5f;
+    [Tooltip("How fast the object can attack")][SerializeField] [Range(0f, 1f)] private float _attackSpeedBonus = .5f; //Making this a percentage scaling and having attacks cooldown specified in their respective scripts to make cooldowns no longer unified 
     [HideInInspector]
-    public float AttackSpeed
+    public float AttackSpeedBonus
     {
-        get { return _attackSpeed; }
+        get { return _attackSpeedBonus; }
         set
         {
-            _attackSpeed = value;
+            _attackSpeedBonus = Mathf.Clamp(value, 0f, 1f);
         }
     }
 
-    [Tooltip("The difficulty scaling for damage, health, etc.")][SerializeField] private float _difficultyScaler = 1f;
+    [Tooltip("The difficulty scaling for damage, health, etc. Default value is 1")][SerializeField] private float _difficultyScaler = 1f;
     [HideInInspector] public float DifficultyScaler
     {
         get { return _difficultyScaler; }
@@ -129,7 +134,7 @@ public class StatsScript : MonoBehaviour
         }
     }
 
-    [Tooltip("The amount of flat scaling melee damage gets, default being 0")][SerializeField] private int _meleeDamageBonus = 0;
+    [Tooltip("The amount of flat scaling melee damage gets, default being 0")][SerializeField] private int _meleeDamageBonus = 0; //Bonuses should be calculated last and not included in percentage scalers
     [HideInInspector]
     public int MeleeDamageBonus
     {
@@ -190,6 +195,29 @@ public class StatsScript : MonoBehaviour
         }
     }
 
+    [Header("All Damage")]
+    [Tooltip("The amount of percentage scaling all damage gets, default being 1")][SerializeField] private float _allDamageScaler = 1f;
+    [HideInInspector]
+    public float AllDamageScaler
+    {
+        get { return _allDamageScaler; }
+        set
+        {
+            _allDamageScaler = value;
+        }
+    }
+
+    [Tooltip("The amount of flat scaling melee damage gets, default being 0")][SerializeField] private int _allDamageBonus = 0;
+    [HideInInspector]
+    public int AllDamageBonus
+    {
+        get { return _allDamageBonus; }
+        set
+        {
+            _allDamageBonus = value;
+        }
+    }
+
     [Header("Block Values")]
     [Tooltip("How many attacks can the object block")][SerializeField] private int _maxBlockCharges = 5;
     [HideInInspector]
@@ -202,16 +230,6 @@ public class StatsScript : MonoBehaviour
         }
     }
 
-    [Tooltip("The rate in which the object get block charges back")][SerializeField] private float _blockChargeCooldown = 1f;
-    [HideInInspector]
-    public float BlockChargeCooldown
-    {
-        get { return _blockChargeCooldown; }
-        set
-        {
-            _blockChargeCooldown = value;
-        }
-    }
 
     //---------------------------------------------------------------------------------------------------
 
@@ -241,6 +259,27 @@ public class StatsScript : MonoBehaviour
     }
     //---------------------------------------------------------------------------------------------------
 
+    public int Damage(int damage, string type)
+    {
+        int calculatedDamage = 0;
+        if (type == "melee")
+        {
+           calculatedDamage = Mathf.RoundToInt(damage + (damage * _meleeDamageScaler - damage) + (damage * _allDamageScaler - damage) + _meleeDamageBonus + _allDamageBonus);
+        }
+        else if (type == "range")
+        {
+            calculatedDamage = Mathf.RoundToInt(damage + (damage * _rangeDamageScaler - damage) + (damage * _allDamageScaler - damage) + _rangeDamageBonus + _allDamageBonus);
+        }
+        else if (type == "ability")
+        {
+            calculatedDamage = Mathf.RoundToInt(damage + (damage * _abilityDamageScaler - damage) + (damage * _allDamageScaler - damage) + _abilityDamageBonus + _allDamageBonus);
+        }
+        else
+        {
+            Debug.Log("Damage Calculation Type Input Is Wrong");
+        }
+        return calculatedDamage;
+    }
 
 
     void Awake()
@@ -265,12 +304,5 @@ public class StatsScript : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown("space"))
-        {
-            Health -= 10;
-            
-        }
-    }
+   
 }
