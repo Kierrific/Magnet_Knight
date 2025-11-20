@@ -6,6 +6,7 @@ public class Item_Grabber : MonoBehaviour
     [Header("References")]
     [Tooltip("list of prefabs to use for items")][SerializeField] private GameObject[] itemPrefabs;
     [Tooltip("canvas gameobject to spawn the items under")][SerializeField] private Transform spawnPoint;
+    [Tooltip("player gameobject/prefab used as a reference for the buttons")][SerializeField] private GameObject playerObject;
 
     private int randomNumber;
     private int itemIndex;
@@ -91,5 +92,74 @@ public class Item_Grabber : MonoBehaviour
         {
             Destroy(item);
         }
+    }
+
+    public void increaseMaxHealth(int num) {
+        playerObject.GetComponent<StatsScript>().MaxHealth += num;
+    }
+
+    public void increaseDefense(float num)
+    {
+        playerObject.GetComponent<StatsScript>().Defense += num;
+    }
+
+    public void increaseMoveSpeed(float num)
+    {
+        playerObject.GetComponent<StatsScript>().MoveSpeed += num;
+    }
+
+    public void increaseAttackSpeed(float num)
+    {
+        playerObject.GetComponent<StatsScript>().AttackSpeedBonus += num;
+    } 
+    
+    public void increaseDifficulty(float num)
+    {
+        playerObject.GetComponent<StatsScript>().DifficultyScaler += num;
+    }
+
+    public void increaseMeleeScaler(float num)
+    {
+        playerObject.GetComponent<StatsScript>().MeleeDamageScaler += num;
+    }
+
+    public void increaseMeleeDamage(int num)
+    {
+        playerObject.GetComponent<StatsScript>().MeleeDamageBonus += num;
+    }
+
+    public void increaseRangeScaler(float num)
+    {
+        playerObject.GetComponent<StatsScript>().RangeDamageScaler += num;
+    }
+
+    public void increaseRangeDamage(int num)
+    {
+        playerObject.GetComponent<StatsScript>().RangeDamageBonus += num;
+    }
+
+    public void increaseAbilityScaler(float num)
+    {
+        playerObject.GetComponent<StatsScript>().AbilityDamageScaler += num;
+    }
+
+    public void increaseAbilityBonus(int num)
+    {
+        playerObject.GetComponent<StatsScript>().AbilityDamageBonus += num;
+    }
+
+    public void increaseUniversalScaler(float num)
+    {
+        playerObject.GetComponent<StatsScript>().AllDamageScaler += num;
+    }
+
+    public void incraseUniversalDamage(int num)
+    {
+        playerObject.GetComponent<StatsScript>().AllDamageBonus += num;
+    }
+    
+    public void increaseMaxScrap(int num)
+    {
+        playerObject.GetComponent<StatsScript>().MaxScrap += num;
     }
 }
