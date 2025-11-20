@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 //TO DO:
-//1) Add Dash   2) Set Up Projectile Prefabs    3) Set Up Secondary Attacks 4) Go through and look at anything marked
+// 1) Set Up Projectile Prefabs    2) Set Up Secondary Attacks  3) Go through and look at anything marked
 
 //Add IFrames to the stats script and make a check when taking damage 
 
@@ -82,6 +82,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         _dashingLength = Mathf.Approximately(_dashingLength, 0f) ? _dashCooldown / 3f : _dashingLength;
+        _dashCooldownTimer = _dashCooldown;
 
         _playerSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
@@ -155,7 +156,11 @@ public class PlayerScript : MonoBehaviour
     public void Move(InputAction.CallbackContext ctx)
     {
         _playerMovement = ctx.ReadValue<Vector2>() * _stats.MoveSpeed;
-        _playerDirection = ctx.ReadValue<Vector2>() != Vector2.zero ? ctx.ReadValue<Vector2>() : _playerDirection; //Sets the player direction to the direction the player is moving unless the player isn't moving
+
+        if (!_dashing)
+        {
+            _playerDirection = ctx.ReadValue<Vector2>() != Vector2.zero ? ctx.ReadValue<Vector2>() : _playerDirection; //Sets the player direction to the direction the player is moving unless the player isn't moving
+        }
     }
 
     public void Swap(InputAction.CallbackContext ctx)
@@ -181,45 +186,51 @@ public class PlayerScript : MonoBehaviour
             _playerBusy = "main"; //Make sure this name matches the previously defined name in the last if statement, (Look into using if _...Pressed instead so a specific string isn't required (E))
             _mainAttackPressed = true;
         }
-        else //Means thhat key got released
+        else //Means that key got released
         {
-            if (_attackTimer > 0)
+            handleMainAttack();
+        }
+    }
+
+    private void handleMainAttack()
+    {
+        if (_attackTimer > 0)
+        {
+            return; //Look into a way to adding a slight buffer, like if the player pressed while cooldown is at 0.05 seconds it waits that time then attack rather than completley canceling attack (E)
+        }
+        _mainAttackPressed = false;
+        _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
+        _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
+        if (_playerState == 1) //If true the player is in melee form
+        {
+            _attackTimer = _meleeCooldown;
+            _meleePosition = transform.position + _mouseDirection.normalized;
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(_meleePosition, _meleeRadius, Vector2.zero, 0, _enemyLayer);
+            foreach (RaycastHit2D hit in hits)
             {
-                return; //Look into a way to adding a slight buffer, like if the player pressed while cooldown is at 0.05 seconds it waits that time then attack rather than completley canceling attack (E)
-            }
-            _mainAttackPressed = false;
-            _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
-            _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
-            if (_playerState == 1) //If true the player is in melee form
-            {
-                _attackTimer = _meleeCooldown; 
-                _meleePosition = transform.position + _playerDirection.normalized;
-                RaycastHit2D[] hits = Physics2D.CircleCastAll(_meleePosition, _meleeRadius, Vector2.zero, 0, _enemyLayer);
-                foreach (RaycastHit2D hit in hits)
+                if (hit.collider.gameObject.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
                 {
-                    if (hit.collider.gameObject.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
-                    {
-                        EnemyStats.Health -= _stats.Damage(_meleeDamage, "melee"); 
-                    }
+                    EnemyStats.Health -= _stats.Damage(_meleeDamage, "melee");
                 }
             }
-            else //Means the player is in ranged form
-            {
-                _attackTimer = _rangeCooldown;
-                Vector3 projectileSpawnLocation = transform.position;
-                //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
-                float xLoc = projectileSpawnLocation.x + (_playerDirection.normalized.x * (_playerSpriteRenderer.size.x /2 + .1f)) + _playerDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x/2;
-                float yLoc = projectileSpawnLocation.y + (_playerDirection.normalized.y * (_playerSpriteRenderer.size.y /2 + .1f)) + _playerDirection.normalized.y * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.y/2;
-                projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
+        }
+        else //Means the player is in ranged form
+        {
+            _attackTimer = _rangeCooldown;
+            Vector3 projectileSpawnLocation = transform.position;
+            //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
+            float xLoc = projectileSpawnLocation.x + (_playerDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _playerDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x / 2;
+            float yLoc = projectileSpawnLocation.y + (_playerDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _playerDirection.normalized.y * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.y / 2;
+            projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
 
-                Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
-                float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
-                GameObject scrapProjectile = Instantiate(_scrapProjectilePrefabs[0], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
-                //Script projScript = scrapProjectile.GetComponent<Script>(); //(I)
+            Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
+            float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
+            GameObject scrapProjectile = Instantiate(_scrapProjectilePrefabs[0], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
+            ScrapProjScript projScript = scrapProjectile.GetComponent<ScrapProjScript>(); //(I)
+            
 
 
-                _attackChargeTime = 0f; //Resets the charge time variable
-            }
+            _attackChargeTime = 0f; //Resets the charge time variable
         }
     }
 
@@ -273,8 +284,10 @@ public class PlayerScript : MonoBehaviour
         _dashingLengthTimer -= Time.deltaTime;
         _rb2d.AddForce(_dashForce * _playerDirection.normalized);
 
-        if (_dashCooldownTimer < 0f)
+        if (_dashingLengthTimer < 0f)
         {
+
+            Debug.Log(_dashCooldownTimer);
             _dashing = false;
             _canMove = true;
             _dashingLengthTimer = _dashingLength;
