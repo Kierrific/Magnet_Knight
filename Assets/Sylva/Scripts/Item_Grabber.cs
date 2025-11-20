@@ -4,8 +4,8 @@ using UnityEngine;
 public class Item_Grabber : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GameObject[] itemPrefabs;
-    [SerializeField] private Transform spawnPoint;
+    [Tooltip("list of prefabs to use for items")][SerializeField] private GameObject[] itemPrefabs;
+    [Tooltip("canvas gameobject to spawn the items under")][SerializeField] private Transform spawnPoint;
 
     private int randomNumber;
     private int itemIndex;
@@ -83,5 +83,13 @@ public class Item_Grabber : MonoBehaviour
         thirdItemBox.transform.SetParent(GameObject.FindGameObjectWithTag("ItemPoint").transform, false);
 
         itemBoxes.Add(thirdItemBox);
+    }
+
+    public void itemGrabbed()
+    {
+        foreach(GameObject item in itemBoxes)
+        {
+            Destroy(item);
+        }
     }
 }
