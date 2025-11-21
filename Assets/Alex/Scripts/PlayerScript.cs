@@ -188,11 +188,11 @@ public class PlayerScript : MonoBehaviour
         }
         else //Means that key got released
         {
-            handleMainAttack();
+            HandleMainAttack();
         }
     }
 
-    private void handleMainAttack()
+    private void HandleMainAttack()
     {
         if (_attackTimer > 0)
         {
@@ -219,14 +219,15 @@ public class PlayerScript : MonoBehaviour
             _attackTimer = _rangeCooldown;
             Vector3 projectileSpawnLocation = transform.position;
             //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
-            float xLoc = projectileSpawnLocation.x + (_playerDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _playerDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x / 2;
-            float yLoc = projectileSpawnLocation.y + (_playerDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _playerDirection.normalized.y * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.y / 2;
+            float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x / 2;
+            float yLoc = projectileSpawnLocation.y + (_mouseDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _mouseDirection.normalized.y * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.y / 2;
             projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
 
             Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
             float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
             GameObject scrapProjectile = Instantiate(_scrapProjectilePrefabs[0], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
             ScrapProjScript projScript = scrapProjectile.GetComponent<ScrapProjScript>(); //(I)
+            projScript.Damage = _stats.Damage(projScript.Damage, "range");
             
 
 
@@ -236,9 +237,9 @@ public class PlayerScript : MonoBehaviour
 
     public void SecondaryAttack(InputAction.CallbackContext ctx)
     {
-        if (_playerBusy != "second" && _playerBusy != "none")
+        if (_attackTimer > 0)
         {
-            return;
+            return; //Look into a way to adding a slight buffer, like if the player pressed while cooldown is at 0.05 seconds it waits that time then attack rather than completley canceling attack (E)
         }
 
         if (ctx.ReadValue<float>() == 1)
@@ -251,23 +252,53 @@ public class PlayerScript : MonoBehaviour
             }
             else //Range
             {
-                //Start Forming Projectile
+                
             }
         }
-        else
+        else //Key released
         {
-            _secondAttackPressed = false;
-            if (_playerState == 1)//Melee
-            {
-                
-            }
-            else //Range
-            {
-                
-            }
-            _attackChargeTime = 0f;
+           HandleSecondaryAttack(); 
         }   
      }
+
+     private void HandleSecondaryAttack()
+    {
+        _secondAttackPressed = false;
+        _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
+        _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
+        if (_playerState == 1)//Melee
+        {
+            
+        }
+        else 
+        {
+
+
+
+            //Scales completley off of time rather than intervals of time
+            // _attackTimer = _rangeCooldown;
+            // Vector3 projectileSpawnLocation = transform.position;
+            // //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
+            // Vector2 baseSize = new (0.25f, 0.25f); 
+            // //Relates projectile size to that of the charge time minimum size is 1 * baseSize, max size is 4 * baseSize
+            // Vector2 projSize = new(baseSize.x/2 + (baseSize.x/2 * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1f/3f))), baseSize.y/2 + (baseSize.y/2 * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1f/3f)))); //Potentially add a proj size scaler stat later(E)
+            // Debug.Log($"Base Size: {baseSize}\nProj Size X: {projSize.x}\nProj Size Y: {projSize.x}\nCharge Time: {_attackChargeTime}");
+            // float xLoc = projectileSpawnLocation.x + _mouseDirection.normalized.x * projSize.x + _mouseDirection.normalized.x;
+            // float yLoc = projectileSpawnLocation.y + _mouseDirection.normalized.y * projSize.y + _mouseDirection.normalized.y;
+            // projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
+            // Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
+            // float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
+            // GameObject ScrapProjectile = Instantiate(_scrapProjectilePrefabs[0], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
+            // ScrapProjScript projScript = ScrapProjectile.GetComponent<ScrapProjScript>(); 
+            // float projDamage = (float)projScript.Damage;
+            // float calcDamage = projDamage + (projDamage * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1 / 3))); //Creates a relation between the base damage and the time held down, a minimum of 0% increase and maximum of 300%
+            // projScript.Damage = _stats.Damage(Mathf.RoundToInt(calcDamage), "range"); 
+            // ScrapProjectile.GetComponent<Transform>().localScale = new(projSize.x * 2, projSize.y * 2, 1f);
+            // _stats.Scrap -= 1f; //Change this to scale later(I)
+        }
+            
+        _attackChargeTime = 0f;
+    }
 
     public void Dash(InputAction.CallbackContext ctx)
     {
@@ -298,5 +329,8 @@ public class PlayerScript : MonoBehaviour
     {
         Gizmos.DrawWireSphere(_meleePosition, _meleeRadius);
     }
+
+
+
 
 }
