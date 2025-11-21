@@ -48,7 +48,7 @@ public class ScrapProjScript : MonoBehaviour
             else
             {
                 Debug.LogWarning($"{collision.gameObject.name} does not have a stats script, attach one or game will not function as desired!");
-                //Debug.Break();
+                Debug.Break(); //DELETE THIS DURING PRESENTATION 
             }
         }
         else if (collision.gameObject.CompareTag("Ground"))

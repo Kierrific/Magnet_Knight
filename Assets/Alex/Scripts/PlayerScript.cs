@@ -13,6 +13,21 @@ using System.Collections.Generic;
 //[RequireComponent(typeof(StatsScript))] //Needs a stats script
 public class PlayerScript : MonoBehaviour
 {
+    public enum Polarity 
+    {
+        Negative = -1,
+        Positive = 1
+    }
+
+    public enum PlayerActions
+    {
+        None = 0,
+        FirstAttack = 1,
+        SecondAttack = 2,
+        Swapping = 3,
+        Dashing = 4, 
+    }
+
     //Serialize Field Variables
     [Tooltip("Drag the players RigidBody2D into this variable (Should define its self in script but still should change this to be sure)")] [SerializeField] private Rigidbody2D _rb2d;
     [Tooltip("The list of the various projectiles that the enemy can fire (Primairy - Secondary")] [SerializeField] private List<GameObject> _scrapProjectilePrefabs;
@@ -40,7 +55,7 @@ public class PlayerScript : MonoBehaviour
     private float _attackChargeTime;
     
     private float _attackTimer; 
-    private string _playerBusy = "none"; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
+    private PlayerActions _playerBusy = PlayerActions.None; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
     private Vector3 _meleePosition; //Really only used for draw gizmos
     
     
@@ -54,7 +69,7 @@ public class PlayerScript : MonoBehaviour
     private float _dashingLengthTimer;
 
     //Other Variables
-    private float _playerState = 1; //1 for positive (melee) -1 for negative (range)
+    private Polarity _playerState = Polarity.Positive; //Positive or Negative
     private Vector3 _mousePosition; //The mouse positions location relative to the world
     private Vector3 _mouseDirection; //The direction between the player and the mouses position
     private float _mouseAngle; //The angle in degrees between the player and the mouses position (-180 to 180)
@@ -109,6 +124,7 @@ public class PlayerScript : MonoBehaviour
         
     }
 
+
     // Update is called once per frame
     void Update()
     {
@@ -118,18 +134,17 @@ public class PlayerScript : MonoBehaviour
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0f;
 
- 
-        
-        _dashCooldownTimer = _dashCooldownTimer > 0f ? _dashCooldownTimer - delta: _dashCooldownTimer; //This is a ternary, basically a single lined if statement
-        _attackChargeTime = _mainAttackPressed || _abilityPressed || _secondAttackPressed ? _attackChargeTime + delta: _attackChargeTime;
+        _dashCooldownTimer -= _dashCooldownTimer > 0f ? delta : 0;
+
+        _attackChargeTime += _mainAttackPressed || _abilityPressed || _secondAttackPressed ? delta: 0f;
 
         if (_attackTimer > 0f) //Checks if attack is off cooldown
         {
             _attackTimer -= delta;
         }
-        else if (_playerBusy != "none") //If attack is off cooldown, then reset current status
+        else if (_playerBusy != PlayerActions.None) //If attack is off cooldown, then reset current status
         {
-            _playerBusy = "none";
+            _playerBusy = PlayerActions.None;
         }
 
 
@@ -167,7 +182,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (ctx.started)
         {
-            _playerState *= -1;
+            _playerState = (Polarity)((int)_playerState * -1);
              _attackChargeTime = 0f; //Resets the charge time variable
 
             //Add another aditional logic here (E)
@@ -176,14 +191,14 @@ public class PlayerScript : MonoBehaviour
 
     public void MainAttack(InputAction.CallbackContext ctx)
     {
-        if (_playerBusy != "main" && _playerBusy != "none") //Means the player is currently doing another action (every action should start with this)
+        if (_playerBusy != PlayerActions.FirstAttack && _playerBusy != PlayerActions.None) //Means the player is currently doing another action (every action should start with this)
         {
            return; 
         }
 
         if (ctx.ReadValue<float>() == 1) //Meaans that key is currently being pressed 
         {
-            _playerBusy = "main"; //Make sure this name matches the previously defined name in the last if statement, (Look into using if _...Pressed instead so a specific string isn't required (E))
+            _playerBusy = PlayerActions.FirstAttack; //Make sure this name matches the previously defined name in the last if statement, (Look into using if _...Pressed instead so a specific string isn't required (E))
             _mainAttackPressed = true;
         }
         else //Means that key got released
@@ -194,6 +209,12 @@ public class PlayerScript : MonoBehaviour
 
     private void HandleMainAttack()
     {
+        if (_playerBusy != PlayerActions.FirstAttack && _playerBusy != PlayerActions.None) //Means the player is currently doing another action (every action should start with this)
+        {
+            return;
+        }
+
+
         if (_attackTimer > 0)
         {
             return; //Look into a way to adding a slight buffer, like if the player pressed while cooldown is at 0.05 seconds it waits that time then attack rather than completley canceling attack (E)
@@ -201,7 +222,7 @@ public class PlayerScript : MonoBehaviour
         _mainAttackPressed = false;
         _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
         _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
-        if (_playerState == 1) //If true the player is in melee form
+        if (_playerState == Polarity.Positive) //If true the player is in melee form
         {
             _attackTimer = _meleeCooldown;
             _meleePosition = transform.position + _mouseDirection.normalized;
@@ -213,6 +234,7 @@ public class PlayerScript : MonoBehaviour
                     EnemyStats.Health -= _stats.Damage(_meleeDamage, "melee");
                 }
             }
+            _attackChargeTime = 0f;
         }
         else //Means the player is in ranged form
         {
@@ -237,6 +259,11 @@ public class PlayerScript : MonoBehaviour
 
     public void SecondaryAttack(InputAction.CallbackContext ctx)
     {
+        if (_playerBusy != PlayerActions.SecondAttack && _playerBusy != PlayerActions.None) //Means the player is currently doing another action (every action should start with this)
+        {
+            return;
+        }
+
         if (_attackTimer > 0)
         {
             return; //Look into a way to adding a slight buffer, like if the player pressed while cooldown is at 0.05 seconds it waits that time then attack rather than completley canceling attack (E)
@@ -244,9 +271,9 @@ public class PlayerScript : MonoBehaviour
 
         if (ctx.ReadValue<float>() == 1)
         {
-            _playerBusy = "second";
+            _playerBusy = PlayerActions.SecondAttack;
             _secondAttackPressed = true;
-            if (_playerState == 1)//Melee
+            if (_playerState == Polarity.Positive)//Melee
             {
                 //Start blocking
             }
@@ -263,38 +290,50 @@ public class PlayerScript : MonoBehaviour
 
      private void HandleSecondaryAttack()
     {
+        if (_playerBusy != PlayerActions.SecondAttack && _playerBusy != PlayerActions.None) //Means the player is currently doing another action (every action should start with this)
+        {
+            return;
+        }
         _secondAttackPressed = false;
         _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
         _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
-        if (_playerState == 1)//Melee
+        if (_playerState == Polarity.Positive)//Melee
         {
-            
+            _attackTimer = _meleeCooldown;
         }
         else 
         {
+            if (_attackTimer > 0)
+            {
+                //(E)
+                return; 
+            }
 
+            Vector3 projectileSpawnLocation = transform.position;
+            //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
+            int projectileIndex = 0; //(0, 1, 2)
 
+            if (_attackChargeTime > 0.5f && _stats.Scrap >= 2)
+            {
+                projectileIndex++;
+                if (_attackChargeTime > 1f && _stats.Scrap >= 3)
+                {
+                    projectileIndex++; 
+                }
+            }
 
-            //Scales completley off of time rather than intervals of time
-            // _attackTimer = _rangeCooldown;
-            // Vector3 projectileSpawnLocation = transform.position;
-            // //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
-            // Vector2 baseSize = new (0.25f, 0.25f); 
-            // //Relates projectile size to that of the charge time minimum size is 1 * baseSize, max size is 4 * baseSize
-            // Vector2 projSize = new(baseSize.x/2 + (baseSize.x/2 * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1f/3f))), baseSize.y/2 + (baseSize.y/2 * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1f/3f)))); //Potentially add a proj size scaler stat later(E)
-            // Debug.Log($"Base Size: {baseSize}\nProj Size X: {projSize.x}\nProj Size Y: {projSize.x}\nCharge Time: {_attackChargeTime}");
-            // float xLoc = projectileSpawnLocation.x + _mouseDirection.normalized.x * projSize.x + _mouseDirection.normalized.x;
-            // float yLoc = projectileSpawnLocation.y + _mouseDirection.normalized.y * projSize.y + _mouseDirection.normalized.y;
-            // projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
-            // Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
-            // float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
-            // GameObject ScrapProjectile = Instantiate(_scrapProjectilePrefabs[0], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
-            // ScrapProjScript projScript = ScrapProjectile.GetComponent<ScrapProjScript>(); 
-            // float projDamage = (float)projScript.Damage;
-            // float calcDamage = projDamage + (projDamage * (Mathf.Clamp(_attackChargeTime, 0f, 1f) / (1 / 3))); //Creates a relation between the base damage and the time held down, a minimum of 0% increase and maximum of 300%
-            // projScript.Damage = _stats.Damage(Mathf.RoundToInt(calcDamage), "range"); 
-            // ScrapProjectile.GetComponent<Transform>().localScale = new(projSize.x * 2, projSize.y * 2, 1f);
-            // _stats.Scrap -= 1f; //Change this to scale later(I)
+            float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _scrapProjectilePrefabs[projectileIndex].GetComponent<SpriteRenderer>().size.x / 2;
+            float yLoc = projectileSpawnLocation.y + (_mouseDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _mouseDirection.normalized.y * _scrapProjectilePrefabs[projectileIndex].GetComponent<SpriteRenderer>().size.y / 2;
+            projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
+
+            Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
+            float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
+            GameObject scrapProjectile = Instantiate(_scrapProjectilePrefabs[projectileIndex], projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
+            ScrapProjScript projScript = scrapProjectile.GetComponent<ScrapProjScript>();
+            projScript.Damage = _stats.Damage(projScript.Damage, "range");
+
+            _attackTimer = _rangeCooldown;
+            _stats.Scrap -= projectileIndex + 1;
         }
             
         _attackChargeTime = 0f;
