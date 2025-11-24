@@ -126,6 +126,7 @@ public class Item_Grabber : MonoBehaviour
     public void increaseMeleeDamage(int num)
     {
         playerObject.GetComponent<StatsScript>().MeleeDamageBonus += num;
+        Debug.Log("function is working!");
     }
 
     public void increaseRangeScaler(float num)
