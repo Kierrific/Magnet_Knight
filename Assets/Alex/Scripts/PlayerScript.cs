@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 //Add IFrames to the stats script and make a check when taking damage 
 
-//Swap were the attack function plays to be something that doesnt take an input action and play that instead 
+//Make some sort of UI tell for whether or not you're in positive or negative
 
 [RequireComponent(typeof(Rigidbody2D))] //Needs a Rigid Body 2D
 //[RequireComponent(typeof(StatsScript))] //Needs a stats script
@@ -28,6 +28,10 @@ public class PlayerScript : MonoBehaviour
         Dashing = 4, 
     }
 
+
+
+
+
     //Serialize Field Variables
     [Tooltip("Drag the players RigidBody2D into this variable (Should define its self in script but still should change this to be sure)")] [SerializeField] private Rigidbody2D _rb2d;
     [Tooltip("The list of the various projectiles that the enemy can fire (Primairy - Secondary")] [SerializeField] private List<GameObject> _scrapProjectilePrefabs;
@@ -39,7 +43,8 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("How long in seconds till the player will be able to melee atack again")] [SerializeField] private float _meleeCooldown = 0.5f; //Update this later or speed up the animation in relation to the sword swing(E) 
     [Tooltip("How long in seconds till the player will be able to ranged attack again")] [SerializeField] private float _rangeCooldown = 0.3f; //Update this later same reason as _meleeCooldown (E)
     [Tooltip("The base damage (int) of the sword")] [SerializeField] private int _meleeDamage = 5;
-    [Tooltip("The base damage (int) of the projectile")] [SerializeField] private int _projectileDamage = 1;
+    //[Tooltip("The base damage (int) of the projectile")] [SerializeField] private int _projectileDamage = 1;
+  
 
 
     //Layers
@@ -67,6 +72,8 @@ public class PlayerScript : MonoBehaviour
     private bool _dashing = false;
     private float _dashCooldownTimer;
     private float _dashingLengthTimer;
+
+
 
     //Other Variables
     private Polarity _playerState = Polarity.Positive; //Positive or Negative
@@ -363,6 +370,8 @@ public class PlayerScript : MonoBehaviour
             _dashingLengthTimer = _dashingLength;
         }
     }
+
+
 
     public void OnDrawGizmos()
     {
