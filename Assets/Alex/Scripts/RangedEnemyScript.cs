@@ -1,4 +1,3 @@
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 
@@ -13,7 +12,7 @@ public class RangedEnemyScript : MonoBehaviour
     }
 
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")][SerializeField] private StatsScript _stats;
-    [Tooltip("The distance in which the enemy can detect the player")][SerializeField] private int _detectRange;
+    [Tooltip("The distance in which the enemy can detect the player")][SerializeField] private float _detectRange;
     [Tooltip("Set this to the layer that the player is on")][SerializeField] private LayerMask _playerLayer;
     [Tooltip("Set this to the layer that the environment is on")][SerializeField] private LayerMask _worldLayer;
     [Tooltip("The size of the BoxCast that checks if the enemy will run into a wall")][SerializeField] private Vector2 _wallCastSize;
@@ -48,6 +47,7 @@ public class RangedEnemyScript : MonoBehaviour
         _detectTimer = _detectCooldown;
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
+        _strafeTimer = _strafeDuration;
 
         if (_player == null)
         {
@@ -102,7 +102,7 @@ public class RangedEnemyScript : MonoBehaviour
             else
             {
                 float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
-                if (distance2Player < (float) _detectRange) //Slight performance check, ray cast wont even run unless there is the possibility it hits the player
+                if (distance2Player < (float) 1000000) //Slight performance check, ray cast wont even run unless there is the possibility it hits the player
                 {
                     DetectPlayer(_detectionRays);
                     _detectTimer = _detectCooldown;
@@ -118,26 +118,29 @@ public class RangedEnemyScript : MonoBehaviour
         {
             //_detectionAngle
             Vector2 startingDirection = (Vector2) (_player.transform.position - transform.position).normalized;
+            
+            startingDirection = _direction.normalized;
+            float angle = Mathf.Atan2(startingDirection.y, startingDirection.x) * Mathf.Rad2Deg;
+            Debug.Log($"Current Angle to player {angle}");
+            angle += (_detectionAngle / 2);
+            //Debug.Log($"Current Angle to player {angle}");
+            startingDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+
             Vector2 currentDirection = startingDirection;
             float angleStep = _detectionAngle / ((float)rays - 1);
             for (int i = 0; i < rays; i++)
             {
+                
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, currentDirection, _detectRange, _playerLayer);
-                if (hit)
+                
+                if (hit == true)
                 {
                     _currentState = States.Agro;
                     return;
                 }
 
-                if (i % 2 == 0) //odd number
-                {
-                    float angle = Mathf.Atan2(startingDirection.y, startingDirection.x) * Mathf.Rad2Deg; // (I)
-                    angle -= angleStep * (float)(i/2);  
-                }
-                else //Even number
-                {
-
-                }
+                angle -= angleStep; 
+                currentDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             }
         }
         else
@@ -261,7 +264,7 @@ public class RangedEnemyScript : MonoBehaviour
             _attackDir = _player.transform.position - transform.position;
             float angle = Mathf.Atan2(_attackDir.y, _attackDir.x) * Mathf.Rad2Deg;
 
-            GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
+            //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
             //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
             //bulletScript.damage *= stats.DamageScale;
             //bulletScript.enemy = gameObject;
