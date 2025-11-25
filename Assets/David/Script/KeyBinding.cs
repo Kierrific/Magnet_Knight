@@ -7,9 +7,9 @@ public class KeyBinding : MonoBehaviour
 {
     public GameObject targetObject;
     public PlayerInput controls;
+    public ChangeButtonTMPText changeButtonTMPText;
 
-
-    private Key lastKeyPressed = Key.None;
+    public Key lastKeyPressed = Key.None;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,7 +20,7 @@ public class KeyBinding : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.anyKey)
         {
            targetObject.SetActive(false);
         }
@@ -31,8 +31,8 @@ public class KeyBinding : MonoBehaviour
             {
                 lastKeyPressed = keyControl.keyCode;
                 Debug.Log("Key Pressed: " + lastKeyPressed);
+                changeButtonTMPText.UpdateButtonText(keyControl.keyCode);
                 break;
-                controls.actions["Move"].ApplyBindingOverride("<Keyboard>/" + lastKeyPressed.ToString());
             }
         }
     }
