@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4931774434125948508}
   - component: {fileID: 6373620025775773}
+  - component: {fileID: 8917553157468368018}
+  - component: {fileID: 3989182464624341576}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -49,3 +51,33 @@ MonoBehaviour:
   - {fileID: 4600001311400221251, guid: 1eab6caa42e00424d8ac186897d75fe4, type: 3}
   spawnPoint: {fileID: 6881113566703294363, guid: 9e6cf54c4cc5547408cef880e626befb, type: 3}
   playerObject: {fileID: 5563724267294458436, guid: e7520d39144432f4f9f9a37b27791b80, type: 3}
+  itemsSpawned: 0
+--- !u!114 &8917553157468368018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3494049956993429665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c24c9e37ed368e644a4b97c690cc32c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefabs: []
+  playerPrefab: {fileID: 0}
+  baseEnemies: 20
+  enemySpawnRate: 0.5
+  difficultyScaling: 0.5
+--- !u!114 &3989182464624341576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3494049956993429665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aea0a9a69ec5190458820e9b66ca3daf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

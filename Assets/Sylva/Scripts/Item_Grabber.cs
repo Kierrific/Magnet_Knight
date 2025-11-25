@@ -11,9 +11,11 @@ public class Item_Grabber : MonoBehaviour
     private int randomNumber;
     private int itemIndex;
     private List<GameObject> itemBoxes = new();
+    [HideInInspector] public bool itemsSpawned = false;
 
     public void Trigger()
     {
+        itemsSpawned = true;
         itemBoxes.Clear();
 
         //------------------------------------------------------------------------------------------------------
@@ -92,6 +94,7 @@ public class Item_Grabber : MonoBehaviour
         {
             Destroy(item);
         }
+        itemsSpawned = false;
     }
 
     public void increaseMaxHealth(int num) {
