@@ -480,9 +480,13 @@ MonoBehaviour:
   _meleeCooldown: 0.5
   _rangeCooldown: 0.3
   _meleeDamage: 5
+  _scrapLoss: 5
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  _projectileLayer:
+    serializedVersion: 2
+    m_Bits: 512
   _groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -512,7 +516,7 @@ MonoBehaviour:
   _abilityDamageBonus: 0
   _allDamageScaler: 1
   _allDamageBonus: 0
-  _scrap: 3
+  _scrap: 90
   _maxScrap: 100
 --- !u!114 &760930411
 MonoBehaviour:
@@ -1509,7 +1513,7 @@ GameObject:
   - component: {fileID: 5927725485613222908}
   m_Layer: 9
   m_Name: EnemyProj
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

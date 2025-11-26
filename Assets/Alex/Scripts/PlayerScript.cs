@@ -43,6 +43,7 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("How long in seconds till the player will be able to melee atack again")] [SerializeField] private float _meleeCooldown = 0.5f; //Update this later or speed up the animation in relation to the sword swing(E) 
     [Tooltip("How long in seconds till the player will be able to ranged attack again")] [SerializeField] private float _rangeCooldown = 0.3f; //Update this later same reason as _meleeCooldown (E)
     [Tooltip("The base damage (int) of the sword")] [SerializeField] private int _meleeDamage = 5;
+    [Tooltip("The base amount of scrap lost (int) when blocking an attack.")] [SerializeField] private int _scrapLoss = 5;
     //[Tooltip("The base damage (int) of the projectile")] [SerializeField] private int _projectileDamage = 1;
   
 
@@ -50,6 +51,7 @@ public class PlayerScript : MonoBehaviour
     //Layers
     [Header("Layers")]
     [Tooltip("The layer for enemies, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _enemyLayer;
+    [Tooltip("The layer for projectiles, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _projectileLayer;
     [Tooltip("The layer for the environment, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _groundLayer;
 
 
@@ -58,6 +60,7 @@ public class PlayerScript : MonoBehaviour
     private bool _secondAttackPressed;
     private bool _abilityPressed;
     private float _attackChargeTime;
+    private bool _blocking;
     
     private float _attackTimer; 
     private PlayerActions _playerBusy = PlayerActions.None; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
@@ -145,6 +148,34 @@ public class PlayerScript : MonoBehaviour
 
         _attackChargeTime += _mainAttackPressed || _abilityPressed || _secondAttackPressed ? delta: 0f;
 
+        if (_blocking)
+        {
+            _mouseDirection = _mousePosition - transform.position;
+            _meleePosition = transform.position + _mouseDirection.normalized;
+            if (_stats.Scrap < _scrapLoss)
+            {
+                HandleSecondaryAttack(); // (E)
+                
+            }
+            else
+            {
+                RaycastHit2D[] hits = Physics2D.CircleCastAll(_meleePosition, _meleeRadius, Vector2.zero, 0, _projectileLayer);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (_stats.Scrap > _scrapLoss)
+                    {
+                        _stats.Scrap -= _scrapLoss;
+                        Destroy(hit.collider.gameObject);
+                    }
+                    else
+                    {
+                        HandleSecondaryAttack();
+                        break;
+                    }
+                }
+            }
+        }
+
         if (_attackTimer > 0f) //Checks if attack is off cooldown
         {
             _attackTimer -= delta;
@@ -187,10 +218,10 @@ public class PlayerScript : MonoBehaviour
 
     public void Swap(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
+        if (ctx.started && _playerBusy == PlayerActions.None)
         {
             _playerState = (Polarity)((int)_playerState * -1);
-             _attackChargeTime = 0f; //Resets the charge time variable
+             _attackChargeTime = 0f; //Resets the charge time variable (This should be unneeded now)
 
             //Add another aditional logic here (E)
         }
@@ -287,6 +318,7 @@ public class PlayerScript : MonoBehaviour
             if (_playerState == Polarity.Positive)//Melee
             {
                 //Start blocking
+                _blocking = true;
             }
             else //Range
             {
@@ -310,6 +342,8 @@ public class PlayerScript : MonoBehaviour
         _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
         if (_playerState == Polarity.Positive)//Melee
         {
+            _blocking = false;
+
             _attackTimer = _meleeCooldown;
         }
         else 
