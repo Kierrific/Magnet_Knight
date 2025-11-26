@@ -178,3 +178,4 @@ MonoBehaviour:
   _projectileSpeed: 10
   _despawnTime: 5
   _damage: 3
+  _targetType: Enemy

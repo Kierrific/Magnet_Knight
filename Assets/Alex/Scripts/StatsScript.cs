@@ -38,29 +38,6 @@ public class StatsScript : MonoBehaviour
                 _health = Mathf.Clamp(value, 0, _maxHealth);
             }
 
-            if (_health == 0)
-            {
-                if (gameObject.tag == "Enemy")
-                {
-                    if (_player.TryGetComponent(out StatsScript PlayerStats))
-                    {
-                        PlayerStats.Scrap += _scrap;
-                    }
-                    else
-                    {
-                        Debug.Log("Player Doesn't Have Stats Script"); //Mathf.Floor()
-                    }
-                    Destroy(gameObject);
-                }
-                else if (gameObject.tag == "Player")
-                {
-                    //UPDATE THIS LATER (E)
-                    Debug.Log("PLAYER DIED");
-                    transform.position = new(0f, 0f, 0f);
-                    _health = _maxHealth;
-                }
-            }
-
             if (gameObject.tag == "Player")
             {
                 //Update this later but likely just make the health variable in the save data equal _health
@@ -267,6 +244,12 @@ public class StatsScript : MonoBehaviour
         {
             Debug.Log("Damage Calculation Type Input Is Wrong");
         }
+
+        if (gameObject.tag == "Enemy") //If object doing the damage is an enemy, then scale with _difficultyScaler
+        {
+            calculatedDamage += Mathf.RoundToInt(damage * _difficultyScaler) - damage;
+        }
+
         return calculatedDamage;
     }
 
@@ -276,14 +259,20 @@ public class StatsScript : MonoBehaviour
         //_player = GameObject.FindWithTag("Player");
         if (gameObject.tag != "Player")
         {
-            Health = MaxHealth;
+            if (gameObject.tag == "Enemy") //If object doing the damage is an enemy, then scale with _difficultyScaler
+            {
+                MaxHealth = Mathf.RoundToInt(_difficultyScaler * MaxHealth);
+            }
+            _health = _maxHealth;
+
+            
             
             //Debug.Log($"Health: {Health}\nMovement Speed: {MoveSpeed}");
         }
         else
         {
             _player = gameObject;
-            
+            _health = _maxHealth;
             //Set Health to save data 
         }
     }
