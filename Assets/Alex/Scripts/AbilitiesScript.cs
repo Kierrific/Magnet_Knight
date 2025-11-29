@@ -47,7 +47,8 @@ public class AbilitiesScript : MonoBehaviour
 
     [Tooltip("The list of current player abilities.")] [SerializeField] private List<Abilities> _abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
     private Vector3 _mousePosition;
-    
+    private bool _pulling = false;
+
     private void Awake()
     {
         //Verifies the stats script is set up properly
@@ -85,6 +86,10 @@ public class AbilitiesScript : MonoBehaviour
     {
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0f;
+        if (_pulling)
+        {
+           Pull(); 
+        }
     }
 
     private void OnDrawGizmos()
@@ -122,10 +127,12 @@ public class AbilitiesScript : MonoBehaviour
         if (ctx.ReadValue<float>() == 1f)
         {
             _currentAction = AbilityActions.Ability1;
+            HandleAbility(2);
         }
         else if (ctx.ReadValue<float>() == 0f)
         {
             _currentAction = AbilityActions.None;
+            HandleAbility(2);
         }
     }
 
@@ -139,14 +146,16 @@ public class AbilitiesScript : MonoBehaviour
         if (ctx.ReadValue<float>() == 1f)
         {
             _currentAction = AbilityActions.Ability1;
+            HandleAbility(3);
         }
         else if (ctx.ReadValue<float>() == 0f)
         {
             _currentAction = AbilityActions.None;
+            HandleAbility(3);
         }
     }
 
-    private void HandleAbility(int abilityNum)
+    private void HandleAbility(int abilityNum) //Could likely make this take the enum instead of the index of the enum
     {
         abilityNum -= 1;
         if (_abilityList[abilityNum] == Abilities.MagnetTrap)
@@ -159,10 +168,15 @@ public class AbilitiesScript : MonoBehaviour
         }
         else if (_abilityList[abilityNum] == Abilities.PolarPull)
         {
-            if (_currentAction == AbilityActions.None) //Ability keybind was released
+            if (_currentAction != AbilityActions.None) //Ability keybind was released
             {
-                Debug.Log("Pull Triggered");
-                Pull();
+                _pulling = true;
+                // Debug.Log("Pull Triggered");
+                // Pull();
+            }
+            else
+            {
+                _pulling = false;
             }
         }
 
@@ -200,8 +214,9 @@ public class AbilitiesScript : MonoBehaviour
         
         //Vector3 _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
         //float _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
-
-        GameObject closestEnemy = GetClosest()?[0]; 
+        var temp = GetClosest();
+        GameObject closestEnemy = temp != null && temp.Count > 0? temp[0] : null;
+        //GameObject closestEnemy = GetClosest()?[0]; 
         
         if (closestEnemy == null)
         {
@@ -226,7 +241,8 @@ public class AbilitiesScript : MonoBehaviour
 
     private void Pull() //Polar Pull in GDD
     {
-        GameObject closestEnemy = GetClosest()?[0]; 
+        var temp = GetClosest();
+        GameObject closestEnemy = temp != null && temp.Count > 0? temp[0] : null;
 
         if (closestEnemy == null)
         {
@@ -238,10 +254,10 @@ public class AbilitiesScript : MonoBehaviour
             Vector3 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _mousePosition.z = 0f;
             Vector3 _mouseDirection = (_mousePosition - closestEnemy.transform.position).normalized;
-            _enemyRB2D.AddForce(_mouseDirection * 1000f); //Change 1000f to a variable later
+            _enemyRB2D.AddForce(_mouseDirection * 100f); //Change 1000f to a variable later
             if (closestEnemy.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
             {
-                EnemyStats.Health -= _stats.Damage(_pullDamage, "ability");
+                //EnemyStats.Health -= _stats.Damage(_pullDamage, "ability");
             }
             else
             {

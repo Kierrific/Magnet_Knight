@@ -480,7 +480,7 @@ MonoBehaviour:
   _dashForce: 300
   _meleeCooldown: 0.5
   _rangeCooldown: 0.3
-  _meleeDamage: 5
+  _meleeDamage: 25
   _scrapLoss: 5
   _enemyLayer:
     serializedVersion: 2
@@ -804,7 +804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 760930410}
-  _selectionRange: 2.5
+  _selectionRange: 1.5
   _orbitPrefab: {fileID: 0}
   _trapDamage: 1
   _trapDuration: 3
@@ -814,7 +814,7 @@ MonoBehaviour:
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  _abilityList: 030000000000000000000000
+  _abilityList: 020000000000000000000000
 --- !u!1 &895692619
 GameObject:
   m_ObjectHideFlags: 0
@@ -1350,7 +1350,7 @@ MonoBehaviour:
   _maxHealth: 80
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 0
+  _moveSpeed: 5
   _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
@@ -1488,7 +1488,7 @@ MonoBehaviour:
   _maxHealth: 80
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 0
+  _moveSpeed: 5
   _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
