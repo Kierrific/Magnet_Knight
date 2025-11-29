@@ -63,6 +63,7 @@ public class StatsScript : MonoBehaviour
 
     //Movement Variables
     //---------------------------------------------------------------------------------------------------
+    private float _maxMoveSpeed;
     [Tooltip("How fast the object moves")][SerializeField] private float _moveSpeed = 5f; //How fast the object moves (5 is current default)
 
     [HideInInspector]
@@ -72,6 +73,7 @@ public class StatsScript : MonoBehaviour
         set
         {
             _moveSpeed = value;
+            _maxMoveSpeed = value;
         }
     }
     //---------------------------------------------------------------------------------------------------
@@ -225,6 +227,14 @@ public class StatsScript : MonoBehaviour
     }
     //---------------------------------------------------------------------------------------------------
 
+    //Slow Variables
+    //---------------------------------------------------------------------------------------------------
+        private float _slowDuration;
+        private float _slowAmount;
+        private bool _slowActive = true; 
+    //---------------------------------------------------------------------------------------------------
+
+
     public int Damage(int damage, string type)
     {
         int calculatedDamage = 0;
@@ -253,9 +263,41 @@ public class StatsScript : MonoBehaviour
         return calculatedDamage;
     }
 
+    public void Slow(float duration, float slowAmount)
+    {
+        if (slowAmount > 1.1f)
+        {
+            Debug.LogWarning($"Tried to slow {gameObject.name} for more than 100%, attempted value was {slowAmount * 100f}.");
+            slowAmount = 1f;
+        }
+
+        if (_slowActive)
+        {
+            Debug.Log("SLOW IS ALREADY ACTIVE");
+            if (slowAmount > _slowAmount || Mathf.Approximately(slowAmount, _slowAmount)) //Reapplies the slow at a higher or equal potency 
+            {
+                _slowAmount = slowAmount;
+                _slowDuration = duration;
+                _moveSpeed = _maxMoveSpeed * (1 - _slowAmount);
+            }
+            else
+            {
+                //Instead of completeling ignoring the lower potency slow, add time to the current slow based on the ratio of lower potency slow to higher potency slow 
+                _slowDuration += slowAmount / _slowAmount * duration;
+            }
+        }
+        else
+        {
+            _slowActive = true;
+            _slowAmount = slowAmount;
+            _slowDuration = duration;
+            _moveSpeed = _maxMoveSpeed * (1 - _slowAmount);
+        }
+    }
 
     void Awake()
     {
+        _maxMoveSpeed = _moveSpeed;
         //_player = GameObject.FindWithTag("Player");
         if (gameObject.tag != "Player")
         {
@@ -280,6 +322,20 @@ public class StatsScript : MonoBehaviour
     private void Start()
     {
 
+    }
+
+    void Update()
+    {
+        if (_slowActive)
+        {
+            _slowDuration -= Time.deltaTime;
+            if (_slowDuration <= 0f)
+            {
+                _slowActive = false;
+                _moveSpeed = _maxMoveSpeed;
+
+            }
+        }
     }
 
    
