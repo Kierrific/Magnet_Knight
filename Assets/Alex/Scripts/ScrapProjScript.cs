@@ -1,16 +1,13 @@
-
 using UnityEngine;
-
-
-
 
 [RequireComponent(typeof(Rigidbody2D))] //Needs a Rigid Body 2D
 public class ScrapProjScript : MonoBehaviour
 {
 
-    [SerializeField] private float _projectileSpeed;
-    [SerializeField] private float _despawnTime;
-    [SerializeField] private int _damage;
+    [Tooltip("The speed at which the projectile travels")] [SerializeField] private float _projectileSpeed = 10f;
+    [Tooltip("How long in seconds for the projectile to despawn")] [SerializeField] private float _despawnTime = 5f;
+    [Tooltip("How much base damage the projectile does before scaling")] [SerializeField] private int _damage = 1;
+    [Tooltip("The string name of the tag the projectile is looking for. (For example if its an enemy projectile type in Player)")] [SerializeField] private string _targetType;
     private Rigidbody2D _projRB2D;
     private SpriteRenderer _projRenderer;
     private Vector2 direction;
@@ -39,11 +36,13 @@ public class ScrapProjScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag(_targetType))
         {
-            if (collision.gameObject.TryGetComponent(out StatsScript EnemyStats))
+            if (collision.gameObject.TryGetComponent(out StatsScript TargetStats))
             {
-                EnemyStats.Health -= _damage;
+                TargetStats.Health -= _damage;
+                Destroy(gameObject);
+
             }
             else
             {
