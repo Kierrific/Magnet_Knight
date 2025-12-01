@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 60a94a8aba316a247b011fae00ef2731
+guid: d07e104de48725d4a97bdb1537a7c932
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: sword and bow icon
+  - name: repulsion wave
     originalName: 
     pivot: {x: 0.5, y: -0.071428575}
     alignment: 9
@@ -134,7 +134,7 @@ ScriptedImporter:
       y: 4
       width: 28
       height: 28
-    spriteID: 9487961333c86ef4fa956a4efa2f8e4e
+    spriteID: cdb0649d3217338409465cfd8c7ad95d
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -142,25 +142,25 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 2, y: 2}
+    uvTransform: {x: 4, y: 4}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -1992686213
-    name: sword and bow icon
+    guid: 226037494
+    name: repulsion wave
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: sword and bow icon
+    - name: repulsion wave
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 0
-        width: 32
-        height: 32
-      spriteId: 9487961333c86ef4fa956a4efa2f8e4e
+        x: 2
+        y: 2
+        width: 28
+        height: 28
+      spriteId: cdb0649d3217338409465cfd8c7ad95d
     linkedCells: []
     parentIndex: -1
   platformSettings:

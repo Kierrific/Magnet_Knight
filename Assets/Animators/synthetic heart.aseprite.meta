@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 60a94a8aba316a247b011fae00ef2731
+guid: d7c8e43d6b004b347a188654ca2be831
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: sword and bow icon
+  - name: synthetic heart
     originalName: 
     pivot: {x: 0.5, y: -0.071428575}
     alignment: 9
@@ -134,7 +134,7 @@ ScriptedImporter:
       y: 4
       width: 28
       height: 28
-    spriteID: 9487961333c86ef4fa956a4efa2f8e4e
+    spriteID: d2cb35739b3cd1f4ba6a2dbba399b78a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -142,25 +142,25 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 2, y: 2}
+    uvTransform: {x: 4, y: 4}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -1992686213
-    name: sword and bow icon
+    guid: -1608960283
+    name: synthetic heart
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: sword and bow icon
+    - name: synthetic heart
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 0
-        width: 32
-        height: 32
-      spriteId: 9487961333c86ef4fa956a4efa2f8e4e
+        x: 2
+        y: 2
+        width: 28
+        height: 28
+      spriteId: d2cb35739b3cd1f4ba6a2dbba399b78a
     linkedCells: []
     parentIndex: -1
   platformSettings:

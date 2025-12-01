@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 60a94a8aba316a247b011fae00ef2731
+guid: 7023d378aced43e4e9bb2da375069058
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: sword and bow icon
+  - name: polar bind
     originalName: 
     pivot: {x: 0.5, y: -0.071428575}
     alignment: 9
@@ -134,7 +134,7 @@ ScriptedImporter:
       y: 4
       width: 28
       height: 28
-    spriteID: 9487961333c86ef4fa956a4efa2f8e4e
+    spriteID: 6ea38461bcd2ca144a4344e6c8160537
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -142,25 +142,25 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 2, y: 2}
+    uvTransform: {x: 4, y: 4}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -1992686213
-    name: sword and bow icon
+    guid: 1748452897
+    name: polar bind
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: sword and bow icon
+    - name: polar bind
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 0
-        width: 32
-        height: 32
-      spriteId: 9487961333c86ef4fa956a4efa2f8e4e
+        x: 2
+        y: 2
+        width: 28
+        height: 28
+      spriteId: 6ea38461bcd2ca144a4344e6c8160537
     linkedCells: []
     parentIndex: -1
   platformSettings:
