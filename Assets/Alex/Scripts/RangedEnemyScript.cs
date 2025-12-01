@@ -156,7 +156,7 @@ public class RangedEnemyScript : MonoBehaviour
                 currentDirection = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             }
         }
-        else
+        else //Make a raycast from enemy to player and if it hit then change state (I)
         {
             _currentState = States.Chasing;
             return;
@@ -322,7 +322,6 @@ public class RangedEnemyScript : MonoBehaviour
             if (!_attacked) //Play sound sound indicator or something that enemy is about to attack(E)
             {
                 _attacked = true;
-                Debug.Log("SHOT IS ABOUT TO BE FIRED NO LONGER UPDATING ANGLE!?!?!??");
             }
 
         }

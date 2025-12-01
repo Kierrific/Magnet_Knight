@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.ShaderGraph.Internal;
 
 //Make a function in statsscript similar to slow but for pushing enemy like a lerp would and use in pull and bind
 
@@ -37,8 +38,9 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("The amount of base damage the Magnetic Trap ability does.")] [SerializeField] private int _trapDamage = 1;
     [Tooltip("How long the enemy stays trapped for in seconds.")] [SerializeField] private float _trapDuration = 3f;
     [Tooltip("The amount of base damage the Polar Pull ability does.")] [SerializeField] private int _pullDamage = 1;
+    [Tooltip("How long the player can pull the enemy for with Polar Pull.")][SerializeField] private float _pullDuration = 3f;
     [Tooltip("The amount of base damage the Polar Bind ability does.")] [SerializeField] private int _bindDamage = 5;
-    [Tooltip("The amount in which the player heals from the healing ability.")] [SerializeField] private int _healAmount = 3;
+    [Tooltip("The base amount the player heals from the healing ability.")] [SerializeField] private int _healAmount = 3;
 
     [Header("Layers")]
     [Tooltip("The layer for enemies, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _enemyLayer;
@@ -48,6 +50,8 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("The list of current player abilities.")] [SerializeField] private List<Abilities> _abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
     private Vector3 _mousePosition;
     private bool _pulling = false;
+    private float _pullTimer = 0f;
+    private int _startHealth;
 
     private void Awake()
     {
@@ -73,6 +77,7 @@ public class AbilitiesScript : MonoBehaviour
             _enemyLayer = LayerMask.GetMask("Enemy");
             
         }
+        _pullTimer = _pullDuration;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -86,9 +91,20 @@ public class AbilitiesScript : MonoBehaviour
     {
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0f;
+    }
+
+    private void FixedUpdate()
+    {
         if (_pulling)
         {
-           Pull(); 
+            if (_pullTimer <= 0f)
+            {
+                _pullTimer = _pullDuration;
+                _pulling = false;
+                return;
+            }
+            Pull();
+            _pullTimer -= (1f / 50f);
         }
     }
 
@@ -176,6 +192,7 @@ public class AbilitiesScript : MonoBehaviour
             }
             else
             {
+                _pullTimer = _pullDuration;
                 _pulling = false;
             }
         }
@@ -205,11 +222,11 @@ public class AbilitiesScript : MonoBehaviour
 
     private void Heal() //Maybe change this to match the name of the ability in the GDD
     {
-        _stats.Health += _healAmount;
+        _stats.Health += _healAmount * (100 / _stats.MaxHealth);
         _stats.Scrap -= 1; //Maybe mess around with changing this based on the heal amount variable  
     }
 
-    private void Trap() //Magnet Trap in the GDD
+    private void Trap() //Magnet Trap in the GDD //(E) Make cost 3 scrap
     {
         
         //Vector3 _mouseDirection = _mousePosition - transform.position; //Look into using a cached transform position rather than calling it (E)
@@ -227,8 +244,9 @@ public class AbilitiesScript : MonoBehaviour
         if (closestEnemy.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
         {
             Debug.Log("Attempting to damage and slow");
-            EnemyStats.Health -= _stats.Damage(_trapDamage, "ability");
             EnemyStats.Slow(_trapDuration, 1f);
+                EnemyStats.Health -= _stats.Damage(_trapDamage, "ability");
+            
 
         }
         else
@@ -239,7 +257,7 @@ public class AbilitiesScript : MonoBehaviour
 
     }
 
-    private void Pull() //Polar Pull in GDD
+    private void Pull() //Polar Pull in GDD //(E) (Cost 2 scrap per second)
     {
         var temp = GetClosest();
         GameObject closestEnemy = temp != null && temp.Count > 0? temp[0] : null;
@@ -250,14 +268,24 @@ public class AbilitiesScript : MonoBehaviour
         }
 
         if (closestEnemy.TryGetComponent(out Rigidbody2D _enemyRB2D))
-        {
+        {   
             Vector3 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _mousePosition.z = 0f;
             Vector3 _mouseDirection = (_mousePosition - closestEnemy.transform.position).normalized;
-            _enemyRB2D.AddForce(_mouseDirection * 100f); //Change 1000f to a variable later
+            if (Vector3.Distance(_enemyRB2D.position, _mousePosition) > 0.25f)
+            {
+                _enemyRB2D.AddForce(_mouseDirection * 500f); //Change 1000f to a variable later
+            }
             if (closestEnemy.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
             {
-                //EnemyStats.Health -= _stats.Damage(_pullDamage, "ability");
+                EnemyStats.Slow(0.1f, 1f);
+                //Debug.Log(_pullTimer % 1f);
+                if (_pullTimer % 1f <= 0.02f)
+                {
+                    Debug.Log($"Pull Timer: {_pullTimer}");
+                    EnemyStats.Health -= _stats.Damage(_pullDamage, "ability");
+                    _stats.Scrap -= 2;
+                }
             }
             else
             {

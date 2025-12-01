@@ -3,11 +3,13 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 //TO DO:
-// 1) Set Up Projectile Prefabs    2) Set Up Secondary Attacks  3) Go through and look at anything marked
+//Go through and look at anything marked
 
 //Add IFrames to the stats script and make a check when taking damage 
 
 //Make some sort of UI tell for whether or not you're in positive or negative
+
+//Fix block not working properly 
 
 [RequireComponent(typeof(Rigidbody2D))] //Needs a Rigid Body 2D
 //[RequireComponent(typeof(StatsScript))] //Needs a stats script

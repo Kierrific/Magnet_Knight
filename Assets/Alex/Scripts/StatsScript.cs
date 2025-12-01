@@ -273,7 +273,7 @@ public class StatsScript : MonoBehaviour
 
         if (_slowActive)
         {
-            Debug.Log("SLOW IS ALREADY ACTIVE");
+            //Debug.Log("SLOW IS ALREADY ACTIVE");
             if (slowAmount > _slowAmount || Mathf.Approximately(slowAmount, _slowAmount)) //Reapplies the slow at a higher or equal potency 
             {
                 _slowAmount = slowAmount;
