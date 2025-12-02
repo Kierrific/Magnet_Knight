@@ -65,11 +65,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefabs:
-  - {fileID: 7591795846458560591, guid: ae51a10944eb47a45ae974dd3558bea3, type: 3}
+  - {fileID: 8610621361866645693, guid: 732232d0a8e3af3429833619f1b61804, type: 3}
   playerPrefab: {fileID: 5563724267294458436, guid: e7520d39144432f4f9f9a37b27791b80, type: 3}
-  baseEnemies: 20
+  baseEnemies: 5
   enemySpawnRate: 0.5
   difficultyScaling: 0.5
+  spawnDistance: 11
 --- !u!114 &3989182464624341576
 MonoBehaviour:
   m_ObjectHideFlags: 0

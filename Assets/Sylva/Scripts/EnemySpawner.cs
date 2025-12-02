@@ -14,6 +14,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int baseEnemies = 20;
     [SerializeField] private float enemySpawnRate = 0.5f;
     [SerializeField] private float difficultyScaling = 0.5f;
+    [SerializeField] private float spawnDistance;
 
     private int enemiesAlive;
     private int currentWave = 1;
@@ -37,7 +38,7 @@ public class EnemySpawner : MonoBehaviour
 
         if (timeSinceLastSpawn >= (1f / enemySpawnRate) && enemiesLeftToSpawn > 0)
         {
-            //SpawnEnemy();
+            SpawnEnemy();
             enemiesLeftToSpawn--;
             enemiesAlive++;
             timeSinceLastSpawn = 0f;
@@ -64,9 +65,13 @@ public class EnemySpawner : MonoBehaviour
         return Mathf.RoundToInt(main.baseEnemies * Mathf.Pow(main.currentWave, main.difficultyScaling));
     }
 
-    //private void SpawnEnemy()
-    //{
-        //GameObject prefabtoSpawn = main.enemyPrefabs[0];
-        //newEnemy = Instantiate(prefabtoSpawn, WIP, Quaternion.identity);
-    //}
+    private void SpawnEnemy()
+    {
+        GameObject prefabtoSpawn = main.enemyPrefabs[0];
+
+        float angle = Random.Range(-180f, 180f);
+        Vector2 position = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * spawnDistance;
+
+        newEnemy = Instantiate(prefabtoSpawn, position + (Vector2)Camera.main.transform.position, Quaternion.identity);
+    }
 }
