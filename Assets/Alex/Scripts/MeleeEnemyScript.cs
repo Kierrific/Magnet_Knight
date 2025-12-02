@@ -15,6 +15,7 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("The distance in which the enemy can detect the player")][SerializeField] private float _detectRange;
     [Tooltip("Set this to the layer that the player is on")][SerializeField] private LayerMask _playerLayer;
     [Tooltip("Set this to the layer that the environment is on")][SerializeField] private LayerMask _worldLayer;
+    [Tooltip("Set this to the layer of the player and the environment is on.")][SerializeField] private LayerMask _combinedLayers;
     [Tooltip("The size of the BoxCast that checks if the enemy will run into a wall")][SerializeField] private Vector2 _wallCastSize;
     [Tooltip("How often the enemy will look for the player")][SerializeField] private float _detectCooldown;
     [Tooltip("After how long of not seeing the player will the enemy return to a roaming state.")][SerializeField] private float _playerUndetected = 3f; //Change name later (E)
@@ -102,16 +103,16 @@ public class MeleeEnemyScript : MonoBehaviour
         {
             Vector3 dir2Player = _player.transform.position - transform.position;
             dir2Player = dir2Player.normalized;
-            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange);
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _combinedLayers);
 
-            if (hit.collider.gameObject.CompareTag("Player"))
+
+
+            if (hit.collider.CompareTag("Player"))
             {
                 Debug.Log($"Name of object hit: {hit.collider.gameObject.name}");
+                _currentState = States.Chasing;
             }
-            else
-            {
-                Debug.Log("ibug8gi");
-            }
+            
         }
     }
 
@@ -191,7 +192,7 @@ public class MeleeEnemyScript : MonoBehaviour
                     if (_canMove)
                     {
                         _direction = Vector3.Cross(dir2Player, Vector3.forward);
-                        _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+                        _enemyRB2D.linearVelocity = _direction.normalized * _stats.MoveSpeed;
                     }
                 }
 
@@ -226,6 +227,27 @@ public class MeleeEnemyScript : MonoBehaviour
             if (_currentState == States.Roaming)
             {
                 _direction *= -1f; //Change this later to make it not just turn around(E)
+            }
+            else if (_currentState == States.Chasing)
+            {
+                float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+                
+                if (distance2Player > 10f) //Moving Forward //Add pathfinding
+                {
+
+                }
+                else if (distance2Player < 5f) //Moving Back
+                {
+
+                }
+                else //Doing Circles
+                {
+                    
+                }
+            }
+            else if (_currentState == States.Attacking) // Means there is a wall between the player and the enemy
+            {
+                Debug.Log("Need to add path finding ):");
             }
         }
     }
