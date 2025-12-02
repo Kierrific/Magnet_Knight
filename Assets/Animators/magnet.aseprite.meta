@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0bbe2ef84966f3c489f4342f05252488
+guid: 4fed20c478e18a84fbac9f472c8b86c8
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,9 +122,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: blackhole
+  - name: magnet
     originalName: 
-    pivot: {x: 0.5, y: -0.071428575}
+    pivot: {x: 0.5, y: -0.44444445}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -132,9 +132,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 28
-      height: 28
-    spriteID: 042f6f95c7b99b74bb4a211e35dce7a8
+      width: 22
+      height: 18
+    spriteID: 32b47595949e7c940a07b78576ef45bf
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -146,21 +146,21 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -442446231
-    name: blackhole
+    guid: -1950150976
+    name: magnet
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: blackhole
+    - name: magnet
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 2
-        y: 2
-        width: 28
-        height: 28
-      spriteId: 042f6f95c7b99b74bb4a211e35dce7a8
+        x: 5
+        y: 8
+        width: 22
+        height: 18
+      spriteId: 32b47595949e7c940a07b78576ef45bf
     linkedCells: []
     parentIndex: -1
   platformSettings:

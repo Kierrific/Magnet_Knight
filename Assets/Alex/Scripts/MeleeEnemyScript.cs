@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class MeleeEnemyScript : MonoBehaviour
@@ -75,10 +76,43 @@ public class MeleeEnemyScript : MonoBehaviour
 
     void Update()
     {
-       if (_stats.Health == 0)
+        if (_stats.Health == 0)
         {
-            Die();
-        } 
+           Die();
+        }
+        Move();
+        if (_currentState == States.Roaming)
+        {
+            if (_detectTimer > 0f)
+            {
+                _detectTimer -= Time.deltaTime;
+            }
+            else
+            {
+                DetectPlayer();
+                _detectTimer = _detectCooldown;
+            }
+        }
+    }
+
+    private void DetectPlayer()
+    {
+        float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+        if (distance2Player < _detectRange + 1f)
+        {
+            Vector3 dir2Player = _player.transform.position - transform.position;
+            dir2Player = dir2Player.normalized;
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange);
+
+            if (hit.collider.gameObject.CompareTag("Player"))
+            {
+                Debug.Log($"Name of object hit: {hit.collider.gameObject.name}");
+            }
+            else
+            {
+                Debug.Log("ibug8gi");
+            }
+        }
     }
 
     private void Move()
@@ -86,6 +120,100 @@ public class MeleeEnemyScript : MonoBehaviour
         if (_currentState == States.Roaming)
         {
             WallCollision();
+            if (!_canMove || _targetLocation < 0)
+            {
+                _canMove = true;
+                _targetLocation = Random.Range(5f, 15f);
+
+                //Get a random direction
+                float xDir = Random.Range(-1f, 1f);
+                float yDir = Random.Range(-1f, 1f) > 0f ? Mathf.Sqrt(1 - (xDir * xDir)) : Mathf.Sqrt(1 - (xDir * xDir)) * -1;
+                _direction = (Vector3)new Vector2(xDir, yDir);
+
+                _enemyRB2D.linearVelocity = Vector3.zero;
+            }
+
+            _targetLocation -= _stats.MoveSpeed * Time.deltaTime;
+            _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+
+        }
+        else if (_currentState == States.Chasing)
+        {
+            WallCollision();
+
+            if (_canMove)
+            {
+                _enemyRB2D.linearVelocity = Vector3.zero;
+            }
+            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+
+            if (distance2Player > 10f)
+            {
+                if (Mathf.Approximately(_timeSinceSeen, 0f))
+                {
+                    Vector3 dir2Player = _player.transform.position - transform.position;
+                    _direction = dir2Player.normalized;
+                    _attackDir = _direction;
+                }
+                if (_canMove)
+                {
+                    _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+                }
+                _enemyRenderer.color = new Color(0f, 1f, 0f);
+
+                _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
+
+                if (_timeSinceSeen >= _playerUndetected)
+                {
+                    _currentState = States.Roaming;
+                }
+            }
+            else
+            {
+                _timeSinceSeen = 0f;
+
+                Vector3 dir2Player = _player.transform.position - transform.position;
+                _enemyRenderer.color = new Color(1f, 0f, 0f);
+                _direction = dir2Player.normalized;
+                _enemyRB2D.linearVelocity = Vector3.zero;
+
+                if (distance2Player < 5f)
+                {
+                    _enemyRenderer.color = new Color(0f, 0f, 1f);
+                    _direction *= -1;
+                    if (_canMove)
+                    {
+                        _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.5f);
+                    }
+                }
+                else
+                {
+                    if (_canMove)
+                    {
+                        _direction = Vector3.Cross(dir2Player, Vector3.forward);
+                        _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+                    }
+                }
+
+            }
+        }
+        else if (_currentState == States.Attacking) 
+        {
+            WallCollision();
+
+            if (_canMove)
+            {
+                float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+                _enemyRB2D.linearVelocity = Vector3.zero;
+                if (distance2Player < 0.75f)
+                {
+                    Vector3 dir2Player = _player.transform.position - transform.position;
+                    _direction = dir2Player.normalized;
+                    _enemyRenderer.color = new Color(1f, 1f, 0f);
+                    _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed * 2f;
+                }
+            }
+
         }
     }
 
@@ -115,6 +243,8 @@ public class MeleeEnemyScript : MonoBehaviour
 
     public void OnDrawGizmos()
     {
+        //RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _playerLayer);
+        Gizmos.DrawWireSphere(transform.position, _detectRange);
         Gizmos.DrawWireCube(_wallCenterPosition, (Vector3)_wallCastSize);
     }
 }
