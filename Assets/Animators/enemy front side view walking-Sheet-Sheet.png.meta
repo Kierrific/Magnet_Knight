@@ -285,7 +285,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      enemy front side view walking-Sheet-Sheet_0: -2716930776664578908
+      enemy front side view walking-Sheet-Sheet_1: 5008865960098327975
+      enemy front side view walking-Sheet-Sheet_2: 3407297847951347987
+      enemy front side view walking-Sheet-Sheet_3: 573412208559233533
+      enemy front side view walking-Sheet-Sheet_4: 6626115329282245388
+      enemy front side view walking-Sheet-Sheet_5: 6227068479510313754
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
