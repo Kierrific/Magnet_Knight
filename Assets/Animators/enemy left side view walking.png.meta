@@ -360,7 +360,16 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      enemy left side view walking_0: -3097551124332574154
+      enemy left side view walking_1: 728193394157264039
+      enemy left side view walking_2: -6202837179054432887
+      enemy left side view walking_3: -6619412753672017541
+      enemy left side view walking_4: -6648559452290311693
+      enemy left side view walking_5: -6586121868354806913
+      enemy left side view walking_6: 4318101674656939076
+      enemy left side view walking_7: 8280020216506137576
+      enemy left side view walking_8: 5918052934899414821
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
