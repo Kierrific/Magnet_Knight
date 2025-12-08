@@ -53,7 +53,6 @@ public class MeleeEnemyScript : MonoBehaviour
 
     private bool _canMove = true;
     private float _detectTimer;
-    private float _targetLocation;
     private Vector3 _direction = Vector2.down;
     private float _timeSinceSeen = 0f;
     private float _attackTimer;
@@ -65,7 +64,7 @@ public class MeleeEnemyScript : MonoBehaviour
     private float _attackDurationTimer;
     private float _attackDuration = 1f; //How long each attack last
     private bool _attacking = false; //Whether or not the enemey is currently attacking
-    private bool _attacked = false; //Whether or not the enemy has attacked this attack pattern
+    //private bool _attacked = false; //Whether or not the enemy has attacked this attack pattern
     private bool _renameMeLater = false; //Whether or not the retreat path finding has been set yet or not
     private Vector3 lastSeenPos; //The last position the enemy saw the player at
     private float agroSwapTimer; //The actual variable keeping track of the agroSwapDuration
@@ -202,7 +201,7 @@ public class MeleeEnemyScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("AYUHAHHAUHAHAHBN");
+
         }
     }
 
@@ -281,6 +280,7 @@ public class MeleeEnemyScript : MonoBehaviour
     {
         if (Vector3.Distance(_player.transform.position, transform.position) > _maxDistance)
         {
+            _enemyRB2D.linearVelocity = Vector3.zero;
             return;
         }
         if (_currentState == States.Roaming)
@@ -390,9 +390,9 @@ public class MeleeEnemyScript : MonoBehaviour
         else if (_currentState == States.Attacking)
         {
             //("ATTACKIONG/1?!??!?!?!?");
-            if (true)//Vector3.Distance(_player.transform.position, path.vectorPath[]))
+            if (Vector3.Distance(_player.transform.position, path.vectorPath[^1]) > 1f)//
             {
-
+                UpdatePath(PathFindingTargets.Player);
             }
 
             float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
@@ -456,14 +456,5 @@ public class MeleeEnemyScript : MonoBehaviour
         Destroy(gameObject); // (E)
     }
 
-    public void OnDrawGizmos()
-    {
-        //RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _playerLayer);
-        Gizmos.DrawWireSphere(transform.position, _detectRange);
-        Vector2 dir2Player = _player.transform.position - transform.position;
-        dir2Player = dir2Player.normalized;
-        Vector2 attackPosition = new(transform.position.x + dir2Player.x, transform.position.y + dir2Player.y);
-        Gizmos.DrawWireSphere(attackPosition, _attackRadius);
-        //Gizmos.DrawWireCube(_wallCenterPosition, (Vector3)_wallCastSize);
-    }
+
 }
