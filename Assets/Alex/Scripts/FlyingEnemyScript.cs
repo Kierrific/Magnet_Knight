@@ -1,10 +1,9 @@
-//using UnityEditor.Experimental.GraphView;
 using Pathfinding;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-//Need to make it so enemiees don't get stuck on each other while pathfinding
 
-public class MeleeEnemyScript : MonoBehaviour
+public class FlyingEnemyScript : MonoBehaviour
 {
     public enum States
     {
@@ -19,15 +18,15 @@ public class MeleeEnemyScript : MonoBehaviour
         Player = 1,
         Retreat = 2,
         Chase = 3,
+        Position = 4,
     }
 
     public enum AgroStates
     {
-        Far = 0, // Distance > 10
-        Close = 1, // Distance < 5
-        Middle = 2, //5 < Distance < 10
+        Far = 0, 
+        Close = 1, 
+        Middle = 2, 
     }
-
 
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")][SerializeField] private StatsScript _stats;
     [Tooltip("The distance in which the enemy can detect the player")][SerializeField] private float _detectRange;
@@ -38,11 +37,9 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("How often the enemy will look for the player")][SerializeField] private float _detectCooldown;
     [Tooltip("After how long of not seeing the player will the enemy return to a roaming state.")][SerializeField] private float _playerUndetected = 3f; //Change name later (E)
     [Tooltip("How often the enemy can attack in seconds.")][SerializeField] private float _attackCooldown;
-    [Tooltip("The size of the enemies sword swing.")][SerializeField] private float _attackRadius = 1f;
     [Tooltip("How close an enemy needs to be during pathfinding to a waypoint to move to the next waypoint.")][SerializeField] private float _nextWaypointDistance = 0.5f;
     [Tooltip("How far the enemy will roam.")][SerializeField] private float _roamDistance;
     [Tooltip("The distance at which AI behavior starts, the lower the number the greater performance impact.")][SerializeField] private float _maxDistance = 30f;
-    [Tooltip("The base damage of the melee enemy.")] [SerializeField] private int _baseDamage;
 
     //Pathfinding Variables
     //-------------------------------------
@@ -52,7 +49,6 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("Set this to the seeker script attached to the enemy.")][SerializeField] private Seeker _seeker;
     //-------------------------------------
 
-    private bool _canMove = true;
     private float _detectTimer;
     private Vector3 _direction = Vector2.down;
     private float _timeSinceSeen = 0f;
@@ -71,7 +67,7 @@ public class MeleeEnemyScript : MonoBehaviour
     private float agroSwapTimer; //The actual variable keeping track of the agroSwapDuration
     private float agroSwapDuration = 0.5f; //The minimum amount of time for the enemy to swap from one state to another
     private AgroStates currentAgroState; //The current agro state the enemy is in (based on distance)
-    private float _circleDir = 1f;
+    private Vector3 _targetLocation;
 
     private void Awake()
     {
@@ -123,10 +119,8 @@ public class MeleeEnemyScript : MonoBehaviour
 
     void Start()
     {
-        //_seeker.StartPath(transform.position, _player.transform.position, PathComplete); //Make this update when needed rather than once
-
         _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
-        //Vector3 randomDirection = Random.insideUnitCircle * 10f + transform.position;
+
     }
 
     void Update()
@@ -159,6 +153,7 @@ public class MeleeEnemyScript : MonoBehaviour
             }
         }
     }
+
 
     private void PathComplete(Path p)
     {
@@ -197,6 +192,10 @@ public class MeleeEnemyScript : MonoBehaviour
                     _seeker.StartPath(transform.position, lastSeenPos, PathComplete);
                     break;
 
+                case PathFindingTargets.Position:
+                    _seeker.StartPath(transform.position, _targetLocation, PathComplete);
+                    break;
+
             }
 
         }
@@ -205,29 +204,6 @@ public class MeleeEnemyScript : MonoBehaviour
 
         }
     }
-
-    private void DetectPlayer()
-    {
-        float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
-        if (distance2Player < _detectRange + 1f)
-        {
-            Vector3 dir2Player = _player.transform.position - transform.position;
-            dir2Player = dir2Player.normalized;
-            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _combinedLayers);
-
-
-            if (hit)
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    //Debug.Log($"Name of object hit: {hit.collider.gameObject.name}");
-                    _currentState = States.Chasing;
-                }
-            }
-
-        }
-    }
-
     private void PathFind()
     {
         if (path == null)
@@ -277,6 +253,27 @@ public class MeleeEnemyScript : MonoBehaviour
         _direction = (path.vectorPath[currentWaypoint] - transform.position).normalized;
     }
 
+    private void DetectPlayer()
+    {
+        float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+        if (distance2Player < _detectRange + 1f)
+        {
+            Vector3 dir2Player = _player.transform.position - transform.position;
+            dir2Player = dir2Player.normalized;
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _combinedLayers);
+
+
+            if (hit)
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    _currentState = States.Chasing;
+                }
+            }
+
+        }
+    }
+
     private void Move()
     {
         if (Vector3.Distance(_player.transform.position, transform.position) > _maxDistance)
@@ -288,178 +285,25 @@ public class MeleeEnemyScript : MonoBehaviour
         {
             PathFind();
             _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
-
         }
         else if (_currentState == States.Chasing)
         {
-            //WallCollision();
             agroSwapTimer -= Time.deltaTime;
-            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
-            if (agroSwapTimer < 0)
-            {
-                if (distance2Player > 10f && currentAgroState != AgroStates.Far)
-                {
-                    currentAgroState = AgroStates.Far;
-                    agroSwapTimer = agroSwapDuration;
-                    //Debug.Log("Agro State swapped to Far");
-                }
-                else if (distance2Player < 5f && currentAgroState != AgroStates.Close)
-                {
-                    currentAgroState = AgroStates.Close;
-                    agroSwapTimer = agroSwapDuration;
-                    //Debug.Log("Agro State swapped to Close");
-                }
-                else if (distance2Player > 5f && distance2Player < 10f && currentAgroState != AgroStates.Middle)
-                {
-                    currentAgroState = AgroStates.Middle;
-                    agroSwapTimer = agroSwapDuration;
-                    //Debug.Log("Agro State swapped to Middle");
-
-                }
-            }
-
-            if (_canMove)
-            {
-                _enemyRB2D.linearVelocity = Vector3.zero;
-            }
-
-            if (currentAgroState == AgroStates.Far) //distance2Player > 10f
-            {
-                _renameMeLater = false;
-                if (Mathf.Approximately(_timeSinceSeen, 0f))
-                {
-                    lastSeenPos = _player.transform.position;
-                    //Vector3 dir2Player = lastSeenPos - transform.position;
-                    UpdatePath(PathFindingTargets.Chase);
-                    PathFind();
-                    //_direction = dir2Player.normalized;
-                }
-                if (_canMove)
-                {
-                    PathFind();
-                    _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
-                }
-                _enemyRenderer.color = new Color(0f, 1f, 0f);
-
-                _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
-
-                if (_timeSinceSeen >= _playerUndetected)
-                {
-                    _currentState = States.Roaming;
-                    UpdatePath(PathFindingTargets.Random);
-                }
-            }
-            else
-            {
-                _timeSinceSeen = 0f;
-
-                Vector3 dir2Player = _player.transform.position - transform.position;
-                _enemyRenderer.color = new Color(1f, 0f, 0f);
-                _direction = dir2Player.normalized;
-                _enemyRB2D.linearVelocity = Vector3.zero;
-
-                if (currentAgroState == AgroStates.Close) //distance2Player > 5f
-                {
-                    if (!_renameMeLater)
-                    {
-                        _renameMeLater = true;
-                        UpdatePath(PathFindingTargets.Retreat);
-
-                    }
-                    _enemyRenderer.color = new Color(0f, 0f, 1f);
-                    PathFind();
-                    //_direction *= -1;
-                    if (_canMove)
-                    {
-                        _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.5f);
-                    }
-                }
-                else
-                {
-                    if (_canMove)
-                    {
-                        _renameMeLater = false;
-                        _direction = Vector3.Cross(dir2Player, Vector3.forward) * _circleDir;
-                        _direction = _direction.normalized;
-                        WallCollision();
-                        _enemyRB2D.linearVelocity = _direction.normalized * _stats.MoveSpeed;
-                    }
-                }
-
-            }
-        }
-        else if (_currentState == States.Attacking)
-        {
-            //("ATTACKIONG/1?!??!?!?!?");
-            if (Vector3.Distance(_player.transform.position, path.vectorPath[^1]) > 1f)//
-            {
-                UpdatePath(PathFindingTargets.Player);
-            }
-
-            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
-
-            if (distance2Player < 1.75f) //Make attack (E)
-            {
-                HandleAttack();
-                _enemyRenderer.color = new Color(1f, 1f, 0f);
-            }
-            else
-            {
-                PathFind();
-                _enemyRB2D.linearVelocity = _direction.normalized * _stats.MoveSpeed;
-
-            }
 
 
+            Vector3 newTargetLocation = Vector3.zero;
 
-        }
-    }
-
-    private void WallCollision()
-    {
-        _wallCenterPosition = (Vector2)transform.position + ((Vector2)_direction * (_enemyRenderer.size.x / 2 + 0.5f)); //Change this if it doesnt work properly after adding the sprite(E)
-        RaycastHit2D hit = Physics2D.BoxCast(_wallCenterPosition, _wallCastSize, 0, Vector2.zero, 0, _worldLayer);
-        if (hit.collider != null)
-        {
-            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
-            if (_currentState == States.Chasing && distance2Player < 10f && distance2Player > 5f)
-            {
-                _direction *= -1f;
-                _circleDir *= -1f;
-            }
-            else if (_currentState == States.Attacking) // Means there is a wall between the player and the enemy
+            if (Vector3.Distance(_targetLocation, newTargetLocation) > 1f)
             {
 
             }
         }
-    }
-
-
-    private void HandleAttack()
-    {
-        _attacking = false;
-        _attackTimer = _attackCooldown;
-        _currentState = States.Chasing;
-        Vector2 dir2Player = _player.transform.position - transform.position;
-        dir2Player = dir2Player.normalized;
-        Vector2 attackPosition = new (transform.position.x + dir2Player.x, transform.position.y + dir2Player.y);
-
-        RaycastHit2D hit = Physics2D.CircleCast(attackPosition, _attackRadius, Vector2.zero, 0, _playerLayer);
-        if (hit)
-        {
-            if (hit.collider.gameObject.TryGetComponent(out StatsScript PlayerStats))
-            {
-                PlayerStats.Health -= _stats.Damage(_baseDamage, "melee");
-                PlayerStats.Slow(1f, .35f);
-            }
-        }
-        //float distance2Player = Vector3.Distance(transform.position, _player.transform.position);
     }
 
     private void Die()
     {
         Destroy(gameObject); // (E)
-    }
 
+    }
 
 }
