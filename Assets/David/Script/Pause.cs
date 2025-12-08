@@ -26,4 +26,10 @@ public class Pause : MonoBehaviour
             }
         }
     }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        isPaused = false;
+    }
 }

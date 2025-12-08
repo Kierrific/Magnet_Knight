@@ -5,15 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Sylva.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
+  - enabled: 0
     path: Assets/David/StartMenu.unity
     guid: bf8f9dda8bd6cb74eaa3435fd5d58ab4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Eleazar/Level 1.unity
     guid: 5d5b6a43681271344be957dbbff54da1
+  - enabled: 1
+    path: Assets/David/TestingScene.unity
+    guid: 9a7127957289b4b488af977234fdb9de
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 7667cd40305d4a54f8aa28688f428dd9, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
