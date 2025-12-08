@@ -42,6 +42,7 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("How close an enemy needs to be during pathfinding to a waypoint to move to the next waypoint.")][SerializeField] private float _nextWaypointDistance = 0.5f;
     [Tooltip("How far the enemy will roam.")][SerializeField] private float _roamDistance;
     [Tooltip("The distance at which AI behavior starts, the lower the number the greater performance impact.")][SerializeField] private float _maxDistance = 30f;
+    [Tooltip("The base damage of the melee enemy.")] [SerializeField] private int _baseDamage;
 
     //Pathfinding Variables
     //-------------------------------------
@@ -446,7 +447,11 @@ public class MeleeEnemyScript : MonoBehaviour
         RaycastHit2D hit = Physics2D.CircleCast(attackPosition, _attackRadius, Vector2.zero, 0, _playerLayer);
         if (hit)
         {
-            Debug.Log("PLAYER HIT!!!?!?!?!?!??");
+            if (hit.collider.gameObject.TryGetComponent(out StatsScript PlayerStats))
+            {
+                PlayerStats.Health -= _stats.Damage(_baseDamage, "melee");
+                PlayerStats.Slow(1f, .35f);
+            }
         }
         //float distance2Player = Vector3.Distance(transform.position, _player.transform.position);
     }

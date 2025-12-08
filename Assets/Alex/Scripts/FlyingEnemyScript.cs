@@ -1,4 +1,5 @@
 using Pathfinding;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 
@@ -17,6 +18,7 @@ public class FlyingEnemyScript : MonoBehaviour
         Player = 1,
         Retreat = 2,
         Chase = 3,
+        Position = 4,
     }
 
     public enum AgroStates
@@ -56,6 +58,7 @@ public class FlyingEnemyScript : MonoBehaviour
     private States _currentState = States.Roaming;
     private Vector2 _wallCenterPosition; //The center position of the boxcast that checks if the enemy is going to run into a wall
     private GameObject _player;
+    private float _attackDurationTimer;
     private float _attackDuration = 1f; //How long each attack last
     private bool _attacking = false; //Whether or not the enemey is currently attacking
     //private bool _attacked = false; //Whether or not the enemy has attacked this attack pattern
@@ -64,18 +67,243 @@ public class FlyingEnemyScript : MonoBehaviour
     private float agroSwapTimer; //The actual variable keeping track of the agroSwapDuration
     private float agroSwapDuration = 0.5f; //The minimum amount of time for the enemy to swap from one state to another
     private AgroStates currentAgroState; //The current agro state the enemy is in (based on distance)
-    private float _circleDir = 1f;
+    private Vector3 _targetLocation;
+
+    private void Awake()
+    {
+        _attackDurationTimer = _attackDuration;
+        _enemyRB2D = GetComponent<Rigidbody2D>();
+        _enemyRenderer = GetComponent<SpriteRenderer>();
+        _detectTimer = _detectCooldown;
+        _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
+        _player = GameObject.FindWithTag("Player");
+
+        if (_player == null)
+        {
+            Debug.LogWarning("Melee Enemy Script cannot find the player object and will not work");
+            Debug.Break();
+        }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+        if (TryGetComponent<Seeker>(out Seeker tempSeeker))
+        {
+            if (_seeker != tempSeeker)
+            {
+                _seeker = tempSeeker;
+                Debug.LogWarning("The Seeker component on the enemy should be assigned to the Stats variable in the inspector");
+
+            }
+        }
+        else
+        {
+            _seeker = gameObject.AddComponent<Seeker>();
+            Debug.LogWarning("Enemy Game Object requires a Seeker script and will not function properly without it.");
+            //Debug.Break;
+        }
+
+        //Verifies the stats script is set up properly
+        if (TryGetComponent<StatsScript>(out StatsScript statsScript))
+        {
+            if (_stats != statsScript)
+            {
+                _stats = statsScript;
+                Debug.LogWarning("The stats script component on the enemy should be assigned to the Stats variable in the inspector", _stats);
+            }
+        }
+        else
+        {
+            _stats = gameObject.AddComponent<StatsScript>();
+            Debug.LogWarning("Enemy Game Object requires a stats script and will not function properly without it.\nAsk me if you need help with that.", _stats);
+        }
+    }
+
     void Start()
     {
-        
+        _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (_stats.Health == 0)
+        {
+            Die();
+        }
+        Move();
+        if (_currentState == States.Roaming)
+        {
+            if (_detectTimer > 0f)
+            {
+                _detectTimer -= Time.deltaTime;
+            }
+            else
+            {
+                DetectPlayer();
+                _detectTimer = _detectCooldown;
+            }
+        }
+        else if (_currentState == States.Chasing)
+        {
+            _attackTimer -= Time.deltaTime;
+            if (_attackTimer < 0 && !_attacking)
+            {
+                UpdatePath(PathFindingTargets.Player);
+                _currentState = States.Attacking;
+                _attacking = true;
+            }
+        }
     }
+
+
+    private void PathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWaypoint = 0;
+        }
+    }
+
+    private void UpdatePath(PathFindingTargets pft) //Creates a new path depending on specified situation. 
+    {
+        if (_seeker.IsDone())
+        {
+            switch (pft)
+            {
+                case PathFindingTargets.Player:
+                    _seeker.StartPath(transform.position, _player.transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Random:
+                    _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Retreat:
+                    Vector3 advoidedDir = (_player.transform.position - transform.position).normalized; //Gets the direction from the enemy to the player
+                    float ranAngle = Random.Range(90f, 180f) * Mathf.Deg2Rad; //Gets the radian of a random angle from 90-180
+
+                    //Gets the direction of this angle
+                    Vector3 ranDir = new(advoidedDir.x * Mathf.Cos(ranAngle) - advoidedDir.y * Mathf.Sin(ranAngle), advoidedDir.x * Mathf.Sin(ranAngle) + advoidedDir.y * Mathf.Cos(ranAngle), 0f);
+
+                    _seeker.StartPath(transform.position, ranDir * 6f + transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Chase:
+                    _seeker.StartPath(transform.position, lastSeenPos, PathComplete);
+                    break;
+
+                case PathFindingTargets.Position:
+                    _seeker.StartPath(transform.position, _targetLocation, PathComplete);
+                    break;
+
+            }
+
+        }
+        else
+        {
+
+        }
+    }
+    private void PathFind()
+    {
+        if (path == null)
+        {
+            return;
+        }
+
+        if (currentWaypoint >= path.vectorPath.Count - 1)
+        {
+            _pathEnded = true;
+            _enemyRB2D.linearVelocity = Vector3.zero;
+            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+            if (_currentState == States.Roaming)
+            {
+                UpdatePath(PathFindingTargets.Random);
+            }
+            else if (_currentState == States.Chasing && distance2Player < 5f)
+            {
+                UpdatePath(PathFindingTargets.Retreat);
+            }
+            else if (_currentState == States.Chasing && distance2Player >= 10f)
+            {
+                _currentState = States.Roaming;
+                UpdatePath(PathFindingTargets.Random);
+            }
+            else if (_currentState == States.Attacking)
+            {
+                UpdatePath(PathFindingTargets.Player);
+
+            }
+
+            return;
+        }
+        else
+        {
+            _pathEnded = false;
+        }
+
+        //path.vectorPath[currentWaypoint] //The vector3 location of the current waypoint on the path
+
+
+        float distance2Waypoint = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
+        if (distance2Waypoint < _nextWaypointDistance)
+        {
+            currentWaypoint++;
+        }
+        _direction = (path.vectorPath[currentWaypoint] - transform.position).normalized;
+    }
+
+    private void DetectPlayer()
+    {
+        float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+        if (distance2Player < _detectRange + 1f)
+        {
+            Vector3 dir2Player = _player.transform.position - transform.position;
+            dir2Player = dir2Player.normalized;
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _combinedLayers);
+
+
+            if (hit)
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    _currentState = States.Chasing;
+                }
+            }
+
+        }
+    }
+
+    private void Move()
+    {
+        if (Vector3.Distance(_player.transform.position, transform.position) > _maxDistance)
+        {
+            _enemyRB2D.linearVelocity = Vector3.zero;
+            return;
+        }
+        if (_currentState == States.Roaming)
+        {
+            PathFind();
+            _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+        }
+        else if (_currentState == States.Chasing)
+        {
+            agroSwapTimer -= Time.deltaTime;
+
+
+            Vector3 newTargetLocation = Vector3.zero;
+
+            if (Vector3.Distance(_targetLocation, newTargetLocation) > 1f)
+            {
+
+            }
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject); // (E)
+
+    }
+
 }
