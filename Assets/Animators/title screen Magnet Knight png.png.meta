@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: bf149d0bc6ebb7f46901445b044d4049
+=======
+guid: 8616b310be8be1445b64d22340873fe8
+>>>>>>> 72ce7276e86e9439653eb290e2f1e0d43723cd99
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -160,7 +164,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
+<<<<<<< HEAD
     nameFileIdTable: {}
+=======
+    nameFileIdTable:
+      title screen Magnet Knight png_0: 1752622933215989243
+>>>>>>> 72ce7276e86e9439653eb290e2f1e0d43723cd99
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -16,17 +19,25 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float difficultyScaling = 0.5f;
     [SerializeField] private float spawnDistance;
 
+    public static UnityEvent onEnemyDestroy = new UnityEvent();
+
     private int enemiesAlive;
     private int currentWave = 1;
     private int enemiesLeftToSpawn;
     private float timeSinceLastSpawn;
     private bool isSpawning = false;
     private bool spawnedItems = false;
+    private int enemyPrefabIndex = 0;
+    //private int rTFCount = 0;
     private GameObject newEnemy;
+    private GameObject prefabtoSpawn;
+
+    private List<GameObject> aliveEnemies = new();
 
     private void Awake()
     {
         main = this;
+        onEnemyDestroy.AddListener(EnemyDestroyed);
     }
 
     private void Update()
@@ -43,6 +54,16 @@ public class EnemySpawner : MonoBehaviour
             enemiesAlive++;
             timeSinceLastSpawn = 0f;
         }
+
+        if (enemiesAlive == 0 && enemiesLeftToSpawn == 0)
+        {
+            EndWave();
+        }
+    }
+
+    private void EnemyDestroyed()
+    {
+        enemiesAlive--;
     }
 
     public void StartWave()
@@ -67,11 +88,21 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        GameObject prefabtoSpawn = main.enemyPrefabs[0];
+        if (enemyPrefabIndex == 0) {
+            enemyPrefabIndex++;
+            prefabtoSpawn = main.enemyPrefabs[0];
+        }
+        else if (enemyPrefabIndex == 1)
+        {
+            enemyPrefabIndex--;
+            //add rTFCount if statement later
+            prefabtoSpawn = main.enemyPrefabs[1];
+        }
 
         float angle = Random.Range(-180f, 180f);
         Vector2 position = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * spawnDistance;
 
         newEnemy = Instantiate(prefabtoSpawn, position + (Vector2)Camera.main.transform.position, Quaternion.identity);
+        aliveEnemies.Add(newEnemy);
     }
 }

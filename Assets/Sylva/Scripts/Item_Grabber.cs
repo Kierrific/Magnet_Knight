@@ -113,7 +113,7 @@ public class Item_Grabber : MonoBehaviour
 
     public void increaseAttackSpeed(float num)
     {
-        playerObject.GetComponent<StatsScript>().AttackSpeedBonus += num;
+        playerObject.GetComponent<StatsScript>().AttackSpeedBonus -= num;
     } 
     
     public void increaseDifficulty(float num)
@@ -165,5 +165,10 @@ public class Item_Grabber : MonoBehaviour
     public void increaseMaxScrap(int num)
     {
         playerObject.GetComponent<StatsScript>().MaxScrap += num;
+    }
+
+    public void increaseCoinCount (int num)
+    {
+        playerObject.GetComponent<StatsScript>().CoinCount += num;
     }
 }
