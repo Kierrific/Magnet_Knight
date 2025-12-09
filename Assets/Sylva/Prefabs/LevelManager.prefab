@@ -50,7 +50,7 @@ MonoBehaviour:
   - {fileID: 389025226511698224, guid: 7edff25950cc3f644bda85f2f218f85d, type: 3}
   - {fileID: 4600001311400221251, guid: 1eab6caa42e00424d8ac186897d75fe4, type: 3}
   spawnPoint: {fileID: 6881113566703294363, guid: 9e6cf54c4cc5547408cef880e626befb, type: 3}
-  playerObject: {fileID: 5563724267294458436, guid: e7520d39144432f4f9f9a37b27791b80, type: 3}
+  playerObject: {fileID: 8543639000912591931, guid: e226df76a9ced3741bb378131a3947b0, type: 3}
   itemsSpawned: 0
 --- !u!114 &8917553157468368018
 MonoBehaviour:
@@ -65,10 +65,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefabs:
+  - {fileID: 8589240992703934803, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
   - {fileID: 8610621361866645693, guid: 732232d0a8e3af3429833619f1b61804, type: 3}
-  playerPrefab: {fileID: 5563724267294458436, guid: e7520d39144432f4f9f9a37b27791b80, type: 3}
-  baseEnemies: 5
-  enemySpawnRate: 0.5
+  playerPrefab: {fileID: 8543639000912591931, guid: e226df76a9ced3741bb378131a3947b0, type: 3}
+  baseEnemies: 100
+  enemySpawnRate: 10
   difficultyScaling: 0.5
   spawnDistance: 11
 --- !u!114 &3989182464624341576
