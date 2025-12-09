@@ -23,9 +23,10 @@ public class FlyingEnemyScript : MonoBehaviour
 
     public enum AgroStates
     {
-        Far = 0, 
-        Close = 1, 
-        Middle = 2, 
+        TopLeft = 0,
+        TopRight = 1,
+        BottomLeft = 2,
+        BottomRight = 3,
     }
 
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")][SerializeField] private StatsScript _stats;
@@ -40,6 +41,7 @@ public class FlyingEnemyScript : MonoBehaviour
     [Tooltip("How close an enemy needs to be during pathfinding to a waypoint to move to the next waypoint.")][SerializeField] private float _nextWaypointDistance = 0.5f;
     [Tooltip("How far the enemy will roam.")][SerializeField] private float _roamDistance;
     [Tooltip("The distance at which AI behavior starts, the lower the number the greater performance impact.")][SerializeField] private float _maxDistance = 30f;
+    [Tooltip("How far in the x and y direction the flying enemy tries to stay offset.")][SerializeField] private float _targetOffset = 6f;
 
     //Pathfinding Variables
     //-------------------------------------
@@ -290,12 +292,16 @@ public class FlyingEnemyScript : MonoBehaviour
         {
             agroSwapTimer -= Time.deltaTime;
 
+            Vector3 playerPos = _player.transform.position;
+            float xDir = currentAgroState == AgroStates.TopLeft || currentAgroState == AgroStates.BottomLeft ? -1 : 1;
+            float yDir = currentAgroState == AgroStates.TopLeft || currentAgroState == AgroStates.TopRight ? -1 : 1;
 
-            Vector3 newTargetLocation = Vector3.zero;
+            Vector3 newTargetLocation = new (playerPos.x + _targetOffset * xDir, playerPos.y + _targetOffset * yDir, 0f);
 
             if (Vector3.Distance(_targetLocation, newTargetLocation) > 1f)
             {
-
+                _targetLocation = newTargetLocation;
+                UpdatePath(PathFindingTargets.Position);
             }
         }
     }
@@ -306,4 +312,8 @@ public class FlyingEnemyScript : MonoBehaviour
 
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(_targetLocation, 1f);
+    }
 }
