@@ -16,6 +16,5 @@ public class StatsHUD : MonoBehaviour
     {
         healthBar.fillAmount = stats.Health / stats.MaxHealth;
         ScrapBar.fillAmount = stats.Scrap / stats.MaxScrap;
-        
     }
 }

@@ -197,6 +197,17 @@ public class StatsScript : MonoBehaviour
         }
     }
 
+    [SerializeField] private int _coinCount = 0;
+    [HideInInspector]
+    public int CoinCount
+    {
+        get { return _coinCount; }
+        set
+        {
+            _coinCount = value;
+        }
+    }
+
 
 
     //---------------------------------------------------------------------------------------------------
