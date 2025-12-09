@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      title screen Magnet Knight png_0: 1752622933215989243
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
