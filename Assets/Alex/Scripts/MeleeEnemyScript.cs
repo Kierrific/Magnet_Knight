@@ -222,6 +222,7 @@ public class MeleeEnemyScript : MonoBehaviour
                 {
                     //Debug.Log($"Name of object hit: {hit.collider.gameObject.name}");
                     _currentState = States.Chasing;
+
                 }
             }
 

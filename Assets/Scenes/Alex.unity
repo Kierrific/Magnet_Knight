@@ -397,7 +397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e2ed1d413bd214d8d5334de068fb85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 0}
+  _stats: {fileID: 385621731}
   _detectRange: 5
   _playerLayer:
     serializedVersion: 2
@@ -415,7 +415,8 @@ MonoBehaviour:
   _nextWaypointDistance: 0.5
   _roamDistance: 40
   _maxDistance: 30
-  _targetOffset: 6
+  _targetOffset: 4
+  _baseDamage: 0
   _seeker: {fileID: 385621729}
 --- !u!114 &385621731
 MonoBehaviour:
@@ -429,11 +430,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b3ff3f4571c8e44e8abb8f3a7918481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 100
+  _maxHealth: 50
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 5
-  _attackSpeedBonus: 0.5
+  _moveSpeed: 4
+  _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
   _meleeDamageBonus: 0
@@ -475,7 +476,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -521,7 +522,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &385621734
 SpriteRenderer:
   m_ObjectHideFlags: 0

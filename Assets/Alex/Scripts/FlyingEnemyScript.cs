@@ -42,6 +42,7 @@ public class FlyingEnemyScript : MonoBehaviour
     [Tooltip("How far the enemy will roam.")][SerializeField] private float _roamDistance;
     [Tooltip("The distance at which AI behavior starts, the lower the number the greater performance impact.")][SerializeField] private float _maxDistance = 30f;
     [Tooltip("How far in the x and y direction the flying enemy tries to stay offset.")][SerializeField] private float _targetOffset = 6f;
+    [Tooltip("The default damage of the flying enemies attack.")] [SerializeField] private int _baseDamage;
 
     //Pathfinding Variables
     //-------------------------------------
@@ -70,6 +71,8 @@ public class FlyingEnemyScript : MonoBehaviour
     private float agroSwapDuration = 0.5f; //The minimum amount of time for the enemy to swap from one state to another
     private AgroStates currentAgroState; //The current agro state the enemy is in (based on distance)
     private Vector3 _targetLocation;
+    private float _startMovespeed;
+    private bool _targetReached = false;
 
     private void Awake()
     {
@@ -121,6 +124,7 @@ public class FlyingEnemyScript : MonoBehaviour
 
     void Start()
     {
+        _startMovespeed = _stats.MoveSpeed;
         _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
 
     }
@@ -131,6 +135,7 @@ public class FlyingEnemyScript : MonoBehaviour
         {
             Die();
         }
+
         Move();
         if (_currentState == States.Roaming)
         {
@@ -147,11 +152,14 @@ public class FlyingEnemyScript : MonoBehaviour
         else if (_currentState == States.Chasing)
         {
             _attackTimer -= Time.deltaTime;
-            if (_attackTimer < 0 && !_attacking)
+            if (_attackTimer < 0 && !_attacking && _targetReached)
             {
-                UpdatePath(PathFindingTargets.Player);
+                _stats.MoveSpeed *= 10f;
+                Vector3 dir2Player = _player.transform.position - transform.position;
+                _direction = dir2Player.normalized;
                 _currentState = States.Attacking;
                 _attacking = true;
+                _attackTimer = _attackDuration;
             }
         }
     }
@@ -201,15 +209,13 @@ public class FlyingEnemyScript : MonoBehaviour
             }
 
         }
-        else
-        {
-
-        }
+       
     }
     private void PathFind()
     {
         if (path == null)
         {
+
             return;
         }
 
@@ -217,25 +223,16 @@ public class FlyingEnemyScript : MonoBehaviour
         {
             _pathEnded = true;
             _enemyRB2D.linearVelocity = Vector3.zero;
-            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
             if (_currentState == States.Roaming)
             {
                 UpdatePath(PathFindingTargets.Random);
             }
-            else if (_currentState == States.Chasing && distance2Player < 5f)
+            else if (_currentState == States.Chasing)
             {
-                UpdatePath(PathFindingTargets.Retreat);
+                UpdatePath(PathFindingTargets.Position);
+                
             }
-            else if (_currentState == States.Chasing && distance2Player >= 10f)
-            {
-                _currentState = States.Roaming;
-                UpdatePath(PathFindingTargets.Random);
-            }
-            else if (_currentState == States.Attacking)
-            {
-                UpdatePath(PathFindingTargets.Player);
-
-            }
+           
 
             return;
         }
@@ -253,6 +250,7 @@ public class FlyingEnemyScript : MonoBehaviour
             currentWaypoint++;
         }
         _direction = (path.vectorPath[currentWaypoint] - transform.position).normalized;
+        
     }
 
     private void DetectPlayer()
@@ -270,6 +268,9 @@ public class FlyingEnemyScript : MonoBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     _currentState = States.Chasing;
+                    _enemyRB2D.linearVelocity = Vector3.zero;
+                    _attackTimer = _attackDuration;
+
                 }
             }
 
@@ -290,18 +291,82 @@ public class FlyingEnemyScript : MonoBehaviour
         }
         else if (_currentState == States.Chasing)
         {
-            agroSwapTimer -= Time.deltaTime;
-
             Vector3 playerPos = _player.transform.position;
             float xDir = currentAgroState == AgroStates.TopLeft || currentAgroState == AgroStates.BottomLeft ? -1 : 1;
             float yDir = currentAgroState == AgroStates.TopLeft || currentAgroState == AgroStates.TopRight ? -1 : 1;
 
             Vector3 newTargetLocation = new (playerPos.x + _targetOffset * xDir, playerPos.y + _targetOffset * yDir, 0f);
-
             if (Vector3.Distance(_targetLocation, newTargetLocation) > 1f)
             {
                 _targetLocation = newTargetLocation;
                 UpdatePath(PathFindingTargets.Position);
+            }
+
+            
+            if (Vector3.Distance(_targetLocation, transform.position) > 1f)
+            {
+                _targetReached = false;
+                PathFind();
+                _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+            }
+            else
+            {
+                _targetReached = true;
+                if (_startMovespeed < _stats.MoveSpeed)
+                {
+                    _stats.MoveSpeed = _startMovespeed;
+                    switch (currentAgroState)
+                    {
+                        case AgroStates.TopLeft:
+                            currentAgroState = AgroStates.BottomRight;
+                            break;
+                        case AgroStates.TopRight:
+                            currentAgroState = AgroStates.BottomLeft;
+                            break;
+                        case AgroStates.BottomLeft:
+                            currentAgroState = AgroStates.TopRight;
+                            break;
+                        case AgroStates.BottomRight:
+                            currentAgroState = AgroStates.TopLeft;
+                            break;
+                    }
+                }
+            }
+
+        }
+        else if (_currentState == States.Attacking)
+        {
+            _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
+
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && _attacking)
+        {
+            if (collision.gameObject.TryGetComponent(out StatsScript PlayerStats))
+            {
+                PlayerStats.Health -= _stats.Damage(_baseDamage, "melee");
+                _currentState = States.Chasing;
+                _attacking = false;
+                switch (currentAgroState)
+                {
+                    case AgroStates.TopLeft:
+                        currentAgroState = AgroStates.BottomRight;
+                        break;
+                    case AgroStates.TopRight:
+                        currentAgroState = AgroStates.BottomLeft;
+                        break;
+                    case AgroStates.BottomLeft:
+                        currentAgroState = AgroStates.TopRight;
+                        break;
+                    case AgroStates.BottomRight:
+                        currentAgroState = AgroStates.TopLeft;
+                        break;
+                }
+                PlayerStats.Slow(1f, .35f);
+                
             }
         }
     }
