@@ -335,7 +335,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      meele front side attacking view_0: 654165892041848063
+      meele front side attacking view_1: -8260470614266203681
+      meele front side attacking view_2: 8681144157900269743
+      meele front side attacking view_3: -2611183512554229948
+      meele front side attacking view_4: -2293218794642415400
+      meele front side attacking view_5: -7584287955731580307
+      meele front side attacking view_6: -2314574587510332115
+      meele front side attacking view_7: 1723831679135591350
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

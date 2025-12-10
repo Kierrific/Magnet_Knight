@@ -305,7 +305,46 @@ public class ShopButtons : MonoBehaviour
 
     public void Health()
     {
+        if (currentLevel != 9 && playerStats.CoinCount >= cost)
+        {
+            // adds the level every buy
+            currentLevel++;
+            level = "Level " + (currentLevel);
+            levelText.text = level;
 
+            // increases the cost every buy
+            costText.text = "Cost " + Mathf.RoundToInt(cost * costMultiplier);
+            cost = Mathf.RoundToInt(cost * costMultiplier);
+
+            // upgrade the player stat text every buy
+            statText = "Ranged Damage " + currentStat + "%";
+            statUpgrade.text = statText;
+            playerStats.MaxHealth += (int)statIncrease;
+            currentStat += 10;
+
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+
+
+        }
+
+        else if (currentLevel == 9 && playerStats.CoinCount >= cost)
+        {
+            // max level reached
+            level = "Max Level";
+            levelText.text = level;
+            costText.text = "";
+            statUpgrade.text = maxText;
+            playerStats.MaxHealth = 10;
+
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+
+            }
+            isMaxLevel = true;
+        }
     }
 
     public void Protection()

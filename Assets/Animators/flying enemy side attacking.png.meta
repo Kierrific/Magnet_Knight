@@ -335,7 +335,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      flying enemy side attacking_0: -1763645813472220847
+      flying enemy side attacking_1: -994907925098713210
+      flying enemy side attacking_2: 7843477640214006287
+      flying enemy side attacking_3: -8921619409869685631
+      flying enemy side attacking_4: -1189287288870757331
+      flying enemy side attacking_5: -5814863331964036273
+      flying enemy side attacking_6: 5993483310221180474
+      flying enemy side attacking_7: 5759426231072836
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
