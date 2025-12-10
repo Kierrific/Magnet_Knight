@@ -151,15 +151,15 @@ public class FlyingEnemyScript : MonoBehaviour
         }
         else if (_currentState == States.Chasing)
         {
-            _attackTimer -= Time.deltaTime;
+            _attackTimer -= Time.deltaTime; 
             if (_attackTimer < 0 && !_attacking && _targetReached)
             {
-                _stats.MoveSpeed *= 10f;
+                _stats.MoveSpeed = 40f;
                 Vector3 dir2Player = _player.transform.position - transform.position;
                 _direction = dir2Player.normalized;
                 _currentState = States.Attacking;
                 _attacking = true;
-                _attackTimer = _attackDuration;
+                _attackTimer = 9999999f;
             }
         }
     }
@@ -311,25 +311,15 @@ public class FlyingEnemyScript : MonoBehaviour
             }
             else
             {
+                _enemyRB2D.linearVelocity = Vector3.zero;
                 _targetReached = true;
                 if (_startMovespeed < _stats.MoveSpeed)
                 {
+                    ChangeAgroState();
+                    _targetReached = false;
+                    _attackTimer = _attackDuration;
                     _stats.MoveSpeed = _startMovespeed;
-                    switch (currentAgroState)
-                    {
-                        case AgroStates.TopLeft:
-                            currentAgroState = AgroStates.BottomRight;
-                            break;
-                        case AgroStates.TopRight:
-                            currentAgroState = AgroStates.BottomLeft;
-                            break;
-                        case AgroStates.BottomLeft:
-                            currentAgroState = AgroStates.TopRight;
-                            break;
-                        case AgroStates.BottomRight:
-                            currentAgroState = AgroStates.TopLeft;
-                            break;
-                    }
+                    
                 }
             }
 
@@ -368,6 +358,26 @@ public class FlyingEnemyScript : MonoBehaviour
                 PlayerStats.Slow(1f, .35f);
                 
             }
+        }
+    }
+
+ 
+   private void ChangeAgroState()
+    {
+        switch (currentAgroState)
+        {
+            case AgroStates.TopLeft:
+                currentAgroState = Random.value > 0.5f ? AgroStates.BottomLeft: AgroStates.TopRight;
+                break;
+            case AgroStates.TopRight:
+                currentAgroState = Random.value > 0.5f ? AgroStates.BottomRight : AgroStates.TopLeft;
+                break;
+            case AgroStates.BottomLeft:
+                currentAgroState = Random.value > 0.5f ? AgroStates.BottomRight : AgroStates.TopLeft;
+                break;
+            case AgroStates.BottomRight:
+                currentAgroState = Random.value > 0.5f ? AgroStates.BottomLeft : AgroStates.TopRight;
+                break;
         }
     }
 

@@ -5,6 +5,9 @@ using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 
 //Make a function in statsscript similar to slow but for pushing enemy like a lerp would and use in pull and bind
+//For Bind make it actually move the enemies
+//Make it so that when ever you are about to add something to the list of selected enemies you check a variable for the causes
+
 
 public class AbilitiesScript : MonoBehaviour
 {
@@ -52,6 +55,7 @@ public class AbilitiesScript : MonoBehaviour
     private bool _pulling = false;
     private float _pullTimer = 0f;
     private int _startHealth;
+    private List<GameObject> _selectedEnemies = new List<GameObject>();
 
     private void Awake()
     {
@@ -201,7 +205,7 @@ public class AbilitiesScript : MonoBehaviour
         {
             if (_currentAction == AbilityActions.None) //Ability keybind was released
             {
-                Debug.Log("Bind Triggered");
+                //Debug.Log("Bind Triggered");
                 Bind();
             }
         }
@@ -213,10 +217,12 @@ public class AbilitiesScript : MonoBehaviour
         _mousePosition.z = 0f;
 
         RaycastHit2D[] hits = Physics2D.CircleCastAll(_mousePosition, _selectionRange, Vector2.zero, 0, _enemyLayer);
+       
+        
 
+        
         //Orders each enemy in selection range by their distance from the mouse, with the lower index being closer to the mouse
         List<GameObject> sortedHits = hits.OrderBy(hit => Vector3.Distance(_mousePosition, hit.collider.gameObject.transform.position)).Select(hit => hit.collider.gameObject).ToList();
-            
         return sortedHits;
     }
 
@@ -302,13 +308,59 @@ public class AbilitiesScript : MonoBehaviour
     private void Bind() //Polar Bind in GDD
     {
         List<GameObject> temp = GetClosest();
-        GameObject closestEnemy = temp != null && temp.Count >= 2 ? temp[0]: null; 
-        GameObject secondClosestEnemy = temp != null && temp.Count >= 2 ? temp[1]: null; 
+        GameObject closestEnemy = temp != null && temp.Count >= 1 ? temp[0] : null;
+        GameObject secondClosestEnemy = temp != null && temp.Count >= 2 ? temp[1] : null;
+        bool enemyAdded = false;
+        Debug.Log(closestEnemy);
+        Debug.Log($"COUNT: {temp.Count}");
 
-       
-        if (closestEnemy == null || secondClosestEnemy == null)
+        if (secondClosestEnemy == null)
         {
-            return;    
+            if (closestEnemy != null)
+            {
+                Debug.Log("1");
+                if (_selectedEnemies.Count < 2)
+                {
+                    Debug.Log("2");
+                    if (!_selectedEnemies.Contains(closestEnemy))
+                    {
+                        _selectedEnemies.Add(closestEnemy);
+                        Debug.Log($"Added {closestEnemy.name} to the selected enemy list");
+                        if (_selectedEnemies.Count != 2)
+                        {
+                            Debug.Log("3");
+                            return;
+                        }
+                        else
+                        {
+                            Debug.Log("4");
+                            closestEnemy = _selectedEnemies[0];
+                            secondClosestEnemy = _selectedEnemies[1];
+                            enemyAdded = true;
+                            _selectedEnemies = new List<GameObject>();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("8");
+                        return;
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.Log("5");
+                return;
+            }
+        }
+
+        if (_selectedEnemies.Count > 0 && !enemyAdded)
+        {
+            Debug.Log("7");
+            secondClosestEnemy = _selectedEnemies[0];
+            _selectedEnemies = new List<GameObject>();
+
         }
 
 
