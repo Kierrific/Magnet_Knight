@@ -147,13 +147,14 @@ MonoBehaviour:
   _attackSpeedBonus: 0.5
   _difficultyScaler: 1
   _meleeDamageScaler: 1
-  _meleeDamageBonus: 0
+  _meleeDamageBonus: 2
   _rangeDamageScaler: 1
   _rangeDamageBonus: 0
   _abilityDamageScaler: 1
   _abilityDamageBonus: 0
   _allDamageScaler: 1
   _allDamageBonus: 0
+  _coinCount: 0
   _scrap: 90
   _maxScrap: 100
 --- !u!50 &5104101220172520026
