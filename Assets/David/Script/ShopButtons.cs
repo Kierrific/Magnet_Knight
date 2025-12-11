@@ -347,13 +347,52 @@ public class ShopButtons : MonoBehaviour
         }
     }
 
-    public void Protection()
+    /*public void Protection()
     { 
-    
+    idk what protection is might delete later or put it in.
     }
-
+    */
     public void UniversalDamage()
-    { 
-    
+    {
+        if (currentLevel != 4 && playerStats.CoinCount >= cost)
+        {
+            // adds the level every buy
+            currentLevel++;
+            level = "Level " + (currentLevel);
+            levelText.text = level;
+
+            // increases the cost every buy
+            costText.text = "Cost " + Mathf.RoundToInt(cost * costMultiplier);
+            cost = Mathf.RoundToInt(cost * costMultiplier);
+
+            // upgrade the player stat text every buy
+            statText = "Universal Damage +" + currentStat;
+            statUpgrade.text = statText;
+            playerStats.AllDamageBonus += (int)statIncrease;
+            currentStat += 4;
+
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+
+
+        }
+
+        else if (currentLevel == 4 && playerStats.CoinCount >= cost)
+        {
+            // max level reached
+            level = "Max Level";
+            levelText.text = level;
+            costText.text = "";
+            statUpgrade.text = maxText;
+            playerStats.AllDamageBonus = 20;
+
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+
+            }
+            isMaxLevel = true;
+        }
     }
 }
