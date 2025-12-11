@@ -5,18 +5,39 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 1
+    path: Assets/Eleazar/Start menu.unity
+    guid: 63d2d004fbade2d44a396e40427fd64b
   - enabled: 0
     path: Assets/Scenes/Sylva.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
-    path: Assets/David/StartMenu.unity
-    guid: bf8f9dda8bd6cb74eaa3435fd5d58ab4
   - enabled: 0
     path: Assets/Eleazar/Level 1.unity
     guid: 5d5b6a43681271344be957dbbff54da1
   - enabled: 1
     path: Assets/David/TestingScene.unity
     guid: 9a7127957289b4b488af977234fdb9de
+  - enabled: 1
+    path: Assets/Scenes/Credits/Alex_Credit.unity
+    guid: c3275ea71965a7f49b96a978d13add21
+  - enabled: 1
+    path: Assets/Scenes/Credits/Calvin_Credit.unity
+    guid: 0b8e1df1bb98c964da90eac152658cde
+  - enabled: 1
+    path: Assets/Scenes/Credits/David_Credit.unity
+    guid: 756e53b15d288b24eb3f05cd4bf80c99
+  - enabled: 1
+    path: Assets/Scenes/Credits/Dereck_Credit.unity
+    guid: 46bef91e87ba5c44d9cc716af6e0df98
+  - enabled: 1
+    path: Assets/Scenes/Credits/Dominic_Credit.unity
+    guid: e64b9d19fa902d94683888d18378c4a6
+  - enabled: 1
+    path: Assets/Scenes/Credits/Eleazar_Credit.unity
+    guid: 79e0e34f03f34da4286018af17afbb5d
+  - enabled: 1
+    path: Assets/Scenes/Credits/Sylva_Credit.unity
+    guid: 8a6916ad6857ded4d8f833431b5c92d6
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 7667cd40305d4a54f8aa28688f428dd9, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
