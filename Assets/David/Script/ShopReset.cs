@@ -80,24 +80,24 @@ public class ShopReset : MonoBehaviour
         Scrap.currentLevel = 0;
 
         // Reset Stat Texts
-        AttackSpeed.statText = "";
-        MeleeDamage.statText = "";
-        RangedDamage.statText = "";
-        AbilityDamage.statText = "";
-        MovementSpeed.statText = "";
-        Defense.statText = "";
-        Health.statText = "";
-        Scrap.statText = "";
+        AttackSpeed.statUpgrade.text = "";
+        MeleeDamage.statUpgrade.text = "";
+        RangedDamage.statUpgrade.text = "";
+        AbilityDamage.statUpgrade.text = "";
+        MovementSpeed.statUpgrade.text = "";
+        Defense.statUpgrade.text = "";
+        Health.statUpgrade.text = "";
+        Scrap.statUpgrade.text = "";
 
         // Reset Stat Values
-        AttackSpeed.currentStat = 0;
-        MeleeDamage.currentStat = 0;
-        RangedDamage.currentStat = 0;
-        AbilityDamage.currentStat = 0;
-        MovementSpeed.currentStat = 0;
-        Defense.currentStat = 0;
-        Health.currentStat = 0;
-        Scrap.currentStat = 0;
+        AttackSpeed.currentStat = 5;
+        MeleeDamage.currentStat = 10;
+        RangedDamage.currentStat = 10;
+        AbilityDamage.currentStat = 10;
+        MovementSpeed.currentStat = 10;
+        Defense.currentStat = 1;
+        Health.currentStat = 10;
+        Scrap.currentStat = 10;
 
         // Reset Real Stat Values
         StatsScript.CooldownReduction = 0f;

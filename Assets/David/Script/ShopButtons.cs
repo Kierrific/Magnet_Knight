@@ -199,7 +199,7 @@ public class ShopButtons : MonoBehaviour
             cost = Mathf.RoundToInt(cost * costMultiplier);
 
             // upgrade the player stat text every buy
-            statText = "Ranged Damage " + currentStat + "%";
+            statText = "Ability Damage " + currentStat + "%";
             statUpgrade.text = statText;
             playerStats.AbilityDamageScaler += statIncrease;
             currentStat += 10;
@@ -294,7 +294,7 @@ public class ShopButtons : MonoBehaviour
             cost = Mathf.RoundToInt(cost * costMultiplier);
 
             // upgrade the player stat text every buy
-            statText = "Ranged Damage " + currentStat + "%";
+            statText = "Defense " + currentStat + "%";
             statUpgrade.text = statText;
             playerStats.Defense += statIncrease;
             currentStat += 1;
@@ -341,7 +341,7 @@ public class ShopButtons : MonoBehaviour
             cost = Mathf.RoundToInt(cost * costMultiplier);
 
             // upgrade the player stat text every buy
-            statText = "Ranged Damage " + currentStat + "%";
+            statText = "Max Health " + currentStat + "%";
             statUpgrade.text = statText;
             playerStats.MaxHealth += (int)statIncrease;
             playerStats.Health += (int)statIncrease;
@@ -396,7 +396,7 @@ public class ShopButtons : MonoBehaviour
             cost = Mathf.RoundToInt(cost * costMultiplier);
 
             // upgrade the player stat text every buy
-            statText = "Ranged Damage " + currentStat + "%";
+            statText = "Max Scrap " + currentStat + "%";
             statUpgrade.text = statText;
             playerStats.MaxScrap += (int)statIncrease;
             playerStats.Scrap += (int)statIncrease;
