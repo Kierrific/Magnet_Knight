@@ -8,6 +8,7 @@ public class ScrapProjScript : MonoBehaviour
     [Tooltip("How long in seconds for the projectile to despawn")] [SerializeField] private float _despawnTime = 5f;
     [Tooltip("How much base damage the projectile does before scaling")] [SerializeField] private int _damage = 1;
     [Tooltip("The string name of the tag the projectile is looking for. (For example if its an enemy projectile type in Player)")] [SerializeField] private string _targetType;
+    [Tooltip("Whether or not the projectile will destroyed when it hits the target")] [SerializeField] private bool _destroyOnHit = true;
     private Rigidbody2D _projRB2D;
     private SpriteRenderer _projRenderer;
     private Vector2 direction;
@@ -41,7 +42,10 @@ public class ScrapProjScript : MonoBehaviour
             if (collision.gameObject.TryGetComponent(out StatsScript TargetStats))
             {
                 TargetStats.Health -= _damage;
-                Destroy(gameObject);
+                if (_destroyOnHit)
+                {
+                    Destroy(gameObject);
+                }
 
             }
             else

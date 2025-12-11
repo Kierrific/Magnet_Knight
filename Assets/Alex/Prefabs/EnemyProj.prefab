@@ -179,3 +179,4 @@ MonoBehaviour:
   _despawnTime: 5
   _damage: 30
   _targetType: Player
+  _destroyOnHit: 1
