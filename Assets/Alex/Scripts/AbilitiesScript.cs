@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
-using UnityEditor.ShaderGraph.Internal;
+//using UnityEditor.ShaderGraph.Internal;
 
 //Make a function in statsscript similar to slow but for pushing enemy like a lerp would and use in pull and bind
 //For Bind make it actually move the enemies
@@ -36,14 +37,32 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")] [SerializeField] private StatsScript _stats;
     [Tooltip("How far away from the mouse can the player select an enemy.")] [SerializeField] private float _selectionRange = 2.5f;
     [Tooltip("Set this to the prefab of the orbit game object")] [SerializeField] private GameObject _orbitPrefab;
+    [Tooltip("Set this to the prefab of the wave attack game object")] [SerializeField] private GameObject _wavePrefab;
+    [Tooltip("The amount of time you can press an ability with the time remaining and have it still activative. (Like Jump Buffering but for abilities)")] [SerializeField] private float _bufferAmount = .25f;
+    [Tooltip("Set this to the Sprite Renderer of the player.")] [SerializeField] private SpriteRenderer _playerSpriteRenderer;
+
 
     [Header("Ability Base Stats")]
     [Tooltip("The amount of base damage the Magnetic Trap ability does.")] [SerializeField] private int _trapDamage = 1;
     [Tooltip("How long the enemy stays trapped for in seconds.")] [SerializeField] private float _trapDuration = 3f;
+    [Tooltip("How long of a cooldown Magnetic Trap has.")] [SerializeField] private float _trapCooldown = 3f;
     [Tooltip("The amount of base damage the Polar Pull ability does.")] [SerializeField] private int _pullDamage = 1;
     [Tooltip("How long the player can pull the enemy for with Polar Pull.")][SerializeField] private float _pullDuration = 3f;
+    [Tooltip("How long of a cooldown Polar Pull has.")] [SerializeField] private float _pullCooldown = 10f;
     [Tooltip("The amount of base damage the Polar Bind ability does.")] [SerializeField] private int _bindDamage = 5;
-    [Tooltip("The base amount the player heals from the healing ability.")] [SerializeField] private int _healAmount = 3;
+    [Tooltip("How long enemies get stuck together with Polar Bind.")][SerializeField] private float _bindDuration = 2f;
+    [Tooltip("How long of a cooldown Polar Bind has.")] [SerializeField] private float _bindCooldown = 10f;
+    [Tooltip("How much scrap it cost to use the Polar Bind ability.")] [SerializeField] private int _bindScrap = 25;
+
+
+    [Tooltip("The base amount the player heals from the Synthetic Heart ability")] [SerializeField] private int _healAmount = 3;
+    [Tooltip("How often should the player heal with the Synthetic Heart ability")] [SerializeField] private float _healTimer = 0.5f;
+    [Tooltip("How long of a cooldown Synthetic Heal has.")] [SerializeField] private float _healCooldown = 1f;
+
+    [Tooltip("How long of a cooldown Wave Attack has.")] [SerializeField] private float _waveCooldown = 3f;
+    [Tooltip("How much scrap it cost to use the scrap ability.")] [SerializeField] private int _waveScrap = 25;
+
+    
 
     [Header("Layers")]
     [Tooltip("The layer for enemies, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _enemyLayer;
@@ -55,7 +74,10 @@ public class AbilitiesScript : MonoBehaviour
     private bool _pulling = false;
     private float _pullTimer = 0f;
     private int _startHealth;
+    private bool _healing = false; //Could likely combine a lot of these to be the same variable rather than each having their own, like _pulling
     private List<GameObject> _selectedEnemies = new List<GameObject>();
+    private List<float> _abilityTimers = new List<float> {0f, 0f, 0f};
+
 
     private void Awake()
     {
@@ -72,6 +94,11 @@ public class AbilitiesScript : MonoBehaviour
         {
             _stats = gameObject.AddComponent<StatsScript>();
             Debug.LogWarning("Player Game Object requires a stats script and will not function properly without it.\nAsk me if you need help with that.", _stats);
+        }
+
+        if (_playerSpriteRenderer == null)
+        {
+            _playerSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         }
 
         //Sets enemy later
@@ -95,6 +122,10 @@ public class AbilitiesScript : MonoBehaviour
     {
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _mousePosition.z = 0f;
+        _abilityTimers[0] -= _abilityTimers[0] > 0f && _currentAction != AbilityActions.Ability1 ? Time.deltaTime : 0;
+        _abilityTimers[1] -= _abilityTimers[1] > 0f && _currentAction != AbilityActions.Ability2 ? Time.deltaTime : 0;
+        _abilityTimers[2] -= _abilityTimers[2] > 0f && _currentAction != AbilityActions.Ability3 ? Time.deltaTime : 0;
+
     }
 
     private void FixedUpdate()
@@ -118,9 +149,17 @@ public class AbilitiesScript : MonoBehaviour
         GetClosest();
     }
 
-    public void Ability1(InputAction.CallbackContext ctx)
+
+
+    public void Ability1(InputAction.CallbackContext ctx) //private List<InputAction.CallbackContext ctx> _bufferCTX; //Use this to save ctx actions //Private List<AbilityActions> _bufferActions; //
     {
+
         if (_currentAction != AbilityActions.None && _currentAction != AbilityActions.Ability1)
+        {
+            return;
+        }
+
+        if (_abilityTimers[0] > 0)
         {
             return;
         }
@@ -139,14 +178,20 @@ public class AbilitiesScript : MonoBehaviour
 
     public void Ability2(InputAction.CallbackContext ctx)
     {
-        if (_currentAction != AbilityActions.None || _currentAction != AbilityActions.Ability2)
+
+        if (_currentAction != AbilityActions.None && _currentAction != AbilityActions.Ability2)
+        {
+            return;
+        }
+
+        if (_abilityTimers[1] > 0)
         {
             return;
         }
 
         if (ctx.ReadValue<float>() == 1f)
         {
-            _currentAction = AbilityActions.Ability1;
+            _currentAction = AbilityActions.Ability2;
             HandleAbility(2);
         }
         else if (ctx.ReadValue<float>() == 0f)
@@ -158,14 +203,20 @@ public class AbilitiesScript : MonoBehaviour
 
     public void Ability3(InputAction.CallbackContext ctx)
     {
-        if (_currentAction != AbilityActions.None || _currentAction != AbilityActions.Ability3)
+        if (_currentAction != AbilityActions.None && _currentAction != AbilityActions.Ability3)
+        {
+            return;
+        }
+
+        if (_abilityTimers[1] > 0)
         {
             return;
         }
 
         if (ctx.ReadValue<float>() == 1f)
         {
-            _currentAction = AbilityActions.Ability1;
+            Debug.Log("TEST3");
+            _currentAction = AbilityActions.Ability3;
             HandleAbility(3);
         }
         else if (ctx.ReadValue<float>() == 0f)
@@ -184,11 +235,12 @@ public class AbilitiesScript : MonoBehaviour
             {
                 Debug.Log("Trap Triggered");
                 Trap();
+                _abilityTimers[abilityNum] = _trapCooldown + _trapDuration;
             }
         }
         else if (_abilityList[abilityNum] == Abilities.PolarPull)
         {
-            if (_currentAction != AbilityActions.None) //Ability keybind was released
+            if (_currentAction != AbilityActions.None) //Ability keybind is pressed
             {
                 _pulling = true;
                 // Debug.Log("Pull Triggered");
@@ -198,6 +250,7 @@ public class AbilitiesScript : MonoBehaviour
             {
                 _pullTimer = _pullDuration;
                 _pulling = false;
+                _abilityTimers[abilityNum] = _pullCooldown;
             }
         }
 
@@ -206,7 +259,28 @@ public class AbilitiesScript : MonoBehaviour
             if (_currentAction == AbilityActions.None) //Ability keybind was released
             {
                 //Debug.Log("Bind Triggered");
-                Bind();
+                StartCoroutine(Bind(abilityNum));
+
+            }
+        }
+        else if (_abilityList[abilityNum] == Abilities.SyntheticHeart)
+        {
+            if (_currentAction != AbilityActions.None)
+            {
+                _healing = true;
+                StartCoroutine(Heal());
+            }
+            else 
+            {
+                _healing = false;
+                _abilityTimers[abilityNum] = _healCooldown;
+            }
+        }
+        else if (_abilityList[abilityNum] == Abilities.RepulsionWave)
+        {
+            if (_currentAction != AbilityActions.None)
+            {
+                Wave(abilityNum);
             }
         }
     }
@@ -226,10 +300,29 @@ public class AbilitiesScript : MonoBehaviour
         return sortedHits;
     }
 
-    private void Heal() //Maybe change this to match the name of the ability in the GDD
+    IEnumerator Heal() 
     {
-        _stats.Health += _healAmount * (100 / _stats.MaxHealth);
-        _stats.Scrap -= 1; //Maybe mess around with changing this based on the heal amount variable  
+        if (_stats.Health == _stats.MaxHealth)
+        {
+            yield break;
+        }
+        for (float i = 0; _stats.Scrap > 0; i += _healTimer)
+        {
+            if (!Mathf.Approximately(i, 0))
+            {
+                _stats.Health += _healAmount * (_stats.MaxHealth / 100);
+                _stats.Scrap -= 1;               
+            }
+
+            if (!_healing || _stats.Health == _stats.MaxHealth)
+            {
+                yield break;
+            }
+            yield return new WaitForSeconds(_healTimer);
+                
+        }
+
+        yield break;
     }
 
     private void Trap() //Magnet Trap in the GDD //(E) Make cost 3 scrap
@@ -243,27 +336,25 @@ public class AbilitiesScript : MonoBehaviour
         
         if (closestEnemy == null)
         {
-            Debug.Log("No enemy found!");
             return;
         }
 
         if (closestEnemy.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
         {
-            Debug.Log("Attempting to damage and slow");
             EnemyStats.Slow(_trapDuration, 1f);
-                EnemyStats.Health -= _stats.Damage(_trapDamage, "ability");
+            EnemyStats.Health -= _stats.Damage(_trapDamage, "ability");
             
 
         }
         else
         {
-            Debug.Log($"Either the player or {closestEnemy.gameObject.name} doesnt have a stats script");  
+            Debug.LogWarning($"Either the player or {closestEnemy.gameObject.name} doesnt have a stats script");  
         }
 
 
     }
 
-    private void Pull() //Polar Pull in GDD //(E) (Cost 2 scrap per second)
+    private void Pull() //Polar Pull in GDD //(E) (Cost 2 scrap per second) //This one is super jank but i'll worry about it if I get time
     {
         var temp = GetClosest();
         GameObject closestEnemy = temp != null && temp.Count > 0? temp[0] : null;
@@ -288,7 +379,6 @@ public class AbilitiesScript : MonoBehaviour
                 //Debug.Log(_pullTimer % 1f);
                 if (_pullTimer % 1f <= 0.02f)
                 {
-                    Debug.Log($"Pull Timer: {_pullTimer}");
                     EnemyStats.Health -= _stats.Damage(_pullDamage, "ability");
                     _stats.Scrap -= 2;
                 }
@@ -305,35 +395,32 @@ public class AbilitiesScript : MonoBehaviour
         }
     }
 
-    private void Bind() //Polar Bind in GDD
+    IEnumerator Bind(int abilityNum) //Polar Bind in GDD
     {
         List<GameObject> temp = GetClosest();
         GameObject closestEnemy = temp != null && temp.Count >= 1 ? temp[0] : null;
         GameObject secondClosestEnemy = temp != null && temp.Count >= 2 ? temp[1] : null;
         bool enemyAdded = false;
-        Debug.Log(closestEnemy);
-        Debug.Log($"COUNT: {temp.Count}");
-
+        if (_stats.Scrap < _bindScrap)
+        {
+            yield break;
+        } 
         if (secondClosestEnemy == null)
         {
             if (closestEnemy != null)
             {
-                Debug.Log("1");
                 if (_selectedEnemies.Count < 2)
                 {
-                    Debug.Log("2");
                     if (!_selectedEnemies.Contains(closestEnemy))
                     {
                         _selectedEnemies.Add(closestEnemy);
                         Debug.Log($"Added {closestEnemy.name} to the selected enemy list");
                         if (_selectedEnemies.Count != 2)
                         {
-                            Debug.Log("3");
-                            return;
+                            yield break;
                         }
                         else
                         {
-                            Debug.Log("4");
                             closestEnemy = _selectedEnemies[0];
                             secondClosestEnemy = _selectedEnemies[1];
                             enemyAdded = true;
@@ -342,49 +429,93 @@ public class AbilitiesScript : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("8");
-                        return;
+                        _selectedEnemies.Remove(closestEnemy);
+                        
+                        yield break;
                     }
                 }
 
             }
             else
             {
-                Debug.Log("5");
-                return;
+                yield break;
             }
         }
 
         if (_selectedEnemies.Count > 0 && !enemyAdded)
         {
-            Debug.Log("7");
             secondClosestEnemy = _selectedEnemies[0];
             _selectedEnemies = new List<GameObject>();
 
         }
 
-
+        _abilityTimers[abilityNum] = _bindCooldown + _bindDuration;
+        _stats.Scrap -= _bindScrap; 
         if (closestEnemy.TryGetComponent(out Rigidbody2D _enemyRB2D) && secondClosestEnemy.TryGetComponent(out Rigidbody2D _enemyTwoRB2D))
         {
-            //Debug.Log("EEE");
-            Vector3 BindDirection = (closestEnemy.transform.position - secondClosestEnemy.transform.position).normalized;
-            _enemyRB2D.AddForce(BindDirection * -1000f); //Change 1000f to a variable later (E)
-            _enemyTwoRB2D.AddForce(BindDirection * 1000f); //Change 1000f to a variable later (E)
             if (closestEnemy.TryGetComponent(out StatsScript EnemyStats) && secondClosestEnemy.TryGetComponent(out StatsScript EnemyTwoStats))
             {
+                if (EnemyTwoStats.Health - _stats.Damage(_bindDamage, "ability") <= 0 || EnemyStats.Health - _stats.Damage(_bindDamage, "ability") <= 0)
+                {
+                    EnemyStats.Health -= _stats.Damage(_bindDamage, "ability");
+                    EnemyTwoStats.Health -= _stats.Damage(_bindDamage, "ability");
+                    _selectedEnemies = new List<GameObject>();
+                    yield break;
+                }
+
                 EnemyStats.Health -= _stats.Damage(_bindDamage, "ability");
                 EnemyTwoStats.Health -= _stats.Damage(_bindDamage, "ability");
+                EnemyStats.Slow(_bindDuration, 1f);
+                EnemyTwoStats.Slow(_bindDuration, 1f);
+                
+
             }
             else
             {
-                Debug.Log($"Either {secondClosestEnemy.gameObject.name} or {closestEnemy.gameObject.name} doesnt have a stats script");  
+                Debug.LogWarning($"Either {secondClosestEnemy.gameObject.name} or {closestEnemy.gameObject.name} doesnt have a stats script");  
             }
+            for (float i = 0; i < _bindDuration; i += Time.deltaTime) // ADD A CHECK TO SEE IF THE GAME OBJECT IS DESTROYED(I)
+            {
+                if (Vector3.Distance(closestEnemy.transform.position, secondClosestEnemy.transform.position) > 0.5f)
+                {
+                    Vector3 BindDirection = (closestEnemy.transform.position - secondClosestEnemy.transform.position).normalized;
+                    _enemyRB2D.AddForce(BindDirection * -200f); 
+                    _enemyTwoRB2D.AddForce(BindDirection * 200f); 
+                }
+                
+                yield return null;
+            }
+            
         }
         else
         {
             Debug.LogWarning($"{closestEnemy.name} or {secondClosestEnemy.name} does not have a Rigidbody2D so the players abilities cannot function properly", closestEnemy);
-            return;
+            yield break;
+;
         }   
+    }
+
+    private void Wave(int abilityNum) //Repulsion Wave in GDD 
+    {
+        if (_stats.Scrap < _waveScrap)
+        {
+            return;
+        }
+        _stats.Scrap -= _waveScrap;
+        Vector3 projectileSpawnLocation = transform.position;
+        Vector3 _mouseDirection = _mousePosition - transform.position; 
+        float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _wavePrefab.GetComponent<SpriteRenderer>().size.x / 2;
+        float yLoc = projectileSpawnLocation.y + (_mouseDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _mouseDirection.normalized.y * _wavePrefab.GetComponent<SpriteRenderer>().size.y / 2;
+        projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);
+        Vector3 TempDirection = _mousePosition - projectileSpawnLocation;
+        float TempAngle = Mathf.Atan2(TempDirection.y, TempDirection.x) * Mathf.Rad2Deg;
+        GameObject waveProjectile = Instantiate(_wavePrefab, projectileSpawnLocation, Quaternion.Euler(new Vector3(0, 0, TempAngle)));
+        ScrapProjScript waveScript = waveProjectile.GetComponent<ScrapProjScript>(); //(I)
+        waveScript.Damage = _stats.Damage(waveScript.Damage, "ability");
+        _abilityTimers[abilityNum] = _waveCooldown;
+        _currentAction = AbilityActions.None;
+        //HandleAbility(1);
+
     }
 
     private void Orbit()

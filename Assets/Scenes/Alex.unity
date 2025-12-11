@@ -410,13 +410,12 @@ MonoBehaviour:
     m_Bits: 320
   _wallCastSize: {x: 1, y: 1}
   _detectCooldown: 1
-  _playerUndetected: 3
   _attackCooldown: 5
   _nextWaypointDistance: 0.5
   _roamDistance: 40
   _maxDistance: 30
   _targetOffset: 4
-  _baseDamage: 0
+  _baseDamage: 20
   _seeker: {fileID: 385621729}
 --- !u!114 &385621731
 MonoBehaviour:
@@ -433,7 +432,7 @@ MonoBehaviour:
   _maxHealth: 50
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 0
+  _moveSpeed: 4
   _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
@@ -669,13 +668,12 @@ MonoBehaviour:
     m_Bits: 320
   _wallCastSize: {x: 1, y: 1}
   _detectCooldown: 1
-  _playerUndetected: 3
   _attackCooldown: 5
   _nextWaypointDistance: 0.5
   _roamDistance: 40
   _maxDistance: 30
   _targetOffset: 4
-  _baseDamage: 0
+  _baseDamage: 20
   _seeker: {fileID: 598555892}
 --- !u!114 &598555894
 MonoBehaviour:
@@ -692,7 +690,7 @@ MonoBehaviour:
   _maxHealth: 50
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 0
+  _moveSpeed: 4
   _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
@@ -1325,16 +1323,28 @@ MonoBehaviour:
   _stats: {fileID: 760930410}
   _selectionRange: 1.5
   _orbitPrefab: {fileID: 0}
+  _wavePrefab: {fileID: 5278739893557004479, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+  _bufferAmount: 0.25
+  _playerSpriteRenderer: {fileID: 760930406}
   _trapDamage: 1
   _trapDuration: 3
+  _trapCooldown: 3
   _pullDamage: 1
   _pullDuration: 3
+  _pullCooldown: 10
   _bindDamage: 5
+  _bindDuration: 2
+  _bindCooldown: 10
+  _bindScrap: 25
   _healAmount: 3
+  _healTimer: 0.5
+  _healCooldown: 1
+  _waveCooldown: 3
+  _waveScrap: 25
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  _abilityList: 030000000000000000000000
+  _abilityList: 030000000200000008000000
 --- !u!1 &895692619
 GameObject:
   m_ObjectHideFlags: 0
@@ -2300,7 +2310,7 @@ MonoBehaviour:
   _nextWaypointDistance: 0.5
   _roamDistance: 20
   _maxDistance: 50
-  _baseDamage: 0
+  _baseDamage: 30
   _seeker: {fileID: 8887440367617414986}
 --- !u!1 &1198404017956837122
 GameObject:
@@ -2670,6 +2680,67 @@ MonoBehaviour:
   _coinCount: 0
   _scrap: 3
   _maxScrap: 100
+--- !u!1001 &7140607614617728998
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494466573398544291, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5278739893557004479, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_Name
+      value: WaveAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 5278739893557004479, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d672984297a56b747a2dd903713ff7f8, type: 3}
 --- !u!114 &8887440367617414986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2742,3 +2813,4 @@ SceneRoots:
   - {fileID: 4999939441447045159}
   - {fileID: 385621735}
   - {fileID: 598555898}
+  - {fileID: 7140607614617728998}

@@ -234,7 +234,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      meele left side attacking view_0: 4440617342989289332
+      meele left side attacking view_1: 4809289123028281180
+      meele left side attacking view_2: 4176014517464748537
+      meele left side attacking view_3: 7428758136315957545
+      meele left side attacking view_4: 4771231618287041308
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
