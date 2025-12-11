@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
 //using UnityEditor.ShaderGraph.Internal;
 
 //Make a function in statsscript similar to slow but for pushing enemy like a lerp would and use in pull and bind
@@ -38,6 +39,7 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("How far away from the mouse can the player select an enemy.")] [SerializeField] private float _selectionRange = 2.5f;
     [Tooltip("Set this to the prefab of the orbit game object")] [SerializeField] private GameObject _orbitPrefab;
     [Tooltip("Set this to the prefab of the wave attack game object")] [SerializeField] private GameObject _wavePrefab;
+    [Tooltip("Set this to the prefab of the black hole attack game objec")][SerializeField] private GameObject _holePrefab; 
     [Tooltip("The amount of time you can press an ability with the time remaining and have it still activative. (Like Jump Buffering but for abilities)")] [SerializeField] private float _bufferAmount = .25f;
     [Tooltip("Set this to the Sprite Renderer of the player.")] [SerializeField] private SpriteRenderer _playerSpriteRenderer;
 
@@ -58,11 +60,22 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("The base amount the player heals from the Synthetic Heart ability")] [SerializeField] private int _healAmount = 3;
     [Tooltip("How often should the player heal with the Synthetic Heart ability")] [SerializeField] private float _healTimer = 0.5f;
     [Tooltip("How long of a cooldown Synthetic Heal has.")] [SerializeField] private float _healCooldown = 1f;
+    [Tooltip("How much scrap it cost to use the Synthetic Heart Ability per _healTimer")][SerializeField] private int _healScrap = 3;
 
     [Tooltip("How long of a cooldown Wave Attack has.")] [SerializeField] private float _waveCooldown = 3f;
-    [Tooltip("How much scrap it cost to use the scrap ability.")] [SerializeField] private int _waveScrap = 25;
+    [Tooltip("How much scrap it cost to use the wave ability.")] [SerializeField] private int _waveScrap = 25;
 
-    
+    [Tooltip("The base amount of damage the BlackHole ability does per second")][SerializeField] private int _holeDamage = 5;
+    [Tooltip("How long the blackhole ability will last")][SerializeField] private float _holeDuration = 5f;
+    [Tooltip("How long of a cooldown the Black Hole ability has")][SerializeField] private float _holeCooldown = 20f;
+    [Tooltip("How much scrap it cost to use the blackhole ability")][SerializeField] private int _holeScrap = 75;
+    [Tooltip("How large of an aoe the Black Hole ability has")][SerializeField] private float _holeRadius = 10f;
+
+
+
+
+
+
 
     [Header("Layers")]
     [Tooltip("The layer for enemies, should define its self in script but still should change this to be sure")] [SerializeField] private LayerMask _enemyLayer;
@@ -283,6 +296,13 @@ public class AbilitiesScript : MonoBehaviour
                 Wave(abilityNum);
             }
         }
+        else if (_abilityList[abilityNum] == Abilities.MagneticBlackhole)
+        {
+            if (_currentAction != AbilityActions.None)
+            {
+                StartCoroutine(Blackhole(abilityNum));
+            }
+        }
     }
 
     private List<GameObject> GetClosest()
@@ -311,7 +331,7 @@ public class AbilitiesScript : MonoBehaviour
             if (!Mathf.Approximately(i, 0))
             {
                 _stats.Health += _healAmount * (_stats.MaxHealth / 100);
-                _stats.Scrap -= 1;               
+                _stats.Scrap -= _healScrap;               
             }
 
             if (!_healing || _stats.Health == _stats.MaxHealth)
@@ -522,5 +542,52 @@ public class AbilitiesScript : MonoBehaviour
     {
         GameObject scrapOrbit = Instantiate(_orbitPrefab, transform.position, Quaternion.identity, transform); //(I)
         //scrapOrbit.transform.SetParent(transform, false);
+    }
+
+    IEnumerator Blackhole(int abilityNum) //Blackhole in the GDD
+    {
+        if (_stats.Scrap < _holeScrap)
+        {
+            yield break;
+        }
+        _currentAction = AbilityActions.None;
+        _stats.Scrap -= _holeScrap;
+        _abilityTimers[abilityNum] = _holeCooldown;
+        GameObject holePreFab = Instantiate(_holePrefab, _mousePosition, Quaternion.identity);
+        int nextWholeNumber = 0;
+        for (float i = 0; i < _holeDuration; i += Time.deltaTime)
+        {
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(holePreFab.transform.position, _holeRadius, Vector2.zero, 0, _enemyLayer);
+            foreach (RaycastHit2D hit in hits)
+            {
+
+
+                if (hit.collider.gameObject.TryGetComponent(out Rigidbody2D _enemyRB2D))
+                {
+                    if (Vector3.Distance(transform.position, hit.collider.gameObject.transform.position) > 1.5f)
+                    {
+                        Vector3 _dir = holePreFab.transform.position - hit.collider.gameObject.transform.position;
+                        _enemyRB2D.AddForce(_dir * 300f);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("AAAAAAHHHHHHHHHHHHHHHHHHHHHHHHH Ojidgdjnijjiosdgnsignosngosmgonsognsgosngosngojn");
+                    Debug.Break();
+                }
+                if (hit.collider.gameObject.TryGetComponent(out StatsScript EnemyStats) && Mathf.FloorToInt(i) > nextWholeNumber)
+                {
+                    EnemyStats.Health -= _stats.Damage(_holeDamage, "ability");
+                    nextWholeNumber++;
+
+                }
+                
+            }
+
+                yield return null;
+        }
+
+        Destroy(holePreFab);
+        yield break;
     }
 }
