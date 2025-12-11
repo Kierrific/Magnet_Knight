@@ -16,8 +16,9 @@ public class ShopButtons : MonoBehaviour
     public float statIncrease;
 
 
-    [Header("Player Stats Reference")]
+    [Header("Stats Reference")]
     public StatsScript playerStats;
+    public ShopReset spentCoins;
 
     [Header("String Texts")]
     public string level;
@@ -42,6 +43,11 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 4 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            spentCoins.coinsSpent += cost;
+            playerStats.CoinCount -= cost;
+            Debug.Log("coins spent up");
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -57,26 +63,25 @@ public class ShopButtons : MonoBehaviour
             playerStats.CooldownReduction += statIncrease;
             currentStat += 5;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
 
 
         }
 
         else if (currentLevel == 4 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.CooldownReduction = 2.5f;
-            if (isMaxLevel == false)
-            {
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-                
-            }
+            playerStats.CooldownReduction = .25f;
             isMaxLevel = true;
         }
     }
@@ -85,6 +90,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -100,14 +109,19 @@ public class ShopButtons : MonoBehaviour
             playerStats.MeleeDamageScaler += statIncrease;
             currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-
 
         }
 
         else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
@@ -115,12 +129,6 @@ public class ShopButtons : MonoBehaviour
             statUpgrade.text = maxText;
             playerStats.MeleeDamageScaler = 2f;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
@@ -129,6 +137,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -144,14 +156,19 @@ public class ShopButtons : MonoBehaviour
             playerStats.RangeDamageScaler += statIncrease;
             currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-
 
         }
 
         else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
@@ -159,12 +176,6 @@ public class ShopButtons : MonoBehaviour
             statUpgrade.text = maxText;
             playerStats.RangeDamageScaler = 2f;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
@@ -174,6 +185,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -189,14 +204,19 @@ public class ShopButtons : MonoBehaviour
             playerStats.AbilityDamageScaler += statIncrease;
             currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-
 
         }
 
         else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
@@ -204,12 +224,6 @@ public class ShopButtons : MonoBehaviour
             statUpgrade.text = maxText;
             playerStats.AbilityDamageScaler = 2f;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
 }
@@ -218,6 +232,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 4 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -233,14 +251,19 @@ public class ShopButtons : MonoBehaviour
             playerStats.MoveSpeed += statIncrease;
             currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-
 
         }
 
         else if (currentLevel == 4 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
@@ -248,12 +271,6 @@ public class ShopButtons : MonoBehaviour
             statUpgrade.text = maxText;
             playerStats.MoveSpeed = 7.5f;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
@@ -263,6 +280,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -278,14 +299,19 @@ public class ShopButtons : MonoBehaviour
             playerStats.Defense += statIncrease;
             currentStat += 1;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
-
 
         }
 
         else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
@@ -293,12 +319,6 @@ public class ShopButtons : MonoBehaviour
             statUpgrade.text = maxText;
             playerStats.Defense = .1f;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
@@ -307,6 +327,10 @@ public class ShopButtons : MonoBehaviour
     {
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -320,29 +344,31 @@ public class ShopButtons : MonoBehaviour
             statText = "Ranged Damage " + currentStat + "%";
             statUpgrade.text = statText;
             playerStats.MaxHealth += (int)statIncrease;
+            playerStats.Health += (int)statIncrease;
             currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
 
 
         }
 
         else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.MaxHealth = 10;
+            playerStats.MaxHealth = 200;
+            playerStats.Health = 200;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
@@ -354,8 +380,12 @@ public class ShopButtons : MonoBehaviour
     */
     public void UniversalDamage()
     {
-        if (currentLevel != 4 && playerStats.CoinCount >= cost)
+        if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
+            // Subtract coins
+            playerStats.CoinCount -= cost;
+            spentCoins.coinsSpent += cost;
+
             // adds the level every buy
             currentLevel++;
             level = "Level " + (currentLevel);
@@ -366,33 +396,36 @@ public class ShopButtons : MonoBehaviour
             cost = Mathf.RoundToInt(cost * costMultiplier);
 
             // upgrade the player stat text every buy
-            statText = "Universal Damage +" + currentStat;
+            statText = "Ranged Damage " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.AllDamageBonus += (int)statIncrease;
-            currentStat += 4;
+            playerStats.MaxScrap += (int)statIncrease;
+            playerStats.Scrap += (int)statIncrease;
+            currentStat += 10;
 
-            // Subtract coins
-            playerStats.CoinCount -= cost;
 
 
         }
 
-        else if (currentLevel == 4 && playerStats.CoinCount >= cost)
+        else if (currentLevel == 9 && playerStats.CoinCount >= cost)
         {
+            if (isMaxLevel == false)
+            {
+                // Subtract coins
+                playerStats.CoinCount -= cost;
+                spentCoins.coinsSpent += cost;
+
+            }
+
             // max level reached
             level = "Max Level";
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.AllDamageBonus = 20;
+            playerStats.MaxScrap = 200;
+            playerStats.Scrap = 200;
 
-            if (isMaxLevel == false)
-            {
-                // Subtract coins
-                playerStats.CoinCount -= cost;
-
-            }
             isMaxLevel = true;
         }
     }
+
 }
