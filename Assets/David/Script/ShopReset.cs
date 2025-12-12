@@ -3,7 +3,11 @@ using UnityEngine;
 public class ShopReset : MonoBehaviour
 {
     [Header("All Coins Spent In The Shop")]
-    public int coinsSpent;
+    public int coinsSpent
+    {
+        get { return SaveDataController.Instance.current.coinsSpent; } 
+        set { SaveDataController.Instance.current.coinsSpent = value; }
+    }
 
     [Header("Reference To Your Coin Value")]
     public StatsScript StatsScript;
@@ -21,8 +25,8 @@ public class ShopReset : MonoBehaviour
 
 
     public void ResetShop()
-    { 
-        StatsScript.CoinCount += coinsSpent;
+    {
+        SaveDataController.Instance.current.coins += coinsSpent;
         coinsSpent = 0;
 
         // Reset All Shop Item Costs To Default Values

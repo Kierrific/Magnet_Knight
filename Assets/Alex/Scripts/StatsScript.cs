@@ -332,7 +332,10 @@ public class StatsScript : MonoBehaviour
 
     private void Start()
     {
+        if (gameObject.name == "Player")
+        {
 
+        }
     }
 
     void Update()

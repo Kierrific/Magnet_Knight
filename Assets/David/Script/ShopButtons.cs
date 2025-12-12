@@ -30,6 +30,8 @@ public class ShopButtons : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
+
         // initial UI setup
         level = "Unlock";
         levelText.text = level;
@@ -41,7 +43,8 @@ public class ShopButtons : MonoBehaviour
 
    public void AttackSpeed()
     {
-        if (currentLevel != 4 && playerStats.CoinCount >= cost)
+        currentLevel = SaveDataController.Instance.current.atsLevel; 
+        if (currentLevel != 4 && SaveDataController.Instance.current.coins >= cost)
         {
             // Subtract coins
             spentCoins.coinsSpent += cost;
@@ -50,6 +53,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.atsLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -60,7 +64,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Attack Speed " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.CooldownReduction += statIncrease;
             currentStat += 5;
 
 
@@ -74,6 +77,7 @@ public class ShopButtons : MonoBehaviour
             // Subtract coins
             playerStats.CoinCount -= cost;
             spentCoins.coinsSpent += cost;
+            SaveDataController.Instance.current.atsLevel++;
             }
 
             // max level reached
@@ -81,13 +85,13 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.CooldownReduction = .25f;
             isMaxLevel = true;
         }
     }
 
     public void MeleeDamage()
     {
+        currentLevel = SaveDataController.Instance.current.meleeLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -96,6 +100,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.meleeLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -106,7 +111,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Melee Damage " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.MeleeDamageScaler += statIncrease;
             currentStat += 10;
 
 
@@ -119,6 +123,8 @@ public class ShopButtons : MonoBehaviour
                 // Subtract coins
                 playerStats.CoinCount -= cost;
                 spentCoins.coinsSpent += cost;
+                SaveDataController.Instance.current.meleeLevel++;
+
 
             }
 
@@ -127,7 +133,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.MeleeDamageScaler = 2f;
 
             isMaxLevel = true;
         }
@@ -135,6 +140,7 @@ public class ShopButtons : MonoBehaviour
 
     public void RangeDamage()
     {
+        currentLevel = SaveDataController.Instance.current.rangedLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -143,6 +149,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.rangedLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -153,7 +160,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Ranged Damage " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.RangeDamageScaler += statIncrease;
             currentStat += 10;
 
 
@@ -166,6 +172,8 @@ public class ShopButtons : MonoBehaviour
                 // Subtract coins
                 playerStats.CoinCount -= cost;
                 spentCoins.coinsSpent += cost;
+                SaveDataController.Instance.current.rangedLevel++;
+
 
             }
 
@@ -174,7 +182,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.RangeDamageScaler = 2f;
 
             isMaxLevel = true;
         }
@@ -183,6 +190,7 @@ public class ShopButtons : MonoBehaviour
 
     public void AbilityDamage()
     {
+        currentLevel = SaveDataController.Instance.current.abilityLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -191,6 +199,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.abilityLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -201,7 +210,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Ability Damage " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.AbilityDamageScaler += statIncrease;
             currentStat += 10;
 
 
@@ -214,6 +222,7 @@ public class ShopButtons : MonoBehaviour
                 // Subtract coins
                 playerStats.CoinCount -= cost;
                 spentCoins.coinsSpent += cost;
+                SaveDataController.Instance.current.abilityLevel++;
 
             }
 
@@ -222,7 +231,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.AbilityDamageScaler = 2f;
 
             isMaxLevel = true;
         }
@@ -230,6 +238,7 @@ public class ShopButtons : MonoBehaviour
 
     public void MovementSpeed()
     {
+        currentLevel = SaveDataController.Instance.current.msLevel;
         if (currentLevel != 4 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -238,6 +247,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.msLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -248,7 +258,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Movement Speed " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.MoveSpeed += statIncrease;
             currentStat += 10;
 
 
@@ -261,6 +270,7 @@ public class ShopButtons : MonoBehaviour
                 // Subtract coins
                 playerStats.CoinCount -= cost;
                 spentCoins.coinsSpent += cost;
+                SaveDataController.Instance.current.msLevel++;
 
             }
 
@@ -269,7 +279,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.MoveSpeed = 7.5f;
 
             isMaxLevel = true;
         }
@@ -278,6 +287,7 @@ public class ShopButtons : MonoBehaviour
 
     public void Defense()
     {
+        currentLevel = SaveDataController.Instance.current.defenseLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -286,6 +296,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.defenseLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -296,7 +307,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Defense " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.Defense += statIncrease;
             currentStat += 1;
 
 
@@ -309,6 +319,7 @@ public class ShopButtons : MonoBehaviour
                 // Subtract coins
                 playerStats.CoinCount -= cost;
                 spentCoins.coinsSpent += cost;
+                SaveDataController.Instance.current.defenseLevel++;
 
             }
 
@@ -317,7 +328,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.Defense = .1f;
 
             isMaxLevel = true;
         }
@@ -325,6 +335,7 @@ public class ShopButtons : MonoBehaviour
 
     public void Health()
     {
+        currentLevel = SaveDataController.Instance.current.healthLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -333,6 +344,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.healthLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -343,8 +355,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Max Health " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.MaxHealth += (int)statIncrease;
-            playerStats.Health += (int)statIncrease;
             currentStat += 10;
 
 
@@ -366,8 +376,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.MaxHealth = 200;
-            playerStats.Health = 200;
 
             isMaxLevel = true;
         }
@@ -380,6 +388,7 @@ public class ShopButtons : MonoBehaviour
     */
     public void UniversalDamage()
     {
+        currentLevel = SaveDataController.Instance.current.scrapLevel;
         if (currentLevel != 9 && playerStats.CoinCount >= cost)
         {
             // Subtract coins
@@ -388,6 +397,7 @@ public class ShopButtons : MonoBehaviour
 
             // adds the level every buy
             currentLevel++;
+            SaveDataController.Instance.current.scrapLevel++;
             level = "Level " + (currentLevel);
             levelText.text = level;
 
@@ -398,8 +408,6 @@ public class ShopButtons : MonoBehaviour
             // upgrade the player stat text every buy
             statText = "Max Scrap " + currentStat + "%";
             statUpgrade.text = statText;
-            playerStats.MaxScrap += (int)statIncrease;
-            playerStats.Scrap += (int)statIncrease;
             currentStat += 10;
 
 
@@ -421,8 +429,6 @@ public class ShopButtons : MonoBehaviour
             levelText.text = level;
             costText.text = "";
             statUpgrade.text = maxText;
-            playerStats.MaxScrap = 200;
-            playerStats.Scrap = 200;
 
             isMaxLevel = true;
         }
