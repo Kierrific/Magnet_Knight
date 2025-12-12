@@ -87,7 +87,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -260,7 +260,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      blackhole spinning_0: -8855785825493352698
+      blackhole spinning_1: 2019267467889962369
+      blackhole spinning_2: 4379932760716651307
+      blackhole spinning_3: 3550858953786089149
+      blackhole spinning_4: -3260044539291096461
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
