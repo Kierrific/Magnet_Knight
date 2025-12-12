@@ -15,6 +15,16 @@ public class MenuButtons : MonoBehaviour
 
     public void QuitToStart()
         {
-        SceneManager.LoadScene("StartMenu");
+        SceneManager.LoadScene("Start menu");
+    }
+
+    public void ShopButton()
+    { 
+        SceneManager.LoadScene("Shop");
+    }
+
+    public void SettingsButton()
+    {
+        SceneManager.LoadScene("Settings");
     }
 }
