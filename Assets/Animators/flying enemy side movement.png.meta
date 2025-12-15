@@ -165,11 +165,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
 <<<<<<< HEAD
+    nameFileIdTable:
+      flying enemy side movement_0: 211846531084574245
+=======
+<<<<<<< HEAD
     nameFileIdTable: {}
 =======
     nameFileIdTable:
       flying enemy side movement_0: 211846531084574245
 >>>>>>> 72ce7276e86e9439653eb290e2f1e0d43723cd99
+>>>>>>> 9d277513411564fb75100e0154b36850fc5f8438
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

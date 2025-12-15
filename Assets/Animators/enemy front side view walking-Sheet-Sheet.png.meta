@@ -52,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -90,7 +90,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -144,10 +144,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 16
-        width: 90
-        height: 154
+        x: 7
+        y: 17
+        width: 88
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,10 +166,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_1
       rect:
         serializedVersion: 2
-        x: 108
-        y: 10
-        width: 90
-        height: 160
+        x: 109
+        y: 11
+        width: 88
+        height: 158
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -188,10 +188,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_2
       rect:
         serializedVersion: 2
-        x: 210
-        y: 4
-        width: 90
-        height: 166
+        x: 211
+        y: 5
+        width: 88
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -210,10 +210,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_3
       rect:
         serializedVersion: 2
-        x: 312
-        y: 10
-        width: 90
-        height: 160
+        x: 313
+        y: 11
+        width: 88
+        height: 158
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -232,10 +232,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_4
       rect:
         serializedVersion: 2
-        x: 414
-        y: 10
-        width: 90
-        height: 160
+        x: 415
+        y: 11
+        width: 88
+        height: 158
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -254,10 +254,10 @@ TextureImporter:
       name: enemy front side view walking-Sheet-Sheet_5
       rect:
         serializedVersion: 2
-        x: 516
-        y: 4
-        width: 90
-        height: 166
+        x: 517
+        y: 5
+        width: 88
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 3d8079f6ecf604544a8043232cd7d912
     internalID: 0
     vertices: []
     indices: 

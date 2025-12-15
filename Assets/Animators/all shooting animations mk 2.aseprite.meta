@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 00386983bd8263e4ba3381f7ce8d04e7
+guid: 56fb253c071f6b9459c84cdd23cb74da
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 0
+  platformSettingsDirtyTick: 639011367066268867
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,9 +122,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Magnet knight run left
+  - name: all shooting animations mk 2
     originalName: 
-    pivot: {x: 0.6756757, y: -0.11538462}
+    pivot: {x: 0.59030837, y: -0.6067416}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -132,9 +132,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 370
-      height: 52
-    spriteID: 2d79b27141906554796e1cd9bc386c48
+      width: 227
+      height: 178
+    spriteID: be97a9bbcec86504abc13a5403fb2690
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -146,21 +146,21 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 1899650781
-    name: Magnet knight run left
+    guid: 455384895
+    name: all shooting animations mk 2
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Magnet knight run left
+    - name: all shooting animations mk 2
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 6
-        width: 370
-        height: 52
-      spriteId: 2d79b27141906554796e1cd9bc386c48
+        x: 16
+        y: 108
+        width: 227
+        height: 178
+      spriteId: be97a9bbcec86504abc13a5403fb2690
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -176,7 +176,55 @@ ScriptedImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     androidETC2FallbackOverride: 0
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Android
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: WebGL
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 500, y: 64}
+  canvasSize: {x: 300, y: 300}
