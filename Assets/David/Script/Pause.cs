@@ -3,6 +3,9 @@ using UnityEngine;
 public class Pause : MonoBehaviour
 {
     private bool isPaused = false;
+
+    public GameObject pauseMenu;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,6 +21,8 @@ public class Pause : MonoBehaviour
             {
                 Time.timeScale = 1f;
                 isPaused = false;
+                pauseMenu.SetActive(false);
+
             }
             else
             {
