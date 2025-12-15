@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      flying enemy side movement_0: 211846531084574245
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
