@@ -297,6 +297,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Health 100%
+  _upgradeType: 6
 --- !u!224 &58395710
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1589,7 +1590,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ba295f5473fdb4f96fd0e392cdddaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinsSpent: 0
   StatsScript: {fileID: 0}
   AttackSpeed: {fileID: 1968472463}
   MeleeDamage: {fileID: 1335022034}
@@ -4225,6 +4225,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Ranged Damage 100%
+  _upgradeType: 2
 --- !u!224 &888895175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5201,6 +5202,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Max Scrap 100%
+  _upgradeType: 7
 --- !u!224 &1170641312
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6031,6 +6033,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Melee Damage 100%
+  _upgradeType: 1
 --- !u!224 &1335022035
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6371,6 +6374,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Movement Speed 50%
+  _upgradeType: 4
 --- !u!224 &1423090073
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6725,6 +6729,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Defense 10%
+  _upgradeType: 5
 --- !u!224 &1546118358
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6887,6 +6892,65 @@ RectTransform:
   m_AnchoredPosition: {x: -261.10992, y: 84.986015}
   m_SizeDelta: {x: 47.4879, y: 15.9439}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1581184997
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1581184999}
+  - component: {fileID: 1581184998}
+  m_Layer: 0
+  m_Name: SaveDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1581184998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581184997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a12c0bf8e77f9ab4fa71dacbff84d4c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _saveDataAsset: {fileID: 11400000, guid: 462c6d56018de19459e1d7c84db87426, type: 2}
+  current:
+    waveRecorded: 0
+    coins: 0
+    coinsSpent: 0
+    atsLevel: 0
+    meleeLevel: 0
+    rangedLevel: 0
+    abilityLevel: 0
+    msLevel: 0
+    defenseLevel: 0
+    healthLevel: 0
+    scrapLevel: 0
+  _directory: SaveData
+  _fileName: SaveData.json
+--- !u!4 &1581184999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581184997}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.29115912, y: 1.4491221, z: 0.11785753}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1625021461
 GameObject:
   m_ObjectHideFlags: 0
@@ -7140,6 +7204,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Ability Damage 100%
+  _upgradeType: 3
 --- !u!224 &1767913392
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8156,6 +8221,7 @@ MonoBehaviour:
   level: 
   statText: 
   maxText: Attack Speed 25%
+  _upgradeType: 0
 --- !u!224 &1968472464
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8798,6 +8864,7 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1581184999}
   - {fileID: 269183567}
   - {fileID: 386823332}
   - {fileID: 701971940}

@@ -81,7 +81,7 @@ public class StatsScript : MonoBehaviour
     //Combat Variables
     //---------------------------------------------------------------------------------------------------
     [Header("Generic Attack Values")]
-    [Tooltip("How fast the object can attack")][SerializeField] [Range(0f, 1f)] private float _attackSpeedBonus = .5f; //Making this a percentage scaling and having attacks cooldown specified in their respective scripts to make cooldowns no longer unified 
+    [Tooltip("How fast the object can attack (This will likely remain unused in favor of cdr) ")][SerializeField] [Range(0f, 1f)] private float _attackSpeedBonus = .5f; //This will likely remain unused in favor of cdr
     [HideInInspector]
     public float AttackSpeedBonus
     {
@@ -270,7 +270,7 @@ public class StatsScript : MonoBehaviour
         {
             calculatedDamage += Mathf.RoundToInt(damage * _difficultyScaler) - damage;
         }
-
+        Debug.Log($"Calculated Damage: {calculatedDamage}");
         return calculatedDamage;
     }
 
@@ -334,6 +334,15 @@ public class StatsScript : MonoBehaviour
     {
         if (gameObject.name == "Player")
         {
+            _maxHealth = 100 + 10 * SaveDataController.Instance.current.healthLevel;
+            _health = _maxHealth;
+            _meleeDamageScaler = 1 + .1f * SaveDataController.Instance.current.meleeLevel;
+            _rangeDamageScaler = 1 + .1f * SaveDataController.Instance.current.rangedLevel;
+            _abilityDamageScaler = 1 + .1f * SaveDataController.Instance.current.abilityLevel;
+            _defense = 1 * SaveDataController.Instance.current.defenseLevel;
+            MoveSpeed = _moveSpeed * (1 + .1f * SaveDataController.Instance.current.msLevel);
+            _cooldownReduction = SaveDataController.Instance.current.atsLevel * .05f;
+            _maxScrap = 100 + 10 * SaveDataController.Instance.current.scrapLevel;
 
         }
     }

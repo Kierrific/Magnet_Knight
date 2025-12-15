@@ -10,6 +10,6 @@ public class CoinShopUpdate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        coinText.text = "Coins: " + playerStats.CoinCount;
+        coinText.text = "Coins: " + SaveDataController.Instance.current.coins;
     }
 }

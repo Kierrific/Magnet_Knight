@@ -68,20 +68,28 @@ public class ShopReset : MonoBehaviour
 
         //Reset Current Levels To 0
         AttackSpeed.currentLevel = 0;
+        SaveDataController.Instance.current.atsLevel = 0;
 
         MeleeDamage.currentLevel = 0;
+        SaveDataController.Instance.current.meleeLevel = 0;
 
         RangedDamage.currentLevel = 0;
+        SaveDataController.Instance.current.rangedLevel = 0;
 
         AbilityDamage.currentLevel = 0;
+        SaveDataController.Instance.current.abilityLevel = 0;
 
         MovementSpeed.currentLevel = 0;
+        SaveDataController.Instance.current.msLevel = 0;
 
         Defense.currentLevel = 0;
+        SaveDataController.Instance.current.defenseLevel = 0;
 
         Health.currentLevel = 0;
+        SaveDataController.Instance.current.healthLevel = 0;
 
         Scrap.currentLevel = 0;
+        SaveDataController.Instance.current.scrapLevel = 0;
 
         // Reset Stat Texts
         AttackSpeed.statUpgrade.text = "";
@@ -93,27 +101,46 @@ public class ShopReset : MonoBehaviour
         Health.statUpgrade.text = "";
         Scrap.statUpgrade.text = "";
 
-        // Reset Stat Values
-        AttackSpeed.currentStat = 5;
-        MeleeDamage.currentStat = 10;
-        RangedDamage.currentStat = 10;
-        AbilityDamage.currentStat = 10;
-        MovementSpeed.currentStat = 10;
-        Defense.currentStat = 1;
-        Health.currentStat = 10;
-        Scrap.currentStat = 10;
+        // Reset Cost Texts
+        AttackSpeed.costText.text = "Cost 50";   
+        MeleeDamage.costText.text = "Cost 100";
+        RangedDamage.costText.text = "Cost 100";
+        AbilityDamage.costText.text = "Cost 100";
+        MovementSpeed.costText.text = "Cost 50";
+        Defense.costText.text = "Cost 50";
+        Health.costText.text = "Cost 50";
+        Scrap.costText.text = "Cost 100";
 
-        // Reset Real Stat Values
-        StatsScript.CooldownReduction = 0f;
-        StatsScript.MeleeDamageScaler = 1;
-        StatsScript.RangeDamageScaler = 1;
-        StatsScript.AbilityDamageScaler = 1;
-        StatsScript.MoveSpeed = 5f;
-        StatsScript.Defense = 0;
-        StatsScript.MaxHealth = 100;
-        StatsScript.Health = 100;
-        StatsScript.Scrap = 100;
-        StatsScript.MaxScrap = 100;
+
+        // Reset Stat Values
+        // AttackSpeed.currentStat = 5;
+        // MeleeDamage.currentStat = 10;
+        // RangedDamage.currentStat = 10;
+        // AbilityDamage.currentStat = 10;
+        // MovementSpeed.currentStat = 10;
+        // Defense.currentStat = 1;
+        // Health.currentStat = 10;
+        // Scrap.currentStat = 10; 
+        AttackSpeed.currentStat = 0;
+        MeleeDamage.currentStat = 0;
+        RangedDamage.currentStat = 0;
+        AbilityDamage.currentStat = 0;
+        MovementSpeed.currentStat = 0;
+        Defense.currentStat = 0;
+        Health.currentStat = 0;
+        Scrap.currentStat = 0; 
+
+        // // Reset Real Stat Values
+        // StatsScript.CooldownReduction = 0f;
+        // StatsScript.MeleeDamageScaler = 1;
+        // StatsScript.RangeDamageScaler = 1;
+        // StatsScript.AbilityDamageScaler = 1;
+        // StatsScript.MoveSpeed = 5f;
+        // StatsScript.Defense = 0;
+        // StatsScript.MaxHealth = 100;
+        // StatsScript.Health = 100;
+        // StatsScript.Scrap = 100;
+        // StatsScript.MaxScrap = 100;
 
 
     }
