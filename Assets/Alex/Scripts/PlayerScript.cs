@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; //InputAction.CallbackContext ctx
 using System.Collections.Generic;
 
 //TO DO:
@@ -359,7 +359,7 @@ public class PlayerScript : MonoBehaviour
             Vector3 projectileSpawnLocation = transform.position;
             //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
             int projectileIndex = 0; //(0, 1, 2)
-
+            Debug.Log($"Attack Charge Time: {_attackChargeTime}");
             if (_attackChargeTime > 0.5f && _stats.Scrap >= 2)
             {
                 projectileIndex++;
