@@ -284,7 +284,7 @@ public class PlayerScript : MonoBehaviour
         {
             _attackTimer = _rangeCooldown;
             Vector3 projectileSpawnLocation = transform.position;
-            //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
+            //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player //_mouseDirection = _mousePosition - transform.position; 
             float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x / 2;
             float yLoc = projectileSpawnLocation.y + (_mouseDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _mouseDirection.normalized.y * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.y / 2;
             projectileSpawnLocation = new Vector3(xLoc, yLoc, projectileSpawnLocation.z);

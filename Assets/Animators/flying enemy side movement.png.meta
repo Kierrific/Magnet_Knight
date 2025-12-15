@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 25dc761e43ecaef4cae98e2b6abacbfd
+=======
 guid: f3b5815a9125a2740813d5729e6c0bf2
+>>>>>>> 72ce7276e86e9439653eb290e2f1e0d43723cd99
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -160,8 +164,17 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
+<<<<<<< HEAD
     nameFileIdTable:
       flying enemy side movement_0: 211846531084574245
+=======
+<<<<<<< HEAD
+    nameFileIdTable: {}
+=======
+    nameFileIdTable:
+      flying enemy side movement_0: 211846531084574245
+>>>>>>> 72ce7276e86e9439653eb290e2f1e0d43723cd99
+>>>>>>> 9d277513411564fb75100e0154b36850fc5f8438
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

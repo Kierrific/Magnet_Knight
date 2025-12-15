@@ -14,8 +14,7 @@ public class StatsHUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healthBar.fillAmount = stats.Health / stats.MaxHealth;
-        ScrapBar.fillAmount = stats.Scrap / stats.MaxScrap;
-        
+        healthBar.fillAmount = (float)stats.Health / stats.MaxHealth;
+        ScrapBar.fillAmount = (float)stats.Scrap / stats.MaxScrap;
     }
 }
