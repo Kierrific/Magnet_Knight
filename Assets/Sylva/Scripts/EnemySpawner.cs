@@ -77,6 +77,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void EndWave()
     {
+        currentWave++;
+        if (currentWave > SaveDataController.Instance.current.waveRecorded)
+        {
+            SaveDataController.Instance.current.waveRecorded = currentWave;
+        }
         main.isSpawning = false;
         LevelManager.main.gameObject.GetComponent<Item_Grabber>().Trigger();
     }
