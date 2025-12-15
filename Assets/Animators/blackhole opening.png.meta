@@ -264,7 +264,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: c28ac3284622df44986269637a90f733
-      internalID: -639253478
+      internalID: -1335757091008487570
       vertices: []
       indices: 
       edges: []
@@ -283,15 +283,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-<<<<<<< HEAD
       blackhole opening_0: -3776114698553349674
       blackhole opening_1: 1507382835215474693
       blackhole opening_2: 2118445574005485931
       blackhole opening_3: -219912382934775134
       blackhole opening_4: 6378222032774628614
-=======
-      blackhole opening_5: -639253478
->>>>>>> d6a6695e5a18f3f0d3d0ec76960c9dbcb3a20eae
+      blackhole opening_5: -1335757091008487570
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
