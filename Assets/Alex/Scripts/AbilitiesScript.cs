@@ -19,8 +19,8 @@ public class AbilitiesScript : MonoBehaviour
         MagnetTrap = 1,
         PolarPull = 2,
         PolarBind = 3,
-        OrbitalScrap = 4,
-        ScrapSiphon = 5,
+        OrbitalScrap = 4,//don't exist
+        ScrapSiphon = 5,//don't exist :)
         RepulsionWave = 6,
         MagneticBlackhole = 7,
         SyntheticHeart = 8,
@@ -82,7 +82,7 @@ public class AbilitiesScript : MonoBehaviour
 
     private AbilityActions _currentAction = AbilityActions.None; 
 
-    [Tooltip("The list of current player abilities.")] [SerializeField] private List<Abilities> _abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
+    [Tooltip("The list of current player abilities.")] public List<Abilities> _abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
     private Vector3 _mousePosition;
     private bool _pulling = false;
     private float _pullTimer = 0f;

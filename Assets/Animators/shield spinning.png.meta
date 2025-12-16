@@ -260,7 +260,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      shield spinning_0: -9182290837920946203
+      shield spinning_1: 7212182882653869570
+      shield spinning_2: -4835373931351387679
+      shield spinning_3: -6751193506628810340
+      shield spinning_4: -8824476775995233788
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

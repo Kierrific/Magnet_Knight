@@ -10,8 +10,16 @@ public class Item_Grabber : MonoBehaviour
 
     private int randomNumber;
     private int itemIndex;
+    private int numActiveAbilities;
     private List<GameObject> itemBoxes = new();
     [HideInInspector] public bool itemsSpawned = false;
+    private AbilitiesScript abilitiesScript;
+    private int selectedBox = 0;
+
+    private void Start()
+    {
+        abilitiesScript = playerObject.GetComponent<AbilitiesScript>();
+    }
 
     public void Trigger()
     {
@@ -30,10 +38,6 @@ public class Item_Grabber : MonoBehaviour
             {
                 itemIndex = i;
             }
-        }
-        if (itemPrefabs[itemIndex].gameObject.GetComponent<Item>().getRemoveCheck())
-        {
-            itemPrefabs[itemIndex].gameObject.GetComponent<Item>().setRemoved();
         }
 
         GameObject firstItemBox = Instantiate(itemPrefabs[itemIndex], spawnPoint.position, Quaternion.identity);
@@ -54,10 +58,6 @@ public class Item_Grabber : MonoBehaviour
                 itemIndex = i;
             }
         }
-        if (itemPrefabs[itemIndex].gameObject.GetComponent<Item>().getRemoveCheck())
-        {
-            itemPrefabs[itemIndex].gameObject.GetComponent<Item>().setRemoved();
-        }
 
         GameObject secondItemBox = Instantiate(itemPrefabs[itemIndex], spawnPoint.position, Quaternion.identity);
         secondItemBox.transform.SetParent(GameObject.FindGameObjectWithTag("ItemPoint").transform, false);
@@ -72,14 +72,10 @@ public class Item_Grabber : MonoBehaviour
         itemIndex = 0;
         for (int i = 1; i < itemPrefabs.Length; i++)
         {
-            if (itemPrefabs[itemIndex].GetComponent<Item>().getChance() > itemPrefabs[i].GetComponent<Item>().getChance() && randomNumber <= itemPrefabs[i].GetComponent<Item>().getChance() && !itemPrefabs[itemIndex].GetComponent<Item>().isRemoved())
+            if (itemPrefabs[itemIndex].GetComponent<Item>().getChance() > itemPrefabs[i].GetComponent<Item>().getChance() && randomNumber <= itemPrefabs[i].GetComponent<Item>().getChance() && !itemPrefabs[i].GetComponent<Item>().isRemoved())
             {
                 itemIndex = i;
             }
-        }
-        if (itemPrefabs[itemIndex].gameObject.GetComponent<Item>().getRemoveCheck())
-        {
-            itemPrefabs[itemIndex].gameObject.GetComponent<Item>().setRemoved();
         }
 
         GameObject thirdItemBox = Instantiate(itemPrefabs[itemIndex], spawnPoint.position, Quaternion.identity);
@@ -88,9 +84,25 @@ public class Item_Grabber : MonoBehaviour
         itemBoxes.Add(thirdItemBox);
     }
 
-    public void itemGrabbed()
+    public void itemGrabbed(int boxNum)
     {
-        foreach(GameObject item in itemBoxes)
+        selectedBox = boxNum;
+        if (itemPrefabs[selectedBox].gameObject.GetComponent<Item>().getRemoveCheck())
+        {
+            itemPrefabs[selectedBox].gameObject.GetComponent<Item>().setRemoved();
+            if (numActiveAbilities == 3)
+            {
+                for (int i = 1; i < itemPrefabs.Length; i++)
+                {
+                    if (!itemPrefabs[i].GetComponent<Item>().isRemoved() && itemPrefabs[i].gameObject.GetComponent<Item>().getRemoveCheck())
+                    {
+                        itemPrefabs[i].gameObject.GetComponent<Item>().setRemoved();
+                    }
+                }
+            }
+        }
+
+        foreach (GameObject item in itemBoxes)
         {
             Destroy(item);
         }
@@ -166,8 +178,44 @@ public class Item_Grabber : MonoBehaviour
         playerObject.GetComponent<StatsScript>().MaxScrap += num;
     }
 
-    public void increaseCoinCount (int num)
+    public void increaseCoinCount(int num)
     {
         playerObject.GetComponent<StatsScript>().CoinCount += num;
+    }
+
+    public void addMagnetTrap()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
+        numActiveAbilities++;
+    }
+
+    public void addPolarPull()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
+        numActiveAbilities++;
+    }
+    
+    public void addPolarBind()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        numActiveAbilities++;
+    }
+    
+    public void addRepulsionWave()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        numActiveAbilities++;
+    }
+
+    public void addMagneticBlackHole()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
+        numActiveAbilities++;
+    }
+
+    public void addSyntheticHeart()
+    {
+        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
+        numActiveAbilities++;
     }
 }
