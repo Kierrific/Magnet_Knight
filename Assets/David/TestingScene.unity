@@ -7305,6 +7305,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1954954897911043079, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1954954897911043079, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1954954897911043079, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5954725
       objectReference: {fileID: 0}
@@ -7345,9 +7353,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6796060936665975322, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
+      propertyPath: m_Size.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796060936665975322, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
+      propertyPath: m_Size.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796060936665975322, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2716930776664578908, guid: dafbb6792856a8a4fbc2e031fd30a9dc, type: 3}
+      objectReference: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 6796060936665975322, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8589240992703934803, guid: 10f2e2e656ac53e46b41b279984d036b, type: 3}
       propertyPath: m_Name
       value: MeleeEnemy
@@ -13139,7 +13159,7 @@ Transform:
   m_GameObject: {fileID: 1651288211}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.58, y: 0.48, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
