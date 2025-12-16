@@ -282,10 +282,7 @@ public class PlayerScript : MonoBehaviour
                 if (hit.collider.gameObject.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
                 {
                     EnemyStats.Health -= _stats.Damage(_meleeDamage, "melee");
-                    if (EnemyStats.Health <= 0) //The less than is likely not needed because health SHOULD be clamped to a minimum of 0
-                    {
-                        _stats.Scrap += EnemyStats.Scrap;
-                    }
+                
                 }
             }
             _attackChargeTime = 0f;

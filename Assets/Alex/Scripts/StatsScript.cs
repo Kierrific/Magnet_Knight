@@ -8,6 +8,7 @@ public class StatsScript : MonoBehaviour
     //If you need this clarified later lmk
 
     private GameObject _player;
+    private StatsScript _playerStats;
     //Health
     //---------------------------------------------------------------------------------------------------
     [Header("Generic Object Values")]
@@ -38,9 +39,13 @@ public class StatsScript : MonoBehaviour
                 _health = Mathf.Clamp(value, 0, _maxHealth);
             }
 
-            if (gameObject.tag == "Player")
+            if (_health <= 0)
             {
-                //Update this later but likely just make the health variable in the save data equal _health
+                if (gameObject.CompareTag("Enemy"))
+                {
+                    Debug.Log("TEST");
+                    _playerStats.Scrap += _scrap;
+                }
             }
         }
     }
@@ -310,7 +315,7 @@ public class StatsScript : MonoBehaviour
     {
         _maxMoveSpeed = _moveSpeed;
         //_player = GameObject.FindWithTag("Player");
-        if (gameObject.tag != "Player")
+        if (!gameObject.CompareTag("Player"))
         {
             if (gameObject.tag == "Enemy") //If object doing the damage is an enemy, then scale with _difficultyScaler
             {
@@ -344,6 +349,10 @@ public class StatsScript : MonoBehaviour
             _cooldownReduction = SaveDataController.Instance.current.atsLevel * .05f;
             _maxScrap = 100 + 10 * SaveDataController.Instance.current.scrapLevel;
 
+        }
+        else
+        {
+            _playerStats = GameObject.FindWithTag("Player").GetComponent<StatsScript>();
         }
     }
 
