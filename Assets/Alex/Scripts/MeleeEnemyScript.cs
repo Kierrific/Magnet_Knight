@@ -52,6 +52,7 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("Set this to the seeker script attached to the enemy.")][SerializeField] private Seeker _seeker;
     //-------------------------------------
 
+    private Animator _anim;
     private bool _canMove = true;
     private float _detectTimer;
     private Vector3 _direction = Vector2.down;
@@ -81,6 +82,8 @@ public class MeleeEnemyScript : MonoBehaviour
         _detectTimer = _detectCooldown;
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
+
+        _anim = GetComponent<Animator>();
 
         if (_player == null)
         {
@@ -414,6 +417,10 @@ public class MeleeEnemyScript : MonoBehaviour
 
 
         }
+
+        _anim.SetFloat("x", _enemyRB2D.linearVelocityX);
+        _anim.SetFloat("y", _enemyRB2D.linearVelocityY);
+
     }
 
     private void WallCollision()
@@ -454,6 +461,8 @@ public class MeleeEnemyScript : MonoBehaviour
                 PlayerStats.Slow(1f, .35f);
             }
         }
+
+        _anim.SetTrigger("attack");
         //float distance2Player = Vector3.Distance(transform.position, _player.transform.position);
     }
 
