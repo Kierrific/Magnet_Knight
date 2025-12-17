@@ -629,7 +629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4024344610477271708
 RectTransform:
   m_ObjectHideFlags: 0
@@ -668,11 +668,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tutorialTexts:
-  - Tutorial 1
-  - Tutorial 2
-  - Tutorial 3
-  - Tutorial 4
-  - Tutorial 5
+  - To move the character, use WASD. To dash, use the spacebar. (These are default
+    controls)
+  - To attack with your sword, left click the mouse.
+  - You can also press F to swap between sword and scrap cannon.
+  - With the scrap cannon, you can shoot scrap by pressing right click, or you can
+    click and hold to charge up a projectile, taking more scrap.
+  - You can use these to progress the waves of enemies that spawn.
+  - When a wave ends, a set of three items and/or abilities will spawn, but you can
+    only choose one.
+  - You have a limit of only 3 abilities, but upgrades are infinite.
+  - Magnet Trap | places a trap that, when triggered, sticks an enemy to the trap
+    for a period of time.
+  - Polar Pull | moves two enemies towards the current mouse position for a period
+    of time.
+  - Polar Bind | Attracts two enemies towards each other for a period of time.
+  - Repulsion Wave | Damages enemies while pushing them back across a long area.
+  - Black Hole | Pulls multiple enemies into the black hole from a long range for
+    a period of time.
+  - Synthetic Heart | Allows you to use scrap to heal your HP.
+  - All of these abilities are useful in their own ways, so choose carefully and
+    make sure to pick some that work well together.
   textGO: {fileID: 5599311464781758826}
 --- !u!1 &6688628493514436074
 GameObject:
