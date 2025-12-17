@@ -203,7 +203,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 63.8
+  m_fontSize: 54.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -733,6 +733,42 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4644787367366926029, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6631451274420698932, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 6631451274420698932, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7822844728126536180, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 6631451274420698932, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793774388815767106, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 8793774388815767106, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7822844728126536180, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 8793774388815767106, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9014303400808057599, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 9014303400808057599, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -7822844728126536180, guid: 595384a9988aef1448467ab59a37051f, type: 2}
+    - target: {fileID: 9014303400808057599, guid: 6d1939cea07864a489bc0f95cefe4bb0, type: 3}
+      propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
