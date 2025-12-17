@@ -20,6 +20,7 @@ public class Item_Grabber : MonoBehaviour
     private void Start()
     {
         abilitiesScript = playerObject.GetComponent<AbilitiesScript>();
+        Debug.Log(abilitiesScript);
     }
 
     public void Trigger()
@@ -197,37 +198,37 @@ public class Item_Grabber : MonoBehaviour
 
     public void addMagnetTrap()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
         numActiveAbilities++;
     }
 
     public void addPolarPull()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
         numActiveAbilities++;
     }
     
     public void addPolarBind()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
         numActiveAbilities++;
     }
     
     public void addRepulsionWave()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
         numActiveAbilities++;
     }
 
     public void addMagneticBlackHole()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
         numActiveAbilities++;
     }
 
     public void addSyntheticHeart()
     {
-        abilitiesScript._abilityList[numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
+        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
         numActiveAbilities++;
     }
 }
