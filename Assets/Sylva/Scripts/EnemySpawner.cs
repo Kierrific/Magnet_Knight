@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using TMPro;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class EnemySpawner : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private GameObject playerPrefab;
+    [Tooltip("Set this to the game object displaying the current wave")] [SerializeField] private TMP_Text waveText;
+
 
     [Header("Attributes")]
     [SerializeField] private int baseEnemies = 20;
@@ -21,6 +24,8 @@ public class EnemySpawner : MonoBehaviour
 
     public static UnityEvent onEnemyDestroy = new UnityEvent();
 
+    private bool _newRecord = false;
+    private string _defaultWaveText = "Wave: ";
     private int enemiesAlive;
     private int currentWave = 1;
     private int enemiesLeftToSpawn;
@@ -40,6 +45,11 @@ public class EnemySpawner : MonoBehaviour
         onEnemyDestroy.AddListener(EnemyDestroyed);
     }
 
+    private void Start()
+    {
+        main.StartWave();
+    }
+
     private void Update()
     {
         spawnedItems = LevelManager.main.GetComponent<Item_Grabber>().itemsSpawned;
@@ -49,10 +59,10 @@ public class EnemySpawner : MonoBehaviour
 
         if (timeSinceLastSpawn >= (1f / enemySpawnRate) && enemiesLeftToSpawn > 0)
         {
+            timeSinceLastSpawn = 0f;
             SpawnEnemy();
             enemiesLeftToSpawn--;
             enemiesAlive++;
-            timeSinceLastSpawn = 0f;
         }
 
         if (enemiesAlive == 0 && enemiesLeftToSpawn == 0)
@@ -78,9 +88,16 @@ public class EnemySpawner : MonoBehaviour
     private void EndWave()
     {
         currentWave++;
-        if (currentWave > SaveDataController.Instance.current.waveRecorded)
+        enemyPrefabIndex = 0;
+        if (currentWave > SaveDataController.Instance.current.waveRecorded || _newRecord)
         {
             SaveDataController.Instance.current.waveRecorded = currentWave;
+            _newRecord = true;
+            waveText.text = $"<color=#FF0000>W</color><color=#FF7600>a</color><color=#FFE800>v</color><color=#00FF00>e</color><color=#0000FF>:</color> <color=#FF0000>{currentWave.ToString()}</color>";
+        }
+        else
+        {
+            waveText.text = _defaultWaveText + currentWave.ToString() + "</color>"; 
         }
         main.isSpawning = false;
         LevelManager.main.gameObject.GetComponent<Item_Grabber>().Trigger();
@@ -93,15 +110,21 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        if (enemyPrefabIndex == 0) {
+        if (enemyPrefabIndex <= 2) {
             enemyPrefabIndex++;
             prefabtoSpawn = main.enemyPrefabs[0];
         }
-        else if (enemyPrefabIndex == 1)
+        else if (enemyPrefabIndex <= 5)
         {
-            enemyPrefabIndex--;
+            enemyPrefabIndex++;
             //add rTFCount if statement later
             prefabtoSpawn = main.enemyPrefabs[1];
+        }
+        else
+        {
+            enemyPrefabIndex = 0;
+            prefabtoSpawn = main.enemyPrefabs[2];
+            timeSinceLastSpawn = -10f;
         }
 
         float angle = Random.Range(-180f, 180f);

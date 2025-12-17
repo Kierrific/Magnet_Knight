@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -107,6 +108,17 @@ public class Item_Grabber : MonoBehaviour
             Destroy(item);
         }
         itemsSpawned = false;
+        StartCoroutine(StartNewWave());
+    }
+
+    private IEnumerator StartNewWave()
+    {
+        for (float i = 10f; i > 0; i -= Time.deltaTime)
+        {
+            yield return null;
+        }
+        EnemySpawner.main.StartWave();
+        yield break;
     }
 
     public void increaseMaxHealth(int num) {
