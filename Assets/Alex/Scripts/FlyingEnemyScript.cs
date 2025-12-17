@@ -397,6 +397,7 @@ public class FlyingEnemyScript : MonoBehaviour
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
 
     }

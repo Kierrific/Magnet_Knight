@@ -468,6 +468,7 @@ public class MeleeEnemyScript : MonoBehaviour
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
     }
 

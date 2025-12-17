@@ -523,6 +523,7 @@ public class RangedEnemyScript : MonoBehaviour
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
     }
 

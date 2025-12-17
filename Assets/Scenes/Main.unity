@@ -11687,8 +11687,8 @@ MonoBehaviour:
   - {fileID: 809020837956768914, guid: 135e4238f21d2f74392d60f6bfa67301, type: 3}
   - {fileID: 8159937914288393479, guid: 02d20d69c25ff8e4e8d36d2fddff3d90, type: 3}
   playerPrefab: {fileID: 8543639000912591931, guid: e226df76a9ced3741bb378131a3947b0, type: 3}
-  waveText: {fileID: 0}
-  baseEnemies: 21
+  waveText: {fileID: 1211032758}
+  baseEnemies: 1
   enemySpawnRate: 1
   difficultyScaling: 0.5
   spawnDistance: 11
