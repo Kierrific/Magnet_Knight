@@ -53,7 +53,7 @@ public class RangedEnemyScript : MonoBehaviour
     [Tooltip("How close an enemy needs to be during pathfinding to a waypoint to move to the next waypoint.")][SerializeField] private float _nextWaypointDistance = 0.5f;
     private bool _retreatSet = false; //Whether or not the retreat path finding has been set yet or not
 
-
+    private Animator _anim;
     private AgroStates currentAgroState; //The current agro state the enemy is in (based on distance)
     private bool _canMove = true;
     private float _detectTimer;
@@ -85,6 +85,8 @@ public class RangedEnemyScript : MonoBehaviour
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
         _strafeTimer = _strafeDuration;
+
+        _anim = GetComponent<Animator>();
 
         if (_player == null)
         {
@@ -441,6 +443,10 @@ public class RangedEnemyScript : MonoBehaviour
         {
             _enemyRB2D.linearVelocity = Vector3.zero; 
         }
+
+        _anim.SetFloat("x", _enemyRB2D.linearVelocityX);
+        _anim.SetFloat("y", _enemyRB2D.linearVelocityY);
+
     }
 
     private void WallCollision()
@@ -481,12 +487,13 @@ public class RangedEnemyScript : MonoBehaviour
         _attacked = false;
         _attackDurationTimer = _attackDuration;
         _currentState = States.Attacking;
-            
-        
-            //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
-            //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
-            //bulletScript.Damage = _stats.Damage(bulletScript.Damage, "range"); //Make sure the fired projectile scales with enemy scaling
-        
+
+        _anim.SetTrigger("attack");
+
+        //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
+        //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
+        //bulletScript.Damage = _stats.Damage(bulletScript.Damage, "range"); //Make sure the fired projectile scales with enemy scaling
+
     }
 
     private void HandleAttack() //(E)
