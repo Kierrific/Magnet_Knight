@@ -28,7 +28,7 @@ public class TutorialScript : MonoBehaviour
 
     public void NextTutorial()
     {
-        if (_textIndex + 2 < _tutorialTexts.Count)
+        if (_textIndex + 1 < _tutorialTexts.Count)
         {
             _textIndex++;
             textGO.text = _tutorialTexts[_textIndex];
