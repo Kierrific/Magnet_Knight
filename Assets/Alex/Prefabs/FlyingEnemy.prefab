@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 9046470707793561701}
-  _detectRange: 5
+  _detectRange: 20
   _playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -229,7 +229,7 @@ MonoBehaviour:
   _roamDistance: 40
   _maxDistance: 30
   _targetOffset: 4
-  _baseDamage: 20
+  _baseDamage: 5
   _seeker: {fileID: 5510349553918920819}
 --- !u!114 &5510349553918920819
 MonoBehaviour:

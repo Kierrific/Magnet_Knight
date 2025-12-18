@@ -11665,10 +11665,12 @@ MonoBehaviour:
   - {fileID: 8159937914288393479, guid: 02d20d69c25ff8e4e8d36d2fddff3d90, type: 3}
   playerPrefab: {fileID: 1100371226}
   waveText: {fileID: 1211032758}
-  baseEnemies: 1
+  baseEnemies: 14
   enemySpawnRate: 1
   difficultyScaling: 0.5
   spawnDistance: 11
+  defaultCoinPerWave: 5
+  currentWave: 1
 --- !u!114 &8328765773597513879
 MonoBehaviour:
   m_ObjectHideFlags: 0

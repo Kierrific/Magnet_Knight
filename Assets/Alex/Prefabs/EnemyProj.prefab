@@ -177,6 +177,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _projectileSpeed: 10
   _despawnTime: 5
-  _damage: 30
+  _damage: 20
   _targetType: Player
   _destroyOnHit: 1

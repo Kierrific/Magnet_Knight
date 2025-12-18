@@ -171,7 +171,7 @@ MonoBehaviour:
   _maxHealth: 120
   _defense: 0
   _cooldownReduction: 0
-  _moveSpeed: 7
+  _moveSpeed: 3
   _attackSpeedBonus: 0
   _difficultyScaler: 1
   _meleeDamageScaler: 1
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 4600222806731963962}
-  _detectRange: 7
+  _detectRange: 20
   _playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -216,7 +216,7 @@ MonoBehaviour:
   _nextWaypointDistance: 0.5
   _roamDistance: 20
   _maxDistance: 50
-  _baseDamage: 0
+  _baseDamage: 10
   _seeker: {fileID: 2671963460874718058}
 --- !u!114 &2671963460874718058
 MonoBehaviour:

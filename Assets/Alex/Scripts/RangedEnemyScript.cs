@@ -488,7 +488,7 @@ public class RangedEnemyScript : MonoBehaviour
         _attackDurationTimer = _attackDuration;
         _currentState = States.Attacking;
 
-        _anim.SetTrigger("attack");
+        _anim.SetTrigger("Attack");
 
         //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
         //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
