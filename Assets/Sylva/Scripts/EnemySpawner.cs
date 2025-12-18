@@ -85,6 +85,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    [ContextMenu("End Wave")]
     private void EndWave()
     {
         currentWave++;

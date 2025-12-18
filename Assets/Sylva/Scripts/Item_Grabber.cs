@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Item_Grabber : MonoBehaviour
 {
+    public static Item_Grabber Instance;
+
     [Header("References")]
     [Tooltip("list of prefabs to use for items")][SerializeField] private GameObject[] itemPrefabs;
     [Tooltip("canvas gameobject to spawn the items under")][SerializeField] private Transform spawnPoint;
@@ -16,6 +18,11 @@ public class Item_Grabber : MonoBehaviour
     [HideInInspector] public bool itemsSpawned = false;
     private AbilitiesScript abilitiesScript;
     private int selectedBox = 0;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -104,12 +111,12 @@ public class Item_Grabber : MonoBehaviour
             }
         }
 
-        foreach (GameObject item in itemBoxes)
+        foreach (GameObject item in Instance.itemBoxes)
         {
             Destroy(item);
         }
         itemsSpawned = false;
-        StartCoroutine(StartNewWave());
+        Instance.StartCoroutine(StartNewWave());
     }
 
     private IEnumerator StartNewWave()
@@ -191,44 +198,44 @@ public class Item_Grabber : MonoBehaviour
         playerObject.GetComponent<StatsScript>().MaxScrap += num;
     }
 
-    public void increaseCoinCount(int num)
+    public void increaseCoinCount(int num) //Change this
     {
         playerObject.GetComponent<StatsScript>().CoinCount += num;
     }
 
     public void addMagnetTrap()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
+        Instance.numActiveAbilities++;
     }
 
     public void addPolarPull()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
+        Instance.numActiveAbilities++;
     }
     
     public void addPolarBind()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        Instance.numActiveAbilities++;
     }
     
     public void addRepulsionWave()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        Instance.numActiveAbilities++;
     }
 
     public void addMagneticBlackHole()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
+        Instance.numActiveAbilities++;
     }
 
     public void addSyntheticHeart()
     {
-        abilitiesScript.abilityList[numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
-        numActiveAbilities++;
+        Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
+        Instance.numActiveAbilities++;
     }
 }
