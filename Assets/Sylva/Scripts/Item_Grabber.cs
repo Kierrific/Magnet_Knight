@@ -115,13 +115,13 @@ public class Item_Grabber : MonoBehaviour
         {
             Destroy(item);
         }
-        itemsSpawned = false;
+        Instance.itemsSpawned = false;
         Instance.StartCoroutine(StartNewWave());
     }
 
     private IEnumerator StartNewWave()
     {
-        for (float i = 10f; i > 0; i -= Time.deltaTime)
+        for (float i = 5f; i > 0; i -= Time.deltaTime)
         {
             yield return null;
         }
@@ -198,9 +198,10 @@ public class Item_Grabber : MonoBehaviour
         playerObject.GetComponent<StatsScript>().MaxScrap += num;
     }
 
-    public void increaseCoinCount(int num) //Change this
+    public void increaseCoinCount(int num) 
     {
-        playerObject.GetComponent<StatsScript>().CoinCount += num;
+        EnemySpawner eSpawner = EnemySpawner.main; //
+        SaveDataController.Instance.current.coins += Mathf.RoundToInt(num + (1.3f * ((float)eSpawner.currentWave - 1f))); ;
     }
 
     public void addMagnetTrap()

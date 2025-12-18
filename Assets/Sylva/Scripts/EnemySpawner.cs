@@ -21,13 +21,14 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float enemySpawnRate = 0.5f;
     [SerializeField] private float difficultyScaling = 0.5f;
     [SerializeField] private float spawnDistance;
+    [SerializeField] private float defaultCoinPerWave = 5;
 
     public static UnityEvent onEnemyDestroy = new UnityEvent();
 
     private bool _newRecord = false;
     private string _defaultWaveText = "Wave: ";
     private int enemiesAlive;
-    private int currentWave = 1;
+    public int currentWave = 1;
     private int enemiesLeftToSpawn;
     private float timeSinceLastSpawn;
     private bool isSpawning = false;
@@ -101,6 +102,7 @@ public class EnemySpawner : MonoBehaviour
             waveText.text = _defaultWaveText + currentWave.ToString() + "</color>"; 
         }
         main.isSpawning = false;
+        SaveDataController.Instance.current.coins += Mathf.RoundToInt(defaultCoinPerWave + (1.3f * ((float) currentWave - 1f)));
         LevelManager.main.gameObject.GetComponent<Item_Grabber>().Trigger();
     }
 
