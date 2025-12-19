@@ -19,8 +19,8 @@ public class AbilitiesScript : MonoBehaviour
         MagnetTrap = 1,
         PolarPull = 2,
         PolarBind = 3,
-        OrbitalScrap = 4,
-        ScrapSiphon = 5,
+        OrbitalScrap = 4,//don't exist
+        ScrapSiphon = 5,//don't exist :)
         RepulsionWave = 6,
         MagneticBlackhole = 7,
         SyntheticHeart = 8,
@@ -82,7 +82,7 @@ public class AbilitiesScript : MonoBehaviour
 
     private AbilityActions _currentAction = AbilityActions.None; 
 
-    [Tooltip("The list of current player abilities.")] [SerializeField] private List<Abilities> _abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
+    [Tooltip("The list of current player abilities.")] public List<Abilities> abilityList = new List<Abilities> {Abilities.None, Abilities.None, Abilities.None};
     private Vector3 _mousePosition;
     private bool _pulling = false;
     private float _pullTimer = 0f;
@@ -242,7 +242,7 @@ public class AbilitiesScript : MonoBehaviour
     private void HandleAbility(int abilityNum) //Could likely make this take the enum instead of the index of the enum
     {
         abilityNum -= 1;
-        if (_abilityList[abilityNum] == Abilities.MagnetTrap)
+        if (abilityList[abilityNum] == Abilities.MagnetTrap)
         {
             if (_currentAction == AbilityActions.None) //Ability keybind was released
             {
@@ -251,7 +251,7 @@ public class AbilitiesScript : MonoBehaviour
                 _abilityTimers[abilityNum] = _trapCooldown + _trapDuration;
             }
         }
-        else if (_abilityList[abilityNum] == Abilities.PolarPull)
+        else if (abilityList[abilityNum] == Abilities.PolarPull)
         {
             if (_currentAction != AbilityActions.None) //Ability keybind is pressed
             {
@@ -267,7 +267,7 @@ public class AbilitiesScript : MonoBehaviour
             }
         }
 
-        else if (_abilityList[abilityNum] == Abilities.PolarBind)
+        else if (abilityList[abilityNum] == Abilities.PolarBind)
         {
             if (_currentAction == AbilityActions.None) //Ability keybind was released
             {
@@ -276,7 +276,7 @@ public class AbilitiesScript : MonoBehaviour
 
             }
         }
-        else if (_abilityList[abilityNum] == Abilities.SyntheticHeart)
+        else if (abilityList[abilityNum] == Abilities.SyntheticHeart)
         {
             if (_currentAction != AbilityActions.None)
             {
@@ -289,14 +289,14 @@ public class AbilitiesScript : MonoBehaviour
                 _abilityTimers[abilityNum] = _healCooldown;
             }
         }
-        else if (_abilityList[abilityNum] == Abilities.RepulsionWave)
+        else if (abilityList[abilityNum] == Abilities.RepulsionWave)
         {
             if (_currentAction != AbilityActions.None)
             {
                 Wave(abilityNum);
             }
         }
-        else if (_abilityList[abilityNum] == Abilities.MagneticBlackhole)
+        else if (abilityList[abilityNum] == Abilities.MagneticBlackhole)
         {
             if (_currentAction != AbilityActions.None)
             {

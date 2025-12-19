@@ -47,13 +47,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPrefabs:
-  - {fileID: 389025226511698224, guid: 02fba53d4d4fd0f4b86e461c618e701c, type: 3}
+  - {fileID: 389025226511698224, guid: f00ab5a9dc35bee45ae046e84f185ed6, type: 3}
   - {fileID: 6221906051725981317, guid: 4b68a7a533dcaf4458b6e33b7b0db6b8, type: 3}
   - {fileID: 3572261301214144418, guid: 8f083435d09468b4ea1ad668521da7b6, type: 3}
   - {fileID: 1099161738866609183, guid: 3edcd41af5fb70349aa230d4879fedab, type: 3}
   - {fileID: 8250245149492594915, guid: 5b79816a766675e48899cba21d2817e5, type: 3}
   - {fileID: 2583317496474054167, guid: 67bcd2befea30824bbe302bca1e601b2, type: 3}
   - {fileID: 6444456314700548460, guid: d839699104807114e888e981d659038c, type: 3}
+  - {fileID: 9060171605603561654, guid: e13fb7d1e901ed449aa46f2de9d8cfa9, type: 3}
+  - {fileID: 1931425567959862948, guid: ca355f16cc8591a4a95feeadc336430d, type: 3}
+  - {fileID: 6547202479874153056, guid: 15017cfd55e507746b5088d28a1d8643, type: 3}
+  - {fileID: 5649349326010713385, guid: 687e792506f5d7341a7c8f7b70dc3c79, type: 3}
+  - {fileID: 2260435915596004162, guid: a46bab8160dd7cd44a9e84941ebd83bd, type: 3}
+  - {fileID: 8519154881481055298, guid: fb49aa6a5fd574c478afaebed158b62b, type: 3}
   spawnPoint: {fileID: 6881113566703294363, guid: 9e6cf54c4cc5547408cef880e626befb, type: 3}
   playerObject: {fileID: 8543639000912591931, guid: e226df76a9ced3741bb378131a3947b0, type: 3}
   itemsSpawned: 1

@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class MenuButtons : MonoBehaviour
 {
+
+    private SaveData saveData;
+
     public void StartButton()
     { 
         SceneManager.LoadScene("MainLevel");
@@ -27,4 +30,5 @@ public class MenuButtons : MonoBehaviour
     {
         SceneManager.LoadScene("Settings");
     }
+
 }

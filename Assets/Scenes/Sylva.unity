@@ -934,7 +934,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8917553157468368018, guid: b20b811be5543154dbd9a9ca66f7fafb, type: 3}
         m_TargetAssemblyTypeName: EnemySpawner, Assembly-CSharp
-        m_MethodName: StartWave
+        m_MethodName: EndWave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

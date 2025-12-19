@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; //InputAction.CallbackContext ctx
 using System.Collections.Generic;
 
 //TO DO:
@@ -67,6 +67,7 @@ public class PlayerScript : MonoBehaviour
     private float _attackTimer; 
     private PlayerActions _playerBusy = PlayerActions.None; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
     private Vector3 _meleePosition; //Really only used for draw gizmos
+
     
     
 
@@ -206,6 +207,7 @@ public class PlayerScript : MonoBehaviour
         {
             HandleDash(); 
         }
+        
     }
 
     public void Move(InputAction.CallbackContext ctx)
@@ -272,10 +274,7 @@ public class PlayerScript : MonoBehaviour
                 if (hit.collider.gameObject.TryGetComponent(out StatsScript EnemyStats) && TryGetComponent(out StatsScript PlayerStats))
                 {
                     EnemyStats.Health -= _stats.Damage(_meleeDamage, "melee");
-                    if (EnemyStats.Health <= 0) //The less than is likely not needed because health SHOULD be clamped to a minimum of 0
-                    {
-                        _stats.Scrap += EnemyStats.Scrap;
-                    }
+                
                 }
             }
             _attackChargeTime = 0f;
@@ -319,8 +318,7 @@ public class PlayerScript : MonoBehaviour
             _secondAttackPressed = true;
             if (_playerState == Polarity.Positive)//Melee
             {
-                //Start blocking
-                _blocking = true;
+                return;
             }
             else //Range
             {
@@ -329,7 +327,7 @@ public class PlayerScript : MonoBehaviour
         }
         else //Key released
         {
-           HandleSecondaryAttack(); 
+            HandleSecondaryAttack(); 
         }   
      }
 
@@ -359,7 +357,7 @@ public class PlayerScript : MonoBehaviour
             Vector3 projectileSpawnLocation = transform.position;
             //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player
             int projectileIndex = 0; //(0, 1, 2)
-
+            Debug.Log($"Attack Charge Time: {_attackChargeTime}");
             if (_attackChargeTime > 0.5f && _stats.Scrap >= 2)
             {
                 projectileIndex++;

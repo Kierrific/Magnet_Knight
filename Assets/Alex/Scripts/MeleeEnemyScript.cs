@@ -52,6 +52,7 @@ public class MeleeEnemyScript : MonoBehaviour
     [Tooltip("Set this to the seeker script attached to the enemy.")][SerializeField] private Seeker _seeker;
     //-------------------------------------
 
+    private Animator _anim;
     private bool _canMove = true;
     private float _detectTimer;
     private Vector3 _direction = Vector2.down;
@@ -81,6 +82,8 @@ public class MeleeEnemyScript : MonoBehaviour
         _detectTimer = _detectCooldown;
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
+
+        _anim = GetComponent<Animator>();
 
         if (_player == null)
         {
@@ -340,7 +343,7 @@ public class MeleeEnemyScript : MonoBehaviour
                     PathFind();
                     _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
                 }
-                _enemyRenderer.color = new Color(0f, 1f, 0f);
+                //_enemyRenderer.color = new Color(0f, 1f, 0f);
 
                 _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
 
@@ -355,7 +358,7 @@ public class MeleeEnemyScript : MonoBehaviour
                 _timeSinceSeen = 0f;
 
                 Vector3 dir2Player = _player.transform.position - transform.position;
-                _enemyRenderer.color = new Color(1f, 0f, 0f);
+                //_enemyRenderer.color = new Color(1f, 0f, 0f);
                 _direction = dir2Player.normalized;
                 _enemyRB2D.linearVelocity = Vector3.zero;
 
@@ -367,7 +370,7 @@ public class MeleeEnemyScript : MonoBehaviour
                         UpdatePath(PathFindingTargets.Retreat);
 
                     }
-                    _enemyRenderer.color = new Color(0f, 0f, 1f);
+                    //_enemyRenderer.color = new Color(0f, 0f, 1f);
                     PathFind();
                     //_direction *= -1;
                     if (_canMove)
@@ -402,7 +405,7 @@ public class MeleeEnemyScript : MonoBehaviour
             if (distance2Player < 1.75f) //Make attack (E)
             {
                 HandleAttack();
-                _enemyRenderer.color = new Color(1f, 1f, 0f);
+                //_enemyRenderer.color = new Color(1f, 1f, 0f);
             }
             else
             {
@@ -414,6 +417,10 @@ public class MeleeEnemyScript : MonoBehaviour
 
 
         }
+
+        _anim.SetFloat("x", _enemyRB2D.linearVelocityX);
+        _anim.SetFloat("y", _enemyRB2D.linearVelocityY);
+
     }
 
     private void WallCollision()
@@ -454,11 +461,14 @@ public class MeleeEnemyScript : MonoBehaviour
                 PlayerStats.Slow(1f, .35f);
             }
         }
+
+        _anim.SetTrigger("attack");
         //float distance2Player = Vector3.Distance(transform.position, _player.transform.position);
     }
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
     }
 

@@ -1,3 +1,4 @@
+using Pathfinding;
 using UnityEngine;
 
 
@@ -12,6 +13,21 @@ public class RangedEnemyScript : MonoBehaviour
         Attacking = 2
     }
 
+    public enum PathFindingTargets
+    {
+        Random = 0,
+        Player = 1,
+        Retreat = 2,
+        Chase = 3,
+    }
+
+    public enum AgroStates
+    {
+        Far = 0, // Distance > 10
+        Close = 1, // Distance < 5
+        Middle = 2, //5 < Distance < 10
+    }
+
     [Tooltip("The instance of the StatsScript attached to the player (Should define its self in script but you should still set it in inspector)")][SerializeField] private StatsScript _stats;
     [Tooltip("The distance in which the enemy can detect the player")][SerializeField] private float _detectRange;
     [Tooltip("Set this to the layer that the player is on")][SerializeField] private LayerMask _playerLayer;
@@ -24,8 +40,21 @@ public class RangedEnemyScript : MonoBehaviour
     [Tooltip("How often the enemy can attack in seconds.")] [SerializeField] private float _attackCooldown;
     [Tooltip("The amount of rays the enemie's player detection function uses.")] private int _detectionRays = 5;
     [Tooltip("The angle in which rays will spawn in while trying to find the player")] private float _detectionAngle = 130f;
+    [Tooltip("The distance at which AI behavior starts, the lower the number the greater performance impact.")][SerializeField] private float _maxDistance = 30f;
+    [Tooltip("Set this to the layer of the player and the environment is on.")][SerializeField] private LayerMask _combinedLayers;
 
 
+    //Pathfinding Variables
+    Path path;
+    private int currentWaypoint = 0;
+    [Tooltip("How far the enemy will roam.")][SerializeField] private float _roamDistance;
+    [Tooltip("Set this to the seeker script attached to the enemy.")][SerializeField] private Seeker _seeker;
+    private Vector3 lastSeenPos; //The last position the enemy saw the player at
+    [Tooltip("How close an enemy needs to be during pathfinding to a waypoint to move to the next waypoint.")][SerializeField] private float _nextWaypointDistance = 0.5f;
+    private bool _retreatSet = false; //Whether or not the retreat path finding has been set yet or not
+
+    private Animator _anim;
+    private AgroStates currentAgroState; //The current agro state the enemy is in (based on distance)
     private bool _canMove = true;
     private float _detectTimer;
     private float _targetLocation; 
@@ -43,6 +72,9 @@ public class RangedEnemyScript : MonoBehaviour
     private float _attackDurationTimer;
     private float _attackDuration = 1f; //How long each attack last
     private bool _attacked = false; //Whether or not the enemy has attacked this attack pattern
+    private float _agroSwapTimer; //The actual variable keeping track of the agroSwapDuration
+    private float _agroSwapDuration = 0.5f; //The minimum amount of time for the enemy to swap from one state to another
+    //agrpSwapTimer | currentAgroState | agroSwapDuration
 
     private void Awake()
     {
@@ -53,6 +85,8 @@ public class RangedEnemyScript : MonoBehaviour
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
         _strafeTimer = _strafeDuration;
+
+        _anim = GetComponent<Animator>();
 
         if (_player == null)
         {
@@ -78,7 +112,7 @@ public class RangedEnemyScript : MonoBehaviour
 
     void Start()
     {
-        
+        _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
     }
 
     // Update is called once per frame
@@ -113,7 +147,7 @@ public class RangedEnemyScript : MonoBehaviour
                 float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
                 if (distance2Player < _detectRange + 1f) //Slight performance check, ray cast wont even run unless there is the possibility it hits the player
                 {
-                    DetectPlayer(_detectionRays);
+                    DetectPlayer();
                     _detectTimer = _detectCooldown;
                 }
                 
@@ -125,7 +159,77 @@ public class RangedEnemyScript : MonoBehaviour
         }
     }
 
-    private void DetectPlayer(int rays)
+    private void PathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWaypoint = 0;
+        }
+    }
+
+    private void UpdatePath(PathFindingTargets pft) //Creates a new path depending on specified situation. 
+    {
+        if (_seeker.IsDone())
+        {
+            switch (pft)
+            {
+                case PathFindingTargets.Player:
+                    _seeker.StartPath(transform.position, _player.transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Random:
+                    _seeker.StartPath(transform.position, (Vector3)(Random.insideUnitCircle * _roamDistance) + transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Retreat:
+                    Vector3 advoidedDir = (_player.transform.position - transform.position).normalized; //Gets the direction from the enemy to the player
+                    float ranAngle = Random.Range(90f, 180f) * Mathf.Deg2Rad; //Gets the radian of a random angle from 90-180
+
+                    //Gets the direction of this angle
+                    Vector3 ranDir = new(advoidedDir.x * Mathf.Cos(ranAngle) - advoidedDir.y * Mathf.Sin(ranAngle), advoidedDir.x * Mathf.Sin(ranAngle) + advoidedDir.y * Mathf.Cos(ranAngle), 0f);
+
+                    _seeker.StartPath(transform.position, ranDir * 6f + transform.position, PathComplete);
+                    break;
+
+                case PathFindingTargets.Chase:
+                    _seeker.StartPath(transform.position, lastSeenPos, PathComplete);
+                    break;
+
+            }
+
+        }
+        else
+        {
+
+        }
+    }
+
+    private void DetectPlayer()
+    {
+        float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+        if (distance2Player < _detectRange + 1f)
+        {
+            Vector3 dir2Player = _player.transform.position - transform.position;
+            dir2Player = dir2Player.normalized;
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, dir2Player, _detectRange, _combinedLayers);
+
+
+            if (hit)
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    //Debug.Log($"Name of object hit: {hit.collider.gameObject.name}");
+                    _currentState = States.Chasing;
+
+                }
+            }
+
+        }
+    }
+
+
+    private void IgnoreThis(int rays)
     {
         if (rays > 0)
         {
@@ -163,54 +267,130 @@ public class RangedEnemyScript : MonoBehaviour
         }
     }
 
+    private void PathFind()
+    {
+        if (path == null)
+        {
+            return;
+        }
+
+        if (currentWaypoint >= path.vectorPath.Count - 1)
+        {
+            //_pathEnded = true;
+            _enemyRB2D.linearVelocity = Vector3.zero;
+            float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
+            if (_currentState == States.Roaming)
+            {
+                UpdatePath(PathFindingTargets.Random);
+            }
+            else if (_currentState == States.Chasing && distance2Player < 5f)
+            {
+                UpdatePath(PathFindingTargets.Retreat);
+            }
+            else if (_currentState == States.Chasing && distance2Player >= 10f)
+            {
+                _currentState = States.Roaming;
+                UpdatePath(PathFindingTargets.Random);
+            }
+            else if (_currentState == States.Attacking)
+            {
+                //UpdatePath(PathFindingTargets.Player);
+
+            }
+
+            return;
+        }
+        else
+        {
+            //_pathEnded = false;
+        }
+
+        //path.vectorPath[currentWaypoint] //The vector3 location of the current waypoint on the path
+
+
+        float distance2Waypoint = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
+        if (distance2Waypoint < _nextWaypointDistance)
+        {
+            currentWaypoint++;
+        }
+        _direction = (path.vectorPath[currentWaypoint] - transform.position).normalized;
+    }
+
     private void Move()
     {
+        if (Vector3.Distance(_player.transform.position, transform.position) > _maxDistance)
+        {
+            _enemyRB2D.linearVelocity = Vector3.zero;
+            return;
+        }
         if (_currentState == States.Roaming)
         {
-            WallCollision();
-            if (!_canMove || _targetLocation < 0){
-                _canMove = true;
-                _targetLocation = Random.Range(5f, 15f);
-
-                //Get a random direction
-                float xDir = Random.Range(-1f, 1f);
-                float yDir = Random.Range(-1f, 1f) > 0f ? Mathf.Sqrt(1-(xDir*xDir)): Mathf.Sqrt(1-(xDir*xDir)) * -1;
-                _direction = (Vector3)new Vector2(xDir, yDir);
-
-                _enemyRB2D.linearVelocity = Vector3.zero;
-            }
-            _targetLocation -= _stats.MoveSpeed * Time.deltaTime;
+            PathFind();
             _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
         }
         else if (_currentState == States.Chasing)
         {
-            WallCollision();
-
-            if (!_canMove)
-            {
-                _enemyRB2D.linearVelocity = Vector3.zero; 
-            }
+            _agroSwapTimer -= Time.deltaTime;
             float distance2Player = Vector3.Distance(_player.transform.position, transform.position);
 
-            if (distance2Player > 10f)
+            if (_agroSwapTimer < 0) 
             {
+                if (distance2Player > 10f && currentAgroState != AgroStates.Far)
+                {
+                    currentAgroState = AgroStates.Far;
+                    _agroSwapTimer = _agroSwapDuration;
+                    //Debug.Log("Agro State swapped to Far");
+                }
+                else if (distance2Player < 5f && currentAgroState != AgroStates.Close)
+                {
+                    currentAgroState = AgroStates.Close;
+                    _agroSwapTimer = _agroSwapDuration;
+                    //Debug.Log("Agro State swapped to Close");
+                }
+                else if (distance2Player > 5f && distance2Player < 10f && currentAgroState != AgroStates.Middle)
+                {
+                    currentAgroState = AgroStates.Middle;
+                    _agroSwapTimer = _agroSwapDuration;
+                    //Debug.Log("Agro State swapped to Middle");
+
+                }
+            }
+
+
+            if (currentAgroState == AgroStates.Far) //distance2Player > 10f
+            {
+                _retreatSet = false;
                 if (Mathf.Approximately(_timeSinceSeen, 0f))
                 {
-                    Vector3 dir2Player = _player.transform.position - transform.position;
-                    _direction = dir2Player.normalized;
-                    _attackDir = _direction;
+                    lastSeenPos = _player.transform.position;
+                    UpdatePath(PathFindingTargets.Chase);
+                    PathFind();
+                }
+                if (_canMove)
+                {
+                    PathFind();
+                    _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
                 }
 
                 if (_canMove)
                 {
                     _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.75f);
                 }
-                _enemyRenderer.color = new Color(0f, 1f, 0f);
+                //_enemyRenderer.color = new Color(0f, 1f, 0f);
                 _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
 
                 if (_timeSinceSeen >= _playerUndetected)
                 {
                     _currentState = States.Roaming;
+                }
+
+                _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
+
+                if (_timeSinceSeen >= _playerUndetected)
+                {
+                    _currentState = States.Roaming;
+                    UpdatePath(PathFindingTargets.Random);
+
                 }
             }
             else
@@ -218,23 +398,30 @@ public class RangedEnemyScript : MonoBehaviour
                 _timeSinceSeen = 0f; //Resets the time since the enemy last saw the player
 
                 Vector3 dir2Player = _player.transform.position - transform.position;
-                _enemyRenderer.color = new Color(1f, 0f, 0f);
+                //_enemyRenderer.color = new Color(1f, 0f, 0f);
                 _direction = dir2Player.normalized;
                 _enemyRB2D.linearVelocity = Vector3.zero;
 
-                if (distance2Player < 5f) 
+                if (currentAgroState == AgroStates.Close) //distance2Player > 5f
                 {
+                    if (!_retreatSet)
+                    {
+                        _retreatSet = true;
+                        UpdatePath(PathFindingTargets.Retreat);
+                    }
+
                     _enemyRenderer.color = new Color(0f, 0f, 1f);
-                    _direction *= -1;
+                    PathFind();
                     if (_canMove)
                     {
-                        _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 2);
+                        _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.5f);
                     }
                 }
                 else
                 {
                     if (_canMove)
                     {
+                        _retreatSet = false;
                         if (_strafeTimer > 0)
                         {
                             _strafeTimer -= Time.deltaTime;
@@ -244,6 +431,7 @@ public class RangedEnemyScript : MonoBehaviour
                             _strafeTimer = _strafeDuration;
                             _strafeDirection *= -1;
                         }
+                        WallCollision();
                         _direction = Vector3.Cross(dir2Player.normalized, Vector3.forward) * _strafeDirection;
                         _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.75f);
                     }
@@ -255,6 +443,10 @@ public class RangedEnemyScript : MonoBehaviour
         {
             _enemyRB2D.linearVelocity = Vector3.zero; 
         }
+
+        _anim.SetFloat("x", _enemyRB2D.linearVelocityX);
+        _anim.SetFloat("y", _enemyRB2D.linearVelocityY);
+
     }
 
     private void WallCollision()
@@ -295,12 +487,13 @@ public class RangedEnemyScript : MonoBehaviour
         _attacked = false;
         _attackDurationTimer = _attackDuration;
         _currentState = States.Attacking;
-            
-        
-            //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
-            //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
-            //bulletScript.Damage = _stats.Damage(bulletScript.Damage, "range"); //Make sure the fired projectile scales with enemy scaling
-        
+
+        _anim.SetTrigger("Attack");
+
+        //GameObject instancedBullet = Instantiate(_bullet, transform.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
+        //EnemyProjectileScript bulletScript = instancedBullet.GetComponent<EnemyProjectileScript>();
+        //bulletScript.Damage = _stats.Damage(bulletScript.Damage, "range"); //Make sure the fired projectile scales with enemy scaling
+
     }
 
     private void HandleAttack() //(E)
@@ -337,6 +530,7 @@ public class RangedEnemyScript : MonoBehaviour
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
     }
 

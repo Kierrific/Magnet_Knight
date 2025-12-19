@@ -51,6 +51,7 @@ public class FlyingEnemyScript : MonoBehaviour
     [Tooltip("Set this to the seeker script attached to the enemy.")][SerializeField] private Seeker _seeker;
     //-------------------------------------
 
+    private Animator _anim;
     private float _detectTimer;
     private Vector3 _direction = Vector2.down;
     private float _attackTimer;
@@ -78,6 +79,8 @@ public class FlyingEnemyScript : MonoBehaviour
         _detectTimer = _detectCooldown;
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
+
+        _anim = GetComponent<Animator>();
 
         if (_player == null)
         {
@@ -154,6 +157,7 @@ public class FlyingEnemyScript : MonoBehaviour
                 Vector3 dir2Player = _player.transform.position - transform.position;
                 _direction = dir2Player.normalized;
                 _currentState = States.Attacking;
+                _anim.SetTrigger("Attack");
                 _attacking = true;
                 _attackTimer = 9999999f;
             }
@@ -364,7 +368,9 @@ public class FlyingEnemyScript : MonoBehaviour
                 PlayerStats.Slow(1f, .35f);
                 
             }
+
         }
+
     }
 
  
@@ -397,6 +403,7 @@ public class FlyingEnemyScript : MonoBehaviour
 
     private void Die()
     {
+        EnemySpawner.main.EnemyDestroyed();
         Destroy(gameObject); // (E)
 
     }
