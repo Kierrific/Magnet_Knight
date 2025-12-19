@@ -46,8 +46,6 @@ public class PlayerScript : MonoBehaviour
     [Tooltip("How long in seconds till the player will be able to ranged attack again")] [SerializeField] private float _rangeCooldown = 0.3f; //Update this later same reason as _meleeCooldown (E)
     [Tooltip("The base damage (int) of the sword")] [SerializeField] private int _meleeDamage = 5;
     [Tooltip("The base amount of scrap lost (int) when blocking an attack.")] [SerializeField] private int _scrapLoss = 5;
-    [Tooltip("The block visual game object")] [SerializeField] private GameObject _blockGameObject;
-    [Tooltip("")] [SerializeField] private List<Sprite> _blockSprites; //To lazy to make proper animations so im doing it this way
     //[Tooltip("The base damage (int) of the projectile")] [SerializeField] private int _projectileDamage = 1;
   
 
@@ -70,7 +68,6 @@ public class PlayerScript : MonoBehaviour
     private PlayerActions _playerBusy = PlayerActions.None; //Use this variable to check if another action is current being acted for example if using ability 1 set string to something like ability1
     private Vector3 _meleePosition; //Really only used for draw gizmos
 
-    private int _blockSpriteIndex = 0;
     
     
 
@@ -158,7 +155,6 @@ public class PlayerScript : MonoBehaviour
         {
             _mouseDirection = _mousePosition - transform.position;
             _meleePosition = transform.position + _mouseDirection.normalized;
-            _blockGameObject.transform.position = _meleePosition;
             if (_stats.Scrap < _scrapLoss)
             {
                 HandleSecondaryAttack(); // (E)
@@ -211,11 +207,7 @@ public class PlayerScript : MonoBehaviour
         {
             HandleDash(); 
         }
-        if (_blocking)
-        {
-            _blockGameObject.GetComponent<SpriteRenderer>().sprite = _blockSprites[_blockSpriteIndex];
-            _blockSpriteIndex = _blockSpriteIndex > _blockSprites.Count - 1 ? _blockSpriteIndex = 0: _blockSpriteIndex++;
-        }
+        
     }
 
     public void Move(InputAction.CallbackContext ctx)
@@ -326,9 +318,7 @@ public class PlayerScript : MonoBehaviour
             _secondAttackPressed = true;
             if (_playerState == Polarity.Positive)//Melee
             {
-                //Start blocking
-                _blockGameObject.SetActive(true);
-                _blocking = true;
+                return;
             }
             else //Range
             {
@@ -337,7 +327,6 @@ public class PlayerScript : MonoBehaviour
         }
         else //Key released
         {
-            _blockGameObject.SetActive(false);
             HandleSecondaryAttack(); 
         }   
      }

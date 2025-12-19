@@ -376,7 +376,7 @@ public class RangedEnemyScript : MonoBehaviour
                 {
                     _enemyRB2D.linearVelocity = _direction * (_stats.MoveSpeed / 1.75f);
                 }
-                _enemyRenderer.color = new Color(0f, 1f, 0f);
+                //_enemyRenderer.color = new Color(0f, 1f, 0f);
                 _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
 
                 if (_timeSinceSeen >= _playerUndetected)
@@ -398,7 +398,7 @@ public class RangedEnemyScript : MonoBehaviour
                 _timeSinceSeen = 0f; //Resets the time since the enemy last saw the player
 
                 Vector3 dir2Player = _player.transform.position - transform.position;
-                _enemyRenderer.color = new Color(1f, 0f, 0f);
+                //_enemyRenderer.color = new Color(1f, 0f, 0f);
                 _direction = dir2Player.normalized;
                 _enemyRB2D.linearVelocity = Vector3.zero;
 

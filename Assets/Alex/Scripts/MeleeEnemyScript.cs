@@ -343,7 +343,7 @@ public class MeleeEnemyScript : MonoBehaviour
                     PathFind();
                     _enemyRB2D.linearVelocity = _direction * _stats.MoveSpeed;
                 }
-                _enemyRenderer.color = new Color(0f, 1f, 0f);
+                //_enemyRenderer.color = new Color(0f, 1f, 0f);
 
                 _timeSinceSeen += distance2Player > 12f ? Time.deltaTime : 0f;
 
@@ -358,7 +358,7 @@ public class MeleeEnemyScript : MonoBehaviour
                 _timeSinceSeen = 0f;
 
                 Vector3 dir2Player = _player.transform.position - transform.position;
-                _enemyRenderer.color = new Color(1f, 0f, 0f);
+                //_enemyRenderer.color = new Color(1f, 0f, 0f);
                 _direction = dir2Player.normalized;
                 _enemyRB2D.linearVelocity = Vector3.zero;
 
@@ -370,7 +370,7 @@ public class MeleeEnemyScript : MonoBehaviour
                         UpdatePath(PathFindingTargets.Retreat);
 
                     }
-                    _enemyRenderer.color = new Color(0f, 0f, 1f);
+                    //_enemyRenderer.color = new Color(0f, 0f, 1f);
                     PathFind();
                     //_direction *= -1;
                     if (_canMove)
@@ -405,7 +405,7 @@ public class MeleeEnemyScript : MonoBehaviour
             if (distance2Player < 1.75f) //Make attack (E)
             {
                 HandleAttack();
-                _enemyRenderer.color = new Color(1f, 1f, 0f);
+                //_enemyRenderer.color = new Color(1f, 1f, 0f);
             }
             else
             {
