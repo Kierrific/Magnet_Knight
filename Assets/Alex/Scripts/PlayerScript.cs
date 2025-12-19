@@ -87,6 +87,7 @@ public class PlayerScript : MonoBehaviour
     private Vector3 _mouseDirection; //The direction between the player and the mouses position
     private float _mouseAngle; //The angle in degrees between the player and the mouses position (-180 to 180)
     private SpriteRenderer _playerSpriteRenderer;
+    private Animator _playerAnimator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -114,6 +115,7 @@ public class PlayerScript : MonoBehaviour
 
         _playerSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
+        _playerAnimator= GetComponent<Animator>();
 
         //Verifies the stats script is set up properly
         if (TryGetComponent<StatsScript>(out StatsScript statsScript))
