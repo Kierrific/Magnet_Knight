@@ -142,7 +142,6 @@ public class ShopButtons : MonoBehaviour
 
    public void AttackSpeed()
     {
-        SaveDataController.Instance.current.coins += 1000;
         currentLevel = SaveDataController.Instance.current.atsLevel; 
         if (currentLevel < 4 && SaveDataController.Instance.current.coins >= cost)
         {

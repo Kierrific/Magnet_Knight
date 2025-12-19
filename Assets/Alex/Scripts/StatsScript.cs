@@ -43,8 +43,12 @@ public class StatsScript : MonoBehaviour
             {
                 if (gameObject.CompareTag("Enemy"))
                 {
-                    Debug.Log("TEST");
                     _playerStats.Scrap += _scrap;
+                }
+                else if (gameObject.CompareTag("Player"))
+                {
+                    Debug.Log("ouhoiuh0oihj");
+                    _deathMenu.GetComponent<DeathScript>().OpenDeathMenu(); //This is written poorly but im lazy
                 }
             }
         }
@@ -250,6 +254,7 @@ public class StatsScript : MonoBehaviour
         private bool _slowActive = true; 
     //---------------------------------------------------------------------------------------------------
 
+    private GameObject _deathMenu; 
 
     public int Damage(int damage, string type)
     {
@@ -313,6 +318,7 @@ public class StatsScript : MonoBehaviour
 
     void Awake()
     {
+        
         _maxMoveSpeed = _moveSpeed;
         //_player = GameObject.FindWithTag("Player");
         if (!gameObject.CompareTag("Player"))
@@ -331,6 +337,8 @@ public class StatsScript : MonoBehaviour
         {
             _player = gameObject;
             _health = _maxHealth;
+            _deathMenu = GameObject.FindWithTag("DeathMenu");
+            _deathMenu.SetActive(false);
             //Set Health to save data 
         }
     }

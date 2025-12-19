@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - ItemPoint
   - Projectile
+  - DeathMenu
   layers:
   - Default
   - TransparentFX
