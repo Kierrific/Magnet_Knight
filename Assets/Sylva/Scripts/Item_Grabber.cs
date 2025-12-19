@@ -19,6 +19,9 @@ public class Item_Grabber : MonoBehaviour
     private AbilitiesScript abilitiesScript;
     private int selectedBox = 0;
 
+    private int pAbility1 = 0;
+    private int pAbility2 = 0;
+
     void Awake()
     {
         Instance = this;
@@ -34,6 +37,8 @@ public class Item_Grabber : MonoBehaviour
     {
         itemsSpawned = true;
         itemBoxes.Clear();
+        pAbility1 = 0;
+        pAbility2 = 0;
 
         //------------------------------------------------------------------------------------------------------
         //         first item box
@@ -47,6 +52,11 @@ public class Item_Grabber : MonoBehaviour
             {
                 itemIndex = i;
             }
+        }
+
+        if (itemPrefabs[itemIndex].GetComponent<Item>().getRemoveCheck())
+        {
+            pAbility1 = itemIndex;
         }
 
         GameObject firstItemBox = Instantiate(itemPrefabs[itemIndex], spawnPoint.position, Quaternion.identity);
@@ -64,7 +74,26 @@ public class Item_Grabber : MonoBehaviour
         {
             if (itemPrefabs[itemIndex].GetComponent<Item>().getChance() > itemPrefabs[i].GetComponent<Item>().getChance() && randomNumber <= itemPrefabs[i].GetComponent<Item>().getChance() && !itemPrefabs[itemIndex].GetComponent<Item>().isRemoved())
             {
-                itemIndex = i;
+                if (i == 0)
+                {
+                    itemIndex = i;
+                }
+                else if (i != pAbility1 && pAbility1 != 0)
+                {
+                    itemIndex = i;
+                }
+            }
+        }
+
+        if (itemPrefabs[itemIndex].GetComponent<Item>().getRemoveCheck())
+        {
+            if (pAbility1 != 0)
+            {
+                pAbility2 = itemIndex;
+            }
+            else
+            {
+                pAbility1 = itemIndex;
             }
         }
 
@@ -83,7 +112,18 @@ public class Item_Grabber : MonoBehaviour
         {
             if (itemPrefabs[itemIndex].GetComponent<Item>().getChance() > itemPrefabs[i].GetComponent<Item>().getChance() && randomNumber <= itemPrefabs[i].GetComponent<Item>().getChance() && !itemPrefabs[i].GetComponent<Item>().isRemoved())
             {
-                itemIndex = i;
+                if (pAbility1 == 0 && pAbility2 == 0)
+                {
+                    itemIndex = i;
+                }
+                if (pAbility1 != 0 && pAbility1 != i)
+                {
+                    if (pAbility2 != 0 && pAbility2 != i)
+                    {
+                        itemIndex = i;
+                    }
+                }
+                
             }
         }
 
