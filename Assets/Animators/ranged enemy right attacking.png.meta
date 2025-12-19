@@ -210,7 +210,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ranged enemy right attacking_0: 6686425902793914286
+      ranged enemy right attacking_1: 1725949941951285355
+      ranged enemy right attacking_2: 2430396934517767108
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
