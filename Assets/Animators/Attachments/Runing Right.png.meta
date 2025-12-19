@@ -210,7 +210,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Runing Right_0: 7449059131206134981
+      Runing Right_1: -777009699047281464
+      Runing Right_2: -6582020836712790892
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
