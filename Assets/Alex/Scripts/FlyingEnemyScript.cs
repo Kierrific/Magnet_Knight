@@ -80,6 +80,8 @@ public class FlyingEnemyScript : MonoBehaviour
         _wallCenterPosition = (Vector2)transform.position + (Vector2)_direction;
         _player = GameObject.FindWithTag("Player");
 
+        _anim = GetComponent<Animator>();
+
         if (_player == null)
         {
             Debug.LogWarning("Melee Enemy Script cannot find the player object and will not work");
@@ -155,7 +157,7 @@ public class FlyingEnemyScript : MonoBehaviour
                 Vector3 dir2Player = _player.transform.position - transform.position;
                 _direction = dir2Player.normalized;
                 _currentState = States.Attacking;
-                _anim.SetTrigger("attack");
+                _anim.SetTrigger("Attack");
                 _attacking = true;
                 _attackTimer = 9999999f;
             }
