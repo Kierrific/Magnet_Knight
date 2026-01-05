@@ -483,7 +483,7 @@ public class PlayerScript : MonoBehaviour
             projScript.Damage = _stats.Damage(projScript.Damage, "range");
 
             _attackTimer = _rangeCooldown;
-            _stats.Scrap -= projectileIndex + 1;
+            _stats.Scrap -= (projectileIndex + 1) * 5;
         }
             
         _attackChargeTime = 0f;
