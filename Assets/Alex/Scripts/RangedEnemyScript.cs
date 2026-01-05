@@ -410,7 +410,7 @@ public class RangedEnemyScript : MonoBehaviour
                         UpdatePath(PathFindingTargets.Retreat);
                     }
 
-                    _enemyRenderer.color = new Color(0f, 0f, 1f);
+                    //_enemyRenderer.color = new Color(0f, 0f, 1f);
                     PathFind();
                     if (_canMove)
                     {

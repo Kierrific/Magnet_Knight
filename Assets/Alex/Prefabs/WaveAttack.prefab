@@ -195,3 +195,4 @@ MonoBehaviour:
   _despawnTime: 5
   _damage: 50
   _targetType: Enemy
+  _destroyOnHit: 0

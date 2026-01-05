@@ -115,7 +115,7 @@ public class PlayerScript : MonoBehaviour
 
         _playerSpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-        _playerAnimator= GetComponent<Animator>();
+        _playerAnimator = GetComponent<Animator>();
 
         //Verifies the stats script is set up properly
         if (TryGetComponent<StatsScript>(out StatsScript statsScript))
@@ -153,6 +153,38 @@ public class PlayerScript : MonoBehaviour
 
         _attackChargeTime += _mainAttackPressed || _abilityPressed || _secondAttackPressed ? delta: 0f;
 
+        if (!_dashing)
+        {
+            if (_playerMovement != Vector2.zero)
+            {
+                if (_playerDirection.normalized.x > .9f) //right
+                {
+                    _playerAnimator.SetFloat("x", 1f);
+                    _playerAnimator.SetFloat("y", 0f);
+                }
+                else if (_playerDirection.normalized.x < -.9f) //Left
+                {
+                    _playerAnimator.SetFloat("x", -1f);
+                    _playerAnimator.SetFloat("y", 0f);
+
+                }
+                else if (_playerDirection.normalized.y > .3f) //up
+                {
+                    _playerAnimator.SetFloat("x", 0f);
+                    _playerAnimator.SetFloat("y", 1f);
+                }
+                else //Down
+                {
+                    _playerAnimator.SetFloat("x", 0f);
+                    _playerAnimator.SetFloat("y", -1f);
+                }
+            }
+            else
+            {
+                _playerAnimator.SetFloat("x", 0f);
+                _playerAnimator.SetFloat("y", 0f);
+            }
+        }
         if (_blocking)
         {
             _mouseDirection = _mousePosition - transform.position;
@@ -209,16 +241,19 @@ public class PlayerScript : MonoBehaviour
         {
             HandleDash(); 
         }
+
         
     }
 
     public void Move(InputAction.CallbackContext ctx)
     {
-        _playerMovement = ctx.ReadValue<Vector2>() * _stats.MoveSpeed;
+        Vector2 readValue = ctx.ReadValue<Vector2>();
+        _playerMovement = readValue * _stats.MoveSpeed;
 
         if (!_dashing)
         {
-            _playerDirection = ctx.ReadValue<Vector2>() != Vector2.zero ? ctx.ReadValue<Vector2>() : _playerDirection; //Sets the player direction to the direction the player is moving unless the player isn't moving
+            _playerDirection = readValue != Vector2.zero ? readValue : _playerDirection; //Sets the player direction to the direction the player is moving unless the player is standing still
+
         }
     }
 
@@ -227,6 +262,14 @@ public class PlayerScript : MonoBehaviour
         if (ctx.started && _playerBusy == PlayerActions.None)
         {
             _playerState = (Polarity)((int)_playerState * -1);
+            if (_playerState == Polarity.Positive)
+            {
+                _playerAnimator.SetBool("Polarity", false);
+            }
+            else
+            {
+                _playerAnimator.SetBool("Polarity", true);
+            }
              _attackChargeTime = 0f; //Resets the charge time variable (This should be unneeded now)
 
             //Add another aditional logic here (E)
@@ -253,6 +296,7 @@ public class PlayerScript : MonoBehaviour
 
     private void HandleMainAttack()
     {
+
         if (_playerBusy != PlayerActions.FirstAttack && _playerBusy != PlayerActions.None) //Means the player is currently doing another action (every action should start with this)
         {
             return;
@@ -268,8 +312,29 @@ public class PlayerScript : MonoBehaviour
         _mouseAngle = Mathf.Atan2(_mouseDirection.y, _mouseDirection.x) * Mathf.Rad2Deg;
         if (_playerState == Polarity.Positive) //If true the player is in melee form
         {
+            _playerAnimator.SetTrigger("Melee");
+            _playerAnimator.SetBool("CanMove", false);
+
             _attackTimer = _meleeCooldown;
             _meleePosition = transform.position + _mouseDirection.normalized;
+            if (_mouseDirection.normalized.x > .5f) //Left
+            {
+                _playerAnimator.SetFloat("AttackDir", -1f);
+            }
+            else if (_mouseDirection.normalized.x < -.5f) //Right
+            {
+                _playerAnimator.SetFloat("AttackDir", -2f);
+            }
+            else if (_mouseDirection.normalized.y > .5f) //Up
+            {
+                _playerAnimator.SetFloat("AttackDir", 1f);
+
+            }
+            else //Down
+            {
+                _playerAnimator.SetFloat("AttackDir", 2f);   
+            }
+
             RaycastHit2D[] hits = Physics2D.CircleCastAll(_meleePosition, _meleeRadius, Vector2.zero, 0, _enemyLayer);
             foreach (RaycastHit2D hit in hits)
             {
@@ -283,6 +348,25 @@ public class PlayerScript : MonoBehaviour
         }
         else //Means the player is in ranged form
         {
+            _playerAnimator.SetTrigger("Range");
+            _playerAnimator.SetBool("CanMove", false);
+            if (_mouseDirection.normalized.x > .5f) //Left
+            {
+                _playerAnimator.SetFloat("AttackDir", -1f);
+            }
+            else if (_mouseDirection.normalized.x < -.5f) //Right
+            {
+                _playerAnimator.SetFloat("AttackDir", -2f);
+            }
+            else if (_mouseDirection.normalized.y > .5f) //Up
+            {
+                _playerAnimator.SetFloat("AttackDir", 1f);
+
+            }
+            else //Down
+            {
+                _playerAnimator.SetFloat("AttackDir", 2f);   
+            }
             _attackTimer = _rangeCooldown;
             Vector3 projectileSpawnLocation = transform.position;
             //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player //_mouseDirection = _mousePosition - transform.position; 

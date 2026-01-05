@@ -136,6 +136,15 @@ public class FlyingEnemyScript : MonoBehaviour
         }
 
         Move();
+        if (_direction.x > 0)
+        {
+            _enemyRenderer.flipX = false;
+        }
+        else
+        {
+            _enemyRenderer.flipX = true;
+            
+        }
         if (_currentState == States.Roaming)
         {
             if (_detectTimer > 0f)

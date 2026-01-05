@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _saveData:
     waveRecorded: 0
-    coins: 100
+    coins: 1000
     coinsSpent: 0
     atsLevel: 0
     meleeLevel: 0
