@@ -67809,6 +67809,9 @@ MonoBehaviour:
   difficultyScaling: 0.5
   spawnDistance: 11
   defaultCoinPerWave: 5
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
   currentWave: 1
 --- !u!114 &8328765773597513879
 MonoBehaviour:

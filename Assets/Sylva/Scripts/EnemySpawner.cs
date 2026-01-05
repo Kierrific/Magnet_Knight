@@ -22,6 +22,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float difficultyScaling = 0.5f;
     [SerializeField] private float spawnDistance;
     [SerializeField] private float defaultCoinPerWave = 5;
+    [SerializeField] private LayerMask _groundLayer;
+
 
     public static UnityEvent onEnemyDestroy = new UnityEvent();
 
@@ -134,6 +136,14 @@ public class EnemySpawner : MonoBehaviour
         Vector2 position = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * spawnDistance;
 
         newEnemy = Instantiate(prefabtoSpawn, position + (Vector2)Camera.main.transform.position, Quaternion.identity);
+        Vector2 boxCastSize = new Vector2(2f, 2f);
+
+        RaycastHit2D check = Physics2D.BoxCast(newEnemy.transform.position, boxCastSize, 0f, Vector2.zero, _groundLayer);
+        if (check) 
+        { 
+            newEnemy.transform.position = new Vector3(0f, 0f, 0f);
+            
+        }
         aliveEnemies.Add(newEnemy);
     }
 }
