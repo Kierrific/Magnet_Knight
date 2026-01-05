@@ -452,6 +452,25 @@ public class PlayerScript : MonoBehaviour
                     projectileIndex++; 
                 }
             }
+            _playerAnimator.SetTrigger("Range");
+            _playerAnimator.SetBool("CanMove", false);
+            if (_mouseDirection.normalized.x > .5f) //Left
+            {
+                _playerAnimator.SetFloat("AttackDir", -1f);
+            }
+            else if (_mouseDirection.normalized.x < -.5f) //Right
+            {
+                _playerAnimator.SetFloat("AttackDir", -2f);
+            }
+            else if (_mouseDirection.normalized.y > .5f) //Up
+            {
+                _playerAnimator.SetFloat("AttackDir", 1f);
+
+            }
+            else //Down
+            {
+                _playerAnimator.SetFloat("AttackDir", 2f);
+            }
 
             float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _scrapProjectilePrefabs[projectileIndex].GetComponent<SpriteRenderer>().size.x / 2;
             float yLoc = projectileSpawnLocation.y + (_mouseDirection.normalized.y * (_playerSpriteRenderer.size.y / 2 + .1f)) + _mouseDirection.normalized.y * _scrapProjectilePrefabs[projectileIndex].GetComponent<SpriteRenderer>().size.y / 2;

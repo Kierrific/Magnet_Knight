@@ -60895,7 +60895,7 @@ MonoBehaviour:
   _dashForce: 300
   _meleeCooldown: 0.5
   _rangeCooldown: 0.3
-  _meleeDamage: 25
+  _meleeDamage: 75
   _scrapLoss: 5
   _enemyLayer:
     serializedVersion: 2
