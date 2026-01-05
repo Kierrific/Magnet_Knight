@@ -43,6 +43,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "KillAll",
+                    "type": "Button",
+                    "id": "33492393-5462-4153-a22e-3468c3e154cb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Attack2",
                     "type": "Button",
                     "id": "e5d51c57-763d-4e9e-8728-29e6583cde3e",
@@ -300,6 +309,17 @@
                     "processors": "",
                     "groups": "Joystick",
                     "action": "Attack1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "def0ced9-71e4-485b-b7cf-682d98f96435",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "KillAll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

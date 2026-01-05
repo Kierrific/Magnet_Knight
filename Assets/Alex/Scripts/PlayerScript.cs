@@ -514,6 +514,15 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void KillAll(InputAction.CallbackContext ctx)
+    {
+        foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            EnemySpawner.main.EnemyDestroyed();
+            Destroy(enemy);
+        }
+    }
+
 
 
     public void OnDrawGizmos()
