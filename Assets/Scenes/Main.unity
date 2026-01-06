@@ -60518,23 +60518,23 @@ MonoBehaviour:
   _holePrefab: {fileID: 1282650031449817078, guid: d10e1794fc92b6a47a0be3bbb5a86b56, type: 3}
   _bufferAmount: 0.25
   _playerSpriteRenderer: {fileID: 1100371233}
-  _trapDamage: 1
+  _trapDamage: 25
   _trapDuration: 3
   _trapCooldown: 3
-  _pullDamage: 1
+  _pullDamage: 30
   _pullDuration: 3
   _pullCooldown: 10
-  _bindDamage: 5
+  _bindDamage: 90
   _bindDuration: 2
   _bindCooldown: 10
   _bindScrap: 25
-  _healAmount: 3
+  _healAmount: 15
   _healTimer: 0.5
   _healCooldown: 1
   _healScrap: 3
   _waveCooldown: 3
   _waveScrap: 25
-  _holeDamage: 5
+  _holeDamage: 15
   _holeDuration: 5
   _holeCooldown: 20
   _holeScrap: 75

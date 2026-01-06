@@ -189,7 +189,7 @@ MonoBehaviour:
   _allDamageScaler: 1
   _allDamageBonus: 0
   _coinCount: 0
-  _scrap: 99999
+  _scrap: 5
   _maxScrap: 100
 --- !u!50 &8089317580216564780
 Rigidbody2D:

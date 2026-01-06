@@ -197,7 +197,7 @@ MonoBehaviour:
   _allDamageScaler: 1
   _allDamageBonus: 0
   _coinCount: 0
-  _scrap: 3
+  _scrap: 5
   _maxScrap: 100
 --- !u!114 &8140478270744032214
 MonoBehaviour:
