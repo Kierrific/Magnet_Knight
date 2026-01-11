@@ -352,7 +352,7 @@ public class StatsScript : MonoBehaviour
             _meleeDamageScaler = 1 + .1f * SaveDataController.Instance.current.meleeLevel;
             _rangeDamageScaler = 1 + .1f * SaveDataController.Instance.current.rangedLevel;
             _abilityDamageScaler = 1 + .1f * SaveDataController.Instance.current.abilityLevel;
-            _defense = 1 * SaveDataController.Instance.current.defenseLevel;
+            _defense = .1f * SaveDataController.Instance.current.defenseLevel;
             MoveSpeed = _moveSpeed * (1 + .1f * SaveDataController.Instance.current.msLevel);
             _cooldownReduction = SaveDataController.Instance.current.atsLevel * .05f;
             _maxScrap = 100 + 10 * SaveDataController.Instance.current.scrapLevel;

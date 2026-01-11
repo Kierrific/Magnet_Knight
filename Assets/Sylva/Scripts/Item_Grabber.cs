@@ -247,36 +247,42 @@ public class Item_Grabber : MonoBehaviour
     public void addMagnetTrap()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.MagnetTrap;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
 
     public void addPolarPull()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarPull;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
     
     public void addPolarBind()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
     
     public void addRepulsionWave()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.PolarBind;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
 
     public void addMagneticBlackHole()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.MagneticBlackhole;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
 
     public void addSyntheticHeart()
     {
         Instance.abilitiesScript.abilityList[Instance.numActiveAbilities] = AbilitiesScript.Abilities.SyntheticHeart;
+        Instance.abilitiesScript.UpdateIcons();
         Instance.numActiveAbilities++;
     }
 }

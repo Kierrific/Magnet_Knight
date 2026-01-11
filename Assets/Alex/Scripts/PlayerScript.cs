@@ -92,6 +92,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
+        
         //Sets some variables if they're not set in the inspector (You still should set these in the inspector if you're using them)
         if (_rb2d == null) 
         {
@@ -235,6 +236,7 @@ public class PlayerScript : MonoBehaviour
 
     }
 
+
     void FixedUpdate()
     {
         if (_dashing)
@@ -315,7 +317,7 @@ public class PlayerScript : MonoBehaviour
             _playerAnimator.SetTrigger("Melee");
             _playerAnimator.SetBool("CanMove", false);
 
-            _attackTimer = _meleeCooldown;
+            _attackTimer = _meleeCooldown * (1 - _stats.CooldownReduction); //(E)
             _meleePosition = transform.position + _mouseDirection.normalized;
             if (_mouseDirection.normalized.x > .5f) //Left
             {
@@ -367,7 +369,7 @@ public class PlayerScript : MonoBehaviour
             {
                 _playerAnimator.SetFloat("AttackDir", 2f);   
             }
-            _attackTimer = _rangeCooldown;
+            _attackTimer = _rangeCooldown * (1 - _stats.CooldownReduction); 
             Vector3 projectileSpawnLocation = transform.position;
             //Adds an calculated offset to where the player spawns relative to the size of the projectile and to the size of the player //_mouseDirection = _mousePosition - transform.position; 
             float xLoc = projectileSpawnLocation.x + (_mouseDirection.normalized.x * (_playerSpriteRenderer.size.x / 2 + .1f)) + _mouseDirection.normalized.x * _scrapProjectilePrefabs[0].GetComponent<SpriteRenderer>().size.x / 2;
@@ -430,7 +432,7 @@ public class PlayerScript : MonoBehaviour
         {
             _blocking = false;
 
-            _attackTimer = _meleeCooldown;
+            _attackTimer = _meleeCooldown * (1 - _stats.CooldownReduction);
         }
         else 
         {
@@ -482,7 +484,7 @@ public class PlayerScript : MonoBehaviour
             ScrapProjScript projScript = scrapProjectile.GetComponent<ScrapProjScript>();
             projScript.Damage = _stats.Damage(projScript.Damage, "range");
 
-            _attackTimer = _rangeCooldown;
+            _attackTimer = _rangeCooldown * (1 - _stats.CooldownReduction);
             _stats.Scrap -= (projectileIndex + 1) * 5;
         }
             

@@ -6728,7 +6728,7 @@ MonoBehaviour:
   spentCoins: {fileID: 323686636}
   level: 
   statText: 
-  maxText: Defense 10%
+  maxText: Defense 50%
   _upgradeType: 5
 --- !u!224 &1546118358
 RectTransform:

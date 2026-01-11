@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 //using UnityEditor.ShaderGraph.Internal;
 
 //Make a function in statsscript similar to slow but for pushing enemy like a lerp would and use in pull and bind
@@ -71,6 +72,11 @@ public class AbilitiesScript : MonoBehaviour
     [Tooltip("How much scrap it cost to use the blackhole ability")][SerializeField] private int _holeScrap = 75;
     [Tooltip("How large of an aoe the Black Hole ability has")][SerializeField] private float _holeRadius = 10f;
 
+    [Header("Cooldown Display")]
+    [Tooltip("")] [SerializeField] private List<GameObject> _cooldownDisplay = new List<GameObject>{null, null, null};
+    [Tooltip("")] [SerializeField] private List<Sprite> _cooldownSprites = new List<Sprite>{null, null, null, null, null, null, null, null, null};
+
+
 
 
 
@@ -94,6 +100,14 @@ public class AbilitiesScript : MonoBehaviour
 
     private void Awake()
     {
+        foreach (GameObject icon in _cooldownDisplay)
+        {
+            if (icon != null)
+            {
+                icon.SetActive(false);
+            }
+        }
+
         //Verifies the stats script is set up properly
         if (TryGetComponent<StatsScript>(out StatsScript statsScript))
         {
@@ -162,7 +176,61 @@ public class AbilitiesScript : MonoBehaviour
         GetClosest();
     }
 
+    public void UpdateIcons()
+    {
+        int index = -1;
+        if (abilityList[2] != Abilities.None)
+        {
+            index = 2;
+        }
+        else if (abilityList[1] != Abilities.None)
+        {
+            index = 1;
+        }
+        else
+        {
+            index = 0;
+        }
+        _cooldownDisplay[index].SetActive(true);
+        _cooldownDisplay[index].transform.GetChild(1).GetComponent<Image>().sprite = _cooldownSprites[index];
+        SetColor(index, false);
 
+
+    }
+    private void SetColor(int index, bool created)
+    {
+        //THIS IS GRAY 105, 106, 106
+        Color _color = new Color();
+        if (created)
+        {
+            _color = new Color(105f/255f, 106f/255f, 106f/255f);
+        }
+        else
+        {
+            if ((index + 1) % 2 != 0)
+            {
+                _color = new Color(195f / 255f, 31f / 255f, 31f / 255f); 
+            }
+            else
+            {
+                _color = new Color(82f / 255f, 134f / 255f, 227f / 255f); 
+            }
+        }
+        _cooldownDisplay[index].transform.GetChild(0).gameObject.GetComponent<Image>().color = _color;
+    }
+    
+    private IEnumerator FillTimer(int index, float cooldownDuration) //
+    {
+        SetColor(index, true);
+        Image fill = _cooldownDisplay[index].transform.GetChild(0).GetComponent<Image>();
+        while (_abilityTimers[index] >= 0f)
+        {
+            fill.fillAmount = _abilityTimers[index] / cooldownDuration;
+            yield return null;
+        }
+        fill.fillAmount = 1f;
+        SetColor(index, false);
+    }
 
     public void Ability1(InputAction.CallbackContext ctx) //private List<InputAction.CallbackContext ctx> _bufferCTX; //Use this to save ctx actions //Private List<AbilityActions> _bufferActions; //
     {
@@ -248,7 +316,9 @@ public class AbilitiesScript : MonoBehaviour
             {
                 Debug.Log("Trap Triggered");
                 Trap();
+                
                 _abilityTimers[abilityNum] = _trapCooldown + _trapDuration;
+                StartCoroutine(FillTimer(abilityNum, _abilityTimers[abilityNum]));
             }
         }
         else if (abilityList[abilityNum] == Abilities.PolarPull)
@@ -264,10 +334,12 @@ public class AbilitiesScript : MonoBehaviour
                 _pullTimer = _pullDuration;
                 _pulling = false;
                 _abilityTimers[abilityNum] = _pullCooldown;
+                StartCoroutine(FillTimer(abilityNum, _pullCooldown));
+
             }
         }
 
-        else if (abilityList[abilityNum] == Abilities.PolarBind)
+        else if (abilityList[abilityNum] == Abilities.PolarBind) 
         {
             if (_currentAction == AbilityActions.None) //Ability keybind was released
             {
@@ -287,6 +359,8 @@ public class AbilitiesScript : MonoBehaviour
             {
                 _healing = false;
                 _abilityTimers[abilityNum] = _healCooldown;
+                StartCoroutine(FillTimer(abilityNum, _healCooldown));
+
             }
         }
         else if (abilityList[abilityNum] == Abilities.RepulsionWave)
@@ -470,6 +544,8 @@ public class AbilitiesScript : MonoBehaviour
         }
 
         _abilityTimers[abilityNum] = _bindCooldown + _bindDuration;
+        StartCoroutine(FillTimer(abilityNum, _abilityTimers[abilityNum]));
+        
         _stats.Scrap -= _bindScrap; 
         if (closestEnemy.TryGetComponent(out Rigidbody2D _enemyRB2D) && secondClosestEnemy.TryGetComponent(out Rigidbody2D _enemyTwoRB2D))
         {
@@ -533,6 +609,8 @@ public class AbilitiesScript : MonoBehaviour
         ScrapProjScript waveScript = waveProjectile.GetComponent<ScrapProjScript>(); //(I)
         waveScript.Damage = _stats.Damage(waveScript.Damage, "ability");
         _abilityTimers[abilityNum] = _waveCooldown;
+        StartCoroutine(FillTimer(abilityNum, _waveCooldown));
+
         _currentAction = AbilityActions.None;
         //HandleAbility(1);
 
@@ -553,6 +631,7 @@ public class AbilitiesScript : MonoBehaviour
         _currentAction = AbilityActions.None;
         _stats.Scrap -= _holeScrap;
         _abilityTimers[abilityNum] = _holeCooldown;
+        StartCoroutine(FillTimer(abilityNum, _holeCooldown));
         GameObject holePreFab = Instantiate(_holePrefab, _mousePosition, Quaternion.identity);
         int nextWholeNumber = 0;
         for (float i = 0; i < _holeDuration; i += Time.deltaTime)

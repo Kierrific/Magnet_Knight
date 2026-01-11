@@ -91,9 +91,9 @@ public class ShopButtons : MonoBehaviour
                 break;  
             case Upgrades.Defense:
                 upgradeLevel = SaveDataController.Instance.current.defenseLevel;
-                maxLevel = 10; 
+                maxLevel = 5; 
                 currentStat = upgradeLevel;
-                statsText = "Defense " + currentStat + "%";
+                statsText = "Defense " + currentStat * 10 + "%";
                 break;  
             case Upgrades.Health:
                 upgradeLevel = SaveDataController.Instance.current.healthLevel; 
@@ -387,7 +387,7 @@ public class ShopButtons : MonoBehaviour
     public void Defense() 
     {
         currentLevel = SaveDataController.Instance.current.defenseLevel;
-        if (currentLevel < 9 && SaveDataController.Instance.current.coins >= cost)
+        if (currentLevel < 4 && SaveDataController.Instance.current.coins >= cost)
         {
             // Subtract coins
             SaveDataController.Instance.current.coins -= cost;
@@ -405,13 +405,13 @@ public class ShopButtons : MonoBehaviour
 
             // upgrade the player stat text every buy
             currentStat += 1;
-            statText = "Defense " + currentStat + "%";
+            statText = "Defense " + currentStat * 10 + "%";
             statUpgrade.text = statText;
 
 
         }
 
-        else if (currentLevel == 9 && SaveDataController.Instance.current.coins >= cost)
+        else if (currentLevel == 4 && SaveDataController.Instance.current.coins >= cost)
         {
             if (isMaxLevel == false)
             {
